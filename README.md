@@ -1,3 +1,9 @@
+# Documento Tesis Magíster
+
+Este documento contiene los avances en mi tesis de magíster tomando como base la clase umemoria v1.3 liberada por Ucampus.
+
+2018
+
 # Clase umemoria v1.3 - Manual de Instrucciones
 
 21-06-2012

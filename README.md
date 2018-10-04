@@ -2,7 +2,7 @@
 
 Este documento contiene los avances en mi tesis de magíster tomando como base la clase umemoria v1.3 liberada por Ucampus.
 
-2018
+04-10-2018
 
 # Clase umemoria v1.3 - Manual de Instrucciones
 

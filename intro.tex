@@ -1,16 +1,31 @@
 \begin{intro}
-\lipsum[30-35]
-\begin{enumerate}
-	\item Item 1
-	\begin{enumerate}
-		\item Subitem 1
-		\item Subitem 2 (ver Figura \ref{logofcfm})
-	\end{enumerate}
-	\item Item 2
-	\item Item 3
-\end{enumerate}
-\begin{teo}
-Se tiene que $$\int_0^t e^sds=e^t-1.$$
-\end{teo}
-\lipsum[36-40]
+\section{Motivation and Problem Statement}
+In  recent years outstanding results in complex decision-making problems have been obtained with Deep Reinforcement Learning (DRL). State of the art algorithms have solved problems with large state spaces and discrete action spaces, such as playing Atari games \cite{atari}, or beating the world champion in GO \cite{Silver2016}, along with low level simulated continuous control tasks in environments such as the ones included in the OpenAI Gym \cite{brockman2016openai} and the DeepMind Control Suite \cite{tassa2018deepmind}. Learning policies, parameterized with Convolutional Neural Networks (CNN) for high-dimensional state spaces, such as raw images, gives agents the possibility to build rich state representations of the environment without feature engineering on the side of the designer (which was always necessary in classical RL). These properties can be really useful in complex robotics problems, giving robots the ability to solve problems using raw visual information. 
+
+Nevertheless, DRL has several limitations when used to address real world systems \cite{Gu2017}. For instance, DRL algorithms require large amounts of data, which means long training times that in contrast to simulated environments cannot be accelerated with more computational power. If somehow this shortcoming was addressed, sometimes the reward function would still pose a problem as it is hard to specify/model and/or to compute in many cases in the real-world. For instance, sometimes additional perception capabilities to the ones of the agent are needed for computing the reward function, since in theory the reward is given ``by the environment``, not be the agent.
+
+In this regard, the transfer of knowledge learned in a simulator to the real-world is a typical solution. However the mismatch between the virtual and real environment, known as ``Reality Gap``, is often problematic \cite{koos2013transferability}. This results in agents that do not perform at their best in the real-world. Thus, it would be preferable to learn/fine-tune policies directly in the real-world.
+
+On the other hand, machine learning methods that rely on the transfer of human knowledge to an agent have shown to be time efficient for obtaining good performance policies. Moreover, some methods do not need expert human teachers for training high performance agents \cite{akrour2011preference,Knox:2009:ISA:1597735.1597738,Celemin2018AnInteractive}. This is why they appear to be good candidates to tackle the DRL real-world issues mentioned before. 
+
+Therefore, in this work, we study the use of human corrective feedback during task execution, to learn policies with high dimensional state spaces, in continuous action problems using CNNs. Our work extends D-COACH \cite{perez2018interactive}, which is a Deep Learning (DL) based extension of the COrrective Advice Communicated by Humans (COACH) framework \cite{Celemin2018AnInteractive}. In the original D-COACH formulation, a demonstration session is required, at the beginning of the training process, for tuning the convolutional layers used for state dimensionality reduction. After that, a fully connected network policy (connected to the previously trained encoder) is interactively trained during task execution with the human corrective feedback, similarly to the human-agent interaction of the original COACH.
+
+In this paper we introduce an enhanced version of D-COACH, which eliminates the need of demonstration sessions and trains the whole CNN simultaneously, reducing the time and effort of the user/coach for teaching a policy.  In D-COACH no reward functions are needed, and the amount of learning episodes are significantly reduced in comparison to alternative DRL approaches. Enhanced D-COACH is validated in three different problems through simulations and real-world scenarios. In each problem, %two % 
+the original and enhanced D-COACH are analyzed and compared with the DDPG method. 
+
+ISER
+
+Deep Reinforcement Learning (DRL) has obtained unprecedented results in decision-making problems, such as playing Atari games \cite{Mnih2013}, or beating the world champion in GO \cite{Silver2016}. Nevertheless, in robotic problems, DRL is still limited in applications with real-world systems \cite{Gu2017}. Most of the tasks that have been successfully addressed with DRL have two common characteristics: 1) they have well-specified reward functions, and 2) they require large amounts of trials, which means long training periods (or powerful computers) to obtain a satisfying behavior. These two characteristics can be problematic in cases where 1) the goals of the tasks are poorly defined or hard to specify/model (reward function does not exist), 2) the execution of many trials is not feasible (real systems case) and/or not much computational power or time is available, and 3) sometimes additional external perception is necessary for computing the reward/cost function. 
+
+On the other hand, Machine Learning methods that rely on transfer of human knowledge, Interactive Machine Learning (IML) methods, have shown to be time efficient for obtaining good performance policies and may not require a well-specified reward function; moreover, some methods do not need expert human teachers for training high performance agents \cite{akrour2011preference,Knox:2009:ISA:1597735.1597738,Celemin2018AnInteractive}. In previous years, IML techniques were limited to work with low-dimensional state spaces problems and to the use of function approximation such as linear models of basis functions (choosing a right basis function set was crucial for successful learning), in the same way as RL. But, as DRL have showed, by approximating policies with Deep Neural Networks (DNNs) it is possible to solve problems with high-dimensional state spaces, without the need of feature engineering for preprocessing the states. If the same approach is used in IML, the DRL shortcomings mentioned before can be addressed with the support of human users who participate in the learning process of the agent.
+
+This work proposes to extend the use of human corrective feedback during task execution to learn policies with state spaces of low and high dimensionality in continuous action problems (which is the case for most of the problems in robotics) using deep neural networks.
+
+We combine Deep Learning (DL) with the corrective advice based learning framework called COrrective Advice Communicated by Humans (COACH) \cite{Celemin2018AnInteractive}, thus creating the Deep COACH (D-COACH) framework. In this approach, no reward functions are needed and the amount of learning episodes is significantly reduced in comparison to alternative approaches. D-COACH is validated in three different tasks, two in simulations and one in the real-world.
+\section{Objectives}
+\subsection{General Objectives}
+\subsection{Specific Objectives}
+\section{Hypotheses}
+\section{Contribution}
+\section{Outline}
 \end{intro}

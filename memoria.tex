@@ -1,14 +1,15 @@
 \documentclass[upright, contnum]{umemoria}
 \depto{Departamento de Ingeniería Eléctrica}
 \author{Rodrigo Javier Pérez Dattari}
-\title{DESDE LA WEB A LOS MÓVILES: LLEVANDO U-CURSOS A NUESTROS BOLSILLOS}
-\auspicio{.}
+\title{Interactive Learning with Corrective Feedback for Continuous-Action Policies based on Deep Neural Networks}
+\auspicio{FONDECYT Projecto 1161500.}
 \date{2018}
 \guia{Javier Ruiz del Solar}
 \carrera{Magíster en Ciencias de la Ingeniería, Mención Eléctrica}
+\carreraeng{Master of Engineering Sciences in Electrical Engineering}
 \memoria{Tesis para optar al Grado de \break  Magíster en Ciencias de la Ingeniería, Mención Eléctrica\break \break
-MEMORIA PARA OPTAR AL TÍTULO DE INGENIERO CIVIL ELÉCTRICO}
-\comision{JOHAN FABRY,PATRICIO INOSTROZA FAJARDIN}
+Memoria para optar al Título de Ingeniero Civil Eléctrico}
+\comision{Carlos Celemin}
 
 \usepackage{lipsum}
 
@@ -21,15 +22,22 @@ MEMORIA PARA OPTAR AL TÍTULO DE INGENIERO CIVIL ELÉCTRICO}
 \maketitle
 
 \begin{abstract}
-\lipsum[1-4]
+
 \end{abstract}
 
+\begin{abstract_eng}
+Deep Reinforcement Learning (DRL) has become a powerful strategy to solve complex decision making problems based on Deep Neural Networks (DNNs). However, it is highly data demanding, so unfeasible in physical systems for most applications. In this work, we approach an alternative Interactive Machine Learning (IML) strategy for training DNN policies based on human corrective feedback, with a method called Deep COACH (D-COACH). This approach not only takes advantage of the knowledge and insights of human teachers as well as the power of DNNs, but also has no need of a reward function (which sometimes implies the need of external perception for computing rewards). We combine Deep Learning with the COrrective Advice Communicated by Humans (COACH) framework, in which non-expert humans shape policies by correcting the agent's actions during execution. The D-COACH framework has the potential to solve complex problems without much data or time required. Experimental results validated the efficiency of the framework in three different problems (two simulated, one with a real robot), with state spaces of low and high dimensions, showing the capacity to successfully learn policies for continuous action spaces like in the Car Racing and Cart-Pole problems faster than with DRL.
+
+Deep Reinforcement Learning (DRL) has become a powerful methodology to solve complex decision making problems. However, DRL has several limitations when used in real-world problems (e.g., robotics applications). For instance, long training times are required and cannot be accelerated in contrast to simulated environments, and reward functions may be hard to specify/model and/or to compute. Moreover, the transfer of policies learned in a simulator to the real-world has limitations (reality gap). On the other hand, machine learning methods that rely on the transfer of human knowledge to an agent have shown to be time efficient for obtaining well performing policies and do not require a reward function. In this context, we analyze the use of human corrective feedback during task execution to learn policies with high-dimensional state spaces, by using the D-COACH framework, and we propose new variants of this framework. D-COACH is a Deep Learning based extension of COACH (COrrective Advice Communicated by Humans), where humans are able to shape policies through corrective advice. The enhanced version of D-COACH, which is proposed in this paper, largely reduces the time and effort of a human for training a policy. Experimental results validate the efficiency of the D-COACH framework in three different problems (simulated and with real robots), and show that its enhanced version reduces the human training effort considerably, and makes it feasible to learn policies within periods of time in which a DRL agent do not reach any improvement.
+\end{abstract_eng}
+
+
 \begin{dedicatoria}
-Una dedicatoria corta.
+A mi abuelo Ernesto.
 \end{dedicatoria}
 
 \begin{thanks}
-\lipsum[1-2]
+
 \end{thanks}
 
 \cleardoublepage

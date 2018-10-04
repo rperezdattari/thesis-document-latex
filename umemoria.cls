@@ -40,10 +40,10 @@
 \RequirePackage{pgffor} % foreach
 
 %% Lenguaje
-\addto\captionsspanish{\renewcommand\tablename{Tabla}}
-\addto\captionsspanish{\renewcommand\contentsname{Tabla de Contenido}}
-\addto\captionsspanish{\renewcommand\listtablename{Índice de Tablas}}
-\addto\captionsspanish{\renewcommand\listfigurename{Índice de Ilustraciones}}
+\addto\captionsspanish{\renewcommand\tablename{Table}}
+\addto\captionsspanish{\renewcommand\contentsname{Table of Contents}}
+\addto\captionsspanish{\renewcommand\listtablename{Table Index}}
+\addto\captionsspanish{\renewcommand\listfigurename{Illustrations Index}}
 
 %% Interlineado
 \RequirePackage{parskip}
@@ -64,7 +64,7 @@
 \begin{flushright}
 \small
 \begin{tabular}{l}
-RESUMEN DE LA MEMORIA PARA OPTAR \\
+RESUMEN DE LA TESIS PARA OPTAR \\
 AL TÍTULO DE \MakeUppercase\@carrera \\
 POR: \MakeUppercase\@author \\
 FECHA: \MakeUppercase\@date\\
@@ -76,11 +76,28 @@ PROF. GUÍA: \foreach \x in \@guia { \MakeUppercase\x }
 \end{center}
 }{\vfill\null}
 
+\newenvironment{abstract_eng}{%
+\cleardoublepage
+\begin{flushright}
+\small
+\begin{tabular}{l}
+ABSTRACT OF THE THESIS TO BE ELIGIBLE FOR\\ THE TITLE
+OF \MakeUppercase\@carreraeng \\
+BY: \MakeUppercase\@author \\
+DATE: \MakeUppercase\@date\\
+SUPERVISOR: \foreach \x in \@guia { \MakeUppercase\x }
+\end{tabular}
+\end{flushright}
+\begin{center}
+\MakeUppercase\@title
+\end{center}
+}{\vfill\null}
+
 \newenvironment{dedicatoria}{\cleardoublepage\null\vspace{\stretch{1}}\begin{flushright}\itshape}{\end{flushright}\vspace{\stretch{2}}\null}
 \let\thanks\undefined
 \newenvironment{thanks}{\cleardoublepage\chapter*{Agradecimientos}}{\vfill\null}
-\newenvironment{intro}{\addcontentsline{toc}{chapter}{\protect\numberline{}Introducción}\chapter*{Introducción}}{\vfill\null}
-\newenvironment{conclusion}{\addcontentsline{toc}{chapter}{\protect\numberline{}Conclusión}\chapter*{Conclusión}}{\vfill\null}
+\newenvironment{intro}{\addcontentsline{toc}{chapter}{\protect\numberline{}Introduction}\chapter*{Introduction}}{\vfill\null}
+\newenvironment{conclusion}{\addcontentsline{toc}{chapter}{\protect\numberline{}Conclusions}\chapter*{Conclusions}}{\vfill\null}
 
 %% Teoremas, proofs, etc
 \renewenvironment{proof}[1][\proofname] {\par\pushQED{\qed}\normalfont\topsep6\p@\@plus6\p@\relax\trivlist\item[\hskip\labelsep\scshape\footnotesize#1\@addpunct{.}]\ignorespaces}{\popQED\endtrivlist\@endpefalse}
@@ -112,6 +129,11 @@ PROF. GUÍA: \foreach \x in \@guia { \MakeUppercase\x }
 \newcommand{\setcarrera}[1]{\def\@carrera{#1}}
 \let\carrera\setcarrera
 \let\setcarrera\relax
+
+\global\let\@carreraeng\@empty
+\newcommand{\setcarreraeng}[1]{\def\@carreraeng{#1}}
+\let\carreraeng\setcarreraeng
+\let\setcarreraeng\relax
 
 \global\let\@memoria\@empty
 \newcommand{\setmemoria}[1]{\def\@memoria{#1}}

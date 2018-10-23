@@ -34,16 +34,16 @@
 \RequirePackage[utf8]{inputenc} %Encoding
 \RequirePackage[top=2cm, left=3cm, bottom=2cm, right=2cm, paper=letterpaper]{geometry} % Margenes
 \RequirePackage{amsmath, amssymb, amsthm, graphicx} % Varios
-\RequirePackage[spanish, es-nolists, es-lcroman]{babel} % Lenguaje
+\RequirePackage[english]{babel} % Lenguaje
 \RequirePackage[pdfpagelabels]{hyperref} % Links y numeracion del PDF
 \RequirePackage{listings} % Codigo Fuente
 \RequirePackage{pgffor} % foreach
 
 %% Lenguaje
-\addto\captionsspanish{\renewcommand\tablename{Table}}
-\addto\captionsspanish{\renewcommand\contentsname{Table of Contents}}
-\addto\captionsspanish{\renewcommand\listtablename{Table Index}}
-\addto\captionsspanish{\renewcommand\listfigurename{Illustrations Index}}
+\addto\captionsenglish{\renewcommand\tablename{Table}}
+\addto\captionsenglish{\renewcommand\contentsname{Table of Contents}}
+\addto\captionsenglish{\renewcommand\listtablename{Table Index}}
+\addto\captionsenglish{\renewcommand\listfigurename{Illustrations Index}}
 
 %% Interlineado
 \RequirePackage{parskip}

@@ -1,21 +1,57 @@
 \chapter{Theoretical Framework}
+
 \section{Machine Learning}
+Machine Learning (ML) is a discipline that studies ways of finding patterns in data by learning from experience. What this mean, is that an algorithm in charge of accomplishing an specific task is able to progressively improve its performance (learn) by comparing its output with data (experience) in a way that indicates how good/bad is doing. If the algorithm is doing good, then the learning process is finished. If is not doing so good, then the algorithm updates its parameters to match (if possible) its output with what is expected.  
 
-Machine Learning (ML) is a discipline that studies ways of finding patterns in data by learning from experience. What this mean, is that an algorithm in charge of accomplishing an specific task is able to progressively improve its performance (learn) by comparing its output with data (experience) in a way that indicates how good/bad is doing. If the algorithm is doing good, then the learning process is finished. If is not doing so good, then the algorithm updates its parameters to match (if possible) its output with what is expected.   
-\subsection{Deep Learning}
+The performance of ML algorithms depends heavily in the quality of the data that they receive. For instance, if a system is asked to recommend the most powerfull computer out of a list based on the color of the computers, it is bound to fail. Instead, if is given information about the CPU, GPU, RAM, etc of the systems, then, it is possible for it to make a better guess. This is what we call the \textbf{representation} of the data, which 
 
-\subsubsection{Autoencoder}
-
-\section{Policy Learning}
-\note{POLICY DESCRIPTION}
-\subsection{Reinforcement Learning}
-\subsubsection{Deep Reinforcement Learning}
-\subsection{Learning from Demonstration}
-\subsubsection{The Correspondence Problem}
-\subsection{Interactive Learning}
-\subsubsection{Evaluative Feedback}
-\subsubsection{Corrective Feedback}
 \section{Function Approximation}
 \subsection{Linear Model of Basis Functions}
 \subsection{Artificial Neural Networks}
+\subsubsection{Feedforward Fully-Connected}
+\subsubsection{Convolutional}
+\subsubsection{Autoencoder}
+\subsubsection{Recurrent}
+\subsubsubsection{Long Short-Term Memory}
+
+\section{Sequential Decision-Making}
+\subsection{Markov Decision Process (MDP)}
+\subsection{Reinforcement Learning}
+\subsubsection{Value Function Approximation}
+\subsubsection{Policy Gradient}
+\subsubsection{On/Off Policy}
+\subsubsection{Replay Buffer}
+\subsection{Learning from Demonstration}
+\subsubsection{The Correspondence Problem}
+\subsubsection{Distributional Drift}
+\subsection{Learning from Feedback}
+\subsubsection{Evaluative Feedback}
+\subsubsection{Corrective Feedback}
+When teaching with human corrective advice, if the agent executes an action $a$ that the human considers to be erroneous, then s/he would indicate the direction in which the action should be corrected (thus, COACH was proposed for problems with continuous actions). Each dimension of the action would have a corresponding correction signal $h$ with values $0$, $-1$ or $1$ which produces an error signal with arbitrary magnitude $e$ that is used to shape directly the policy. Thus, the error would be: 
+\begin{equation}\label{eq:error}
+    error=h \cdot e.
+\end{equation}
+
+$h=0$ indicates that no correction has been advised. $h=\pm 1$ indicates the direction of the advised correction.
+
 \section{COrrective Advice Communicated by Humans (COACH)}
+In this framework no value function is modeled, since no reward/cost is used in the learning process \cite{Celemin2018AnInteractive}. A parametrized policy is directly learned in the parameter space, as in Policy Search (PS) RL. 
+The classic COACH algorithm shapes two functions parametrized as a linear model of basis functions. The objective of the first function is to learn the policy of the agent $\pi(s)=f^{\top}\theta$; the objective of the second function, $H(s)=f^{\top}\psi$, is to learn a prediction of the human feedback. The vector of basis functions $f(s)$, for simplicity is called $f$. The parameter vectors $\theta$ and $\psi$ are updated to shape the models. As it can be seen, $f$ is the same vector for both the Policy Model $\pi(s)$ and the Human Feedback Model  $H(s)$. The Human Feedback Model is used to adapt the size of the error signal that is then used to update the weights of $\pi(s)$. Both functions are updated using stochastic gradient descent each time feedback is received. The pseudocode of COACH is shown in Algorithm \ref{algorithm:COACH}.
+
+\begin{algorithm}[H]
+\caption{Basic Structure of COACH}\label{algorithm:COACH}
+\begin{algorithmic}[1]
+\State \textbf{Require:} error magnitude $e$, human model learning rate $\beta$, time steps $N$
+\For{t = 1,2,...,N}{}
+\State \textbf{observe} state $s_{t}$
+\State \textbf{execute} action $a_{t}=\pi(s_{t})$
+\State \textbf{feedback} human corrective advice $h_{t}$
+\If{$h_{t}$ != 0}
+\State \textbf{update} $H(s_{t})$ with $\Delta \psi = \beta\cdot (h_{t}-H(s_{t}))\cdot f$
+\State $\alpha_{t} = |H(s_{t+1})|$
+\State $error_{t} = h_{t}\cdot e$
+\State \textbf{update} $\pi(s_{t})$ with $\Delta \theta = \alpha_{t} \cdot error_{t} \cdot f$
+\EndIf
+\EndFor
+\end{algorithmic}
+\end{algorithm}

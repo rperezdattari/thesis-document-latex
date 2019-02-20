@@ -1,26 +1,38 @@
 \chapter{Theoretical Framework}
-
-\section{Machine Learning}
-Machine Learning (ML) is a discipline that studies ways of finding patterns in data by learning from experience. What this mean, is that an algorithm in charge of accomplishing an specific task is able to progressively improve its performance (learn) by comparing its output with data (experience) in a way that indicates how good/bad is doing. If the algorithm is doing good, then the learning process is finished. If is not doing so good, then the algorithm updates its parameters to match (if possible) its output with what is expected.  
-
-The performance of ML algorithms depends heavily in the quality of the data that they receive. For instance, if a system is asked to recommend the most powerfull computer out of a list based on the color of the computers, it is bound to fail. Instead, if is given information about the CPU, GPU, RAM, etc of the systems, then, it is possible for it to make a better guess. This is what we call the \textbf{representation} of the data, which 
-
-\section{Function Approximation}
-\subsection{Linear Model of Basis Functions}
-\subsection{Artificial Neural Networks}
-\subsubsection{Feedforward Fully-Connected}
-\subsubsection{Convolutional}
-\subsubsection{Autoencoder}
-\subsubsection{Recurrent}
-\subsubsubsection{Long Short-Term Memory}
-
 \section{Sequential Decision-Making}
+In robotics, sequential decision-making problems refers to tasks in which a robot must achieve a goal by physically interacting with the environment, for example, navigating from one point to another, grasping an object, balancing, etc. It can be described as a step-by-step decision theory, where depending on the information that is gathered by its sensors, the robot has to make decisions consecutively.
+
 \subsection{Markov Decision Process (MDP)}
+A Markov Decision Process (MDP) is meant to be a straightforward framing of sequential decision-making problems. In a MDP we have an \emph{agent} and an \emph{environment}, which interact continually. The agent is the learner and the decision maker. The environment is everything that the agent can interact with\cite{sutton}. In robotics, the agent is the robot and the environment is the setting, in the real world, in which the robot interacts.
+
+To keep things as simple as possible, MDPs are commonly modeled as discrete time interaction of the agent with the environment. Thus, the time is divided into a sequence of \emph{time steps}, $t=0,1,2,3,...$ . At each time step the agent \emph{observes} a representation of the environment's \emph{state}. Depending on the state, the agent selects an \emph{action}, that, ideally, will lead to achieving the goal of the task.
+
+The state describes the current situation of the environment; the action is an input to the environment that the agent can select and that affects the environment's evolution. The environment's evolution is the sequence of states visited by the agent while solving the task. Transitioning from one state to another is a stochastic process defined by the nature of the environment and the actions taken, at each time step, by the agent. Additionally, a MDP is formulated as an extension of a Markov chain, such that the Markov property is satisfied. As a consequence, the conditional probability distribution of future states depends only upon the present state, such that:
+
+\begin{equation}
+    P(s_{t}|s_{t-1}, a_{t-1}) = P(s_{t}|s_{t-1},...,s_{0},a_{t-1},...,a_{0})
+\end{equation}
+
+Finally, every time the environment transitions, a numerical \emph{reward} is received by the agent.  Given the state in which the environment was, this value will indicate the quality of the last taken action. At a given state, a better action will produce a better reward. In a nutshell, a MDP can by defined by the tuple $MDP=(S,A,R,P)$, graphically represented in the following diagram:
+
+\textbf{super diagrama}
+
 \subsection{Reinforcement Learning}
 \subsubsection{Value Function Approximation}
 \subsubsection{Policy Gradient}
 \subsubsection{On/Off Policy}
 \subsubsection{Replay Buffer}
+
+
+\subsection{Function Approximation}
+\subsubsection{Linear Model of Basis Functions}
+\subsubsection{Artificial Neural Networks}
+\subsubsection{Feedforward Fully-Connected}
+\subsubsection{Convolutional}
+\subsubsection{Autoencoder}
+\subsubsection{Recurrent}
+Long Short-Term Memory
+
 \subsection{Learning from Demonstration}
 \subsubsection{The Correspondence Problem}
 \subsubsection{Distributional Drift}

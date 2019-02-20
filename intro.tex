@@ -18,26 +18,20 @@ the original and enhanced D-COACH are analyzed and compared with the DDPG method
 
 \section{Objectives}
 \subsection{General Objective}
-The general objective of this work is to develop and validate a sample-efficient robot learning algorithm based on human corrective feedback for solving sequential decision-making problems with low-dimensional, high-dimensional and partially observed states.
+The general objective of this work is to develop and validate an algorithm that exploits the advantages of combining deep learning with human corrective feedback for learning policies when solving sequential decision-making problems in robotics. 
 
 \subsection{Specific Objectives}
 
 \begin{itemize}
     \item Study the state-of-the-art of robot learning algorithms for solving sequential decision-making problems.
-    \item Combine the COrrective Advice Communicated by Humans (COACH) framework with Deep Learning techniques to develop a framework capable of 
-    \item 
+    \item Propose and implement an algorithm that, by using deep neural networks policies, allows robots to learn to solve tasks in continuous-action domains from low-dimensional and high-dimensional states using online human corrective feedback. 
+    \item Validate the proposed algorithm with tasks using simulated and real platforms.
+    \item Propose a variation of the algorithm to solve partially observed problems.
+    \item Study the advantages and limitations of the proposed algorithm over other state-of-the-art sequential decision-making learning algorithms when applied in robotics problems. 
 \end{itemize}
 
-Los objetivos específicos de esta tesis son:
-Conocer el estado del arte de algoritmos de aprendizaje de agentes para problemas de toma de decisión secuencial (Aprendizaje Reforzado, Interactivo, por Imitación, etc.). 
-Proponer y desarrollar un método que permita que humanos les enseñen a robots a resolver tareas en función de información obtenida desde imágenes. Este método debe ser aplicable en robótica.
-Validar el método en simulación, en problemas de estado de baja dimensión.
-Validar el método en simulación, en problemas de estado de alta dimensión.
-Validar el método en robots, en problemas de estado de alta dimensión, en el mundo real. 
-Proponer variaciones, que permitan la versatilidad del método para distintos problemas.
-Identificar las limitaciones del método, proponiendo variaciones que pudiesen permitir abordarlas.  
-Identificar las implicancias del método propuesto dentro del área de algoritmos de aprendizaje de robots para problemas de toma de decisión secuencial. 
 \section{Hypothesis}
-\section{Contribution}
+Human corrective feedback can be used to learn well performing deep neural network policies. As a consequence, an algorithm of this kind will effectively inherit the learning properties of using human corrective feedback and the function approximation properties of deep neural networks. Combining both approaches will result in a time-efficient and reward function free learning algorithm capable of solving problems using complex observations, such as raw pixels from an image.
+
 \section{Outline}
 \end{intro}

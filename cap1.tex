@@ -5,19 +5,19 @@ In robotics, sequential decision-making problems refers to tasks in which a robo
 \subsection{Markov Decision Process (MDP)}
 A Markov Decision Process (MDP) is meant to be a straightforward framing of sequential decision-making problems. In a MDP we have an \emph{agent} and an \emph{environment}, which interact continually. The agent is the learner and the decision maker. The environment is everything that the agent can interact with\cite{sutton}. In robotics, the agent is the robot and the environment is the setting, in the real world, in which the robot interacts.
 
-To keep things as simple as possible, MDPs are commonly modeled as discrete time interaction of the agent with the environment. Thus, the time is divided into a sequence of \emph{time steps}, $t=0,1,2,3,...$ . At each time step the agent \emph{observes} \textbf{($o_{t}$)} a representation of the environment's \emph{state} \textbf{($s_{t}$)}. Depending on the state, the agent selects an \emph{action} \textbf{($a_{t}$)}, that, ideally, will lead to achieving the goal of the task.
+To keep things as simple as possible, MDPs are commonly modeled as discrete time interaction of the agent with the environment. Thus, the time is divided into a sequence of \emph{time steps}, $t=0,1,2,3,...$ . At each time step the agent \emph{observes} $o_{t}$ a representation of the environment's \emph{state} $s_{t}$. Depending on the state, the agent selects an \emph{action} $a_{t}$, that, ideally, will lead to achieving the goal of the task.
 
 The state describes the current situation of the environment; the action is an input to the environment that the agent can select and that affects the environment's evolution. The agent receives a representation of the state which is called the observation. In robotics, this is information gathered with sensors such as RGB cameras, encoders, inertial measurement units, etc. If the observation contains sufficient information such that the agent can fully understand the environment state, then the problem is said to be \emph{fully observed}, otherwise, is called \emph{partially observed}. If a partially observed problem is modeled with a MDP, then is called a partially observable MDP, or POMDP.
 
 The environment's evolution is the sequence of states visited by the agent. Transitioning from one state to another is a stochastic process defined by the nature of the environment and the actions taken, at each time step, by the agent. Additionally, a MDP is formulated as an extension of a Markov chain, such that the Markov property is satisfied. As a consequence, the conditional probability distribution of future states depends only upon the present state, such that:
 
 \begin{equation}
-    \mathsf{P}(s_{t}|s_{t-1}, a_{t-1}) = \mathsf{P}(s_{t}|s_{t-1},...,s_{0},a_{t-1},...,a_{0})  \hspace{0.5cm} \forall t
+    p(s_{t}|s_{t-1}, a_{t-1}) = p(s_{t}|s_{t-1},...,s_{0},a_{t-1},...,a_{0})  \hspace{0.5cm} \forall t
 \end{equation}
 
 Finally, every time the environment transitions, a numerical \emph{reward} is received by the agent. Better decisions will produce higher rewards.
 
-In a nutshell, a MDP can by defined by the tuple $MDP=(\mathcal{S},\matchcal{A},\mathcal{R},\mathcal{P})$, where $\mathcal{S}$ represents the state space and $\mathcal{A}$ the action space. $\mathcal{R}$ represents the \emph{reward function}, which generates a scalar reward every time step. This reward may depend on $s_{t-1}$; $s_{t-1},a_{t-1}$ or $s_{t-1},a_{t-1},s_{t}$, so $\mathcal{R}$ can be defined with $\mathcal{R}: \mathcal{S} \to \R$, $\mathcal{R}: \mathcal{S} \times \mathcal{A} \to \R$ or $\mathcal{R}: \mathcal{S} \times \mathcal{A} \times \mathcal{S} \to \R$, respectively. Finally, $\mathcal{P}$ corresponds to the transition function, which is the probability $\mathsf{P}(s_{t+1}|s_{t}, a_{t})$, where $\mathcal{P}: \mathcal{S} \times \mathcal{A} \times \mathcal{S} \to [0, 1]$. Graphically, a MDP can be summarized in the following diagram:
+In a nutshell, a MDP can by defined by the tuple $MDP=(\mathcal{S},\matchcal{A},\mathcal{R},\mathcal{P})$, where $\mathcal{S}$ represents the state space and $\mathcal{A}$ the action space. $\mathcal{R}$ represents the \emph{reward function}, which generates a scalar reward $r$ every time step. This reward may depend on $s_{t-1}$; $s_{t-1},a_{t-1}$ or $s_{t-1},a_{t-1},s_{t}$, so $\mathcal{R}$ can be defined with $\mathcal{R}: \mathcal{S} \to \R$, $\mathcal{R}: \mathcal{S} \times \mathcal{A} \to \R$ or $\mathcal{R}: \mathcal{S} \times \mathcal{A} \times \mathcal{S} \to \R$, respectively. Finally, $\mathcal{P}$ corresponds to the transition function, which is the probability $p(s_{t+1}|s_{t}, a_{t})$, where $\mathcal{P}: \mathcal{S} \times \mathcal{A} \times \mathcal{S} \to [0, 1]$. Graphically, a MDP can be summarized in the following diagram:
 
 \begin{figure}[H]
     \centering
@@ -27,27 +27,228 @@ In a nutshell, a MDP can by defined by the tuple $MDP=(\mathcal{S},\matchcal{A},
 \end{figure}
 
 \subsection{Reinforcement Learning}
-Reinforcement Learning aims to use the MDP framing of sequential decision-making problems so that agents learn to solve tasks from \emph{experience}. In this case, experience is understood as the agent-environment interaction, which results in the generation of reward values that indicates the quality of the decisions made by the agent. The idea is to, somehow, use this experience to \textbf{maximize the expected return}. The return \textbf{($G$)} is simply the sum of the rewards \textbf{($r$)}:
+Reinforcement Learning aims to use the MDP framing of sequential decision-making problems so that agents learn to solve tasks from \emph{experience}. In this case, experience is understood as the agent-environment interaction (see Figure \ref{fig:agent-environment}), which results in the generation of reward values that indicates the quality of the decisions made by the agent. 
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.7\linewidth]{imagenes/cap1/agent_environment.png}
+    \caption{The agent-environment interaction.}
+    \label{fig:agent-environment}
+\end{figure}
+
+The idea is to use this experience to learn/discover a \emph{policy} that maximizes the total amount of reward the agent receives. A policy $\pi$ is a function that maps states into actions in a deterministic $\pi: \mathcal{S} \to \mathcal{A}$ or stochastic $\pi: \mathcal{S} \times \mathcal{A} \to [0,1]$ manner. To obtain a good performing policy, is necessary to adequately combine \emph{exploration} with \emph{exploitation}. When exploring, the agent finds more information about the environment, when exploiting, it exploits known information to maximize the reward.
+
+Commonly, in complex problems, $\pi$ is a parametrized model; then, the goal of reinforcement learning is to find the set of parameters $\theta$ that maximizes the sum of rewards, or \emph{return} $G$, that the agent will obtain when solving a task. As a consequence of the parametrized policy $\pi_{\theta}$, the agent will follow a trajectory $\tau = \{s_{0}, a_{0},...,s_{T}, a_{T}\}$, where $T$ is the number of time steps. When a problem has well-defined initial and final conditions it has a \emph{finite horizon} (the trajectory generated between the initial and final conditions is called \emph{episode}), otherwise, it has an \emph{infinite horizon}. In the former, $T \in \N$; in the later, $T \to \infty$. Finally, $\tau$ follows the probability distribution $p_{\theta}(\tau)$ that depends on $p(s_{t+1}|s_{t}, a_{t})$, $\pi_{\theta}$ and $p_{0}=p(s_{0})$, which corresponds to the initial distribution of states.
+
+Then, the goal of reinforcement learning is to \textbf{maximize the expected return} of a given task such that:
 
 \begin{equation}
-G_{t} = \sum_{i=t+1}^{T}r_{i}
+    J = E_{\tau \sim p_{\theta}(\tau)} \left[\sum_{t=0}^{T}r(s_{t}, a_{t})\right]
 \end{equation}
 
+\begin{equation}
+    \theta^{*} = \argmax_{\theta}J(\theta)
+\label{eq:objective}
+\end{equation}
 
-\subsubsection{Value Function Approximation}
-\subsubsection{Policy Gradient}
-\subsubsection{On/Off Policy}
-\subsubsection{Replay Buffer}
+It can be observed that in the infinite horizon case, this definition can be numerically unstable and have divergence problems. To address this, the term $\gamma \in [0, 1)$ can be introduced to construct a formulation of the goal with \emph{discounted rewards}:
 
+\begin{equation}
+    J = E_{\tau \sim p_{\theta}(\tau)} \left[\sum_{t=0}^{T}\gamma^{t}r(s_{t}, a_{t})\right]
+\end{equation}
+
+$\gamma$ allows to control the horizon in which the agent maximizes the reward.
+
+\newpage
+
+\subsubsection{Learning Policies}
+
+Under this framework, there are different approaches for learning policies:
+
+\begin{itemize}
+    \item Value Based (Critic)
+    \item Policy Based (Actor)
+    \item Actor-Critic
+\end{itemize}
+
+In the \textbf{Value Based} approach, the policy is learnt implicitly by learning a \emph{value function}. This function estimates the expected return of the agent for every state, or in other words, how good is to be in a given state. The value for a given state will depend in the in policy of the agent, thus, the value function can be written as:
+
+\begin{equation}
+    V^{\pi}(s_{t'})  = E_{\tau' \sim p_{\theta}(\tau')}\left[\sum_{t=t'}^{T}\gamma^{t}r_{t}(s_{t}, a_{t})|s_{t'}\right]
+\end{equation}
+
+Where $\tau'$ is the trajectory followed by the agent starting from time step $t'$.
+
+Similarly, the value of taking the action \emph{a} in the state \emph{s} can be estimated by a function, which is called the \emph{action-value function}:
+
+\begin{equation}
+    Q^{\pi}(s_{t'}, a_{t'})  = E_{\tau' \sim p_{\theta}(\tau')}\left[\sum_{t=t'}^{T}\gamma^{t}r_{t}(s_{t}, a_{t})|s_{t'},a_{t'}\right]
+\end{equation}
+
+The main idea is to find a policy $\pi^{*}$, which is called the \emph{optimal policy}, such that:
+
+\begin{equation}
+    V^{\pi^{*}}(s) \geq V^{\pi}(s) \hspace{0.5cm} \forall s, \pi
+\end{equation}
+
+\begin{equation}
+    Q^{\pi^{*}}(s,a) \geq Q^{\pi}(s,a) \hspace{0.5cm} \forall s,a,\pi
+\end{equation}
+
+If these conditions are met, then $\theta^{*}$ is obtained. On the other hand, \textbf{Policy Based} approaches update $\theta$ by direct policy differentiation. In this case, the challenge is to estimate the gradient of $J(\theta)$ to update $\theta$ iteratively, using gradient ascent:
+
+\begin{equation}
+    \Delta \theta = \alpha \nabla_{\theta}J(\theta)
+\end{equation}
+
+\begin{equation}
+    \theta \leftarrow \theta + \Delta \theta
+\end{equation}
+
+Where $\alpha$ is the learning rate.
+
+Finally, \textbf{Actor-Critic} approaches combine Value Based and Policy Based methods. Figure \ref{fig:rl_summ} summarizes these RL approaches:
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\linewidth]{imagenes/cap1/rl_summary.png}
+    \caption{Reinforcement Learning methods.}
+    \label{fig:rl_summ}
+\end{figure}
+
+Independently of the technique that is used to solve a problem with Reinforcement Learning, the anatomy these algorithms is always the same: obtain experience (generate samples), fit a model (or estimate a return), improve the policy and repeat (see Figure \ref{fig:RL_anatomy}). 
+
+\begin{itemize}
+    \item \textbf{Generate samples:} obtain $n$ transitions. A transition is the quadruple $(s_{t}, a_{t}, r_{t+1}, s_{t+1})$, which can also be written as $(s, a, r, s')$.
+    \item \textbf{Fit a model:} use the gathered samples to improve the estimation of a value function or to estimate $\nabla_{\theta} J(\theta)$.
+    \item \textbf{Improve the policy:} use the estimated value function to obtain a policy or $\nabla_{\theta} J(\theta)$ to update $\theta$.
+\end{itemize}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.7\linewidth]{imagenes/cap1/RL_anatomy.png}
+    \caption{Anatomy of Reinforcement Learning.}
+    \label{fig:RL_anatomy}
+\end{figure}
+
+\subsubsection{Model-Free vs Model-Based}
+Reinforcement Learning approaches may be either Model-Free or Model-Based.
+
+\textbf{Model-Free} algorithms learn a policy directly from experience. The dynamics of the environment are not directly learned.
+
+\textbf{Model-Based} algorithms learn a \emph{model} of the dynamics of the environment from experience. Then, planning or optimal control techniques are applied to develop a policy using the model.
+
+A model of the environment is a function $M: \mathcal{S} \times \mathcal{A} \to \mathcal{S}$ that predicts the next state as a function of the current state and action to take:
+
+\begin{equation}
+    M(s_{t},a_{t}) = s_{t+1}  
+\end{equation}
+
+or, in the stochastic case, $M: \mathcal{S} \times \mathcal{A} \times \mathcal{S} \to [0, 1]$:
+
+\begin{equation}
+    M(s_{t},a_{t}) = p(s_{t+1}|s_{t},a_{t})  
+\end{equation}
+
+Figure \ref{fig:free_based_model} summarizes the difference between both approaches:
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.6\linewidth]{imagenes/cap1/free_based_model.png}
+    \caption{Model-Free vs Model-Based.}
+    \label{fig:free_based_model}
+\end{figure}
+
+\subsubsection{Experience Replay}
+The anatomy of Reinforcement Learning (Figure \ref{fig:RL_anatomy}) suggests that every time the policy is improved, is necessary to obtain new samples in order to improve it again. This is only true in \emph{on-policy} algorithms. On-policy algorithms are those in which a policy can only be updated with data gathered by itself. Data gathered before the last update corresponds to data gathered by a past version of the current policy; thus, gathered by a different policy. So if the policy is changed, even a little bit, is necessary to generate new samples. 
+
+On the other hand, \emph{off-policy} algorithms are able to improve a policy without the aforementioned restriction; thus, using samples collected by other policies or by past versions of itself. Under this context is where is useful to use \emph{experience replay}.
+
+The key idea of experience replay is to store old transitions $(s, a, r, s')$ in a buffer (or memory buffer) and replay them constantly (randomly sampling a mini-batch) when updating a policy. Using experience replay have two advantages: (1) the data/samples are uncorrelated and (2) data efficiency is significantly improved:
+
+\begin{itemize}
+    \item \textbf{Uncorrelated samples:} every sequential decision-making problem has the issue that the data generated when exploring the environment is correlated. If the data is correlated, then, every time the policy is updated, this will be with respect to a sequence, or various sequences. In some cases this is problematic because models may locally overfit to this data, constantly forgetting older experiences. This issue can be tackled by randomly sampling from a memory buffer.
+    
+    \item\textbf{Data efficiency:} depending on the the parametrized model of $\pi_{\theta}$, it may not be efficient to update its parameters with a set of samples just once. To successfully extract all the information contained in the samples, it would be necessary to update the model several times from them. This is achieved when using experience replay.
+\end{itemize}
 
 \subsection{Function Approximation}
+Although $\pi$ can be represented by a lookup table, where every state has a corresponding action stored in a table, this representation is not scalable to complex problems with large state/action spaces. This is mainly because the states and/or actions are too many to be stored in memory and/or it would take too long to adequately explore the states. Thus, in robotics contexts, where state/action spaces are most likely continuous, the standard approach is to use function approximation. As mentioned before, this means that the policy is a parametrized model $\pi_{\theta}$.
+
+There is a large list of different function approximators, but in this work two of them are the most relevant: \textbf{linear models of basis functions (LCBFs)} and \textbf{artificial neural networks (ANNs)}. Although the policy may not be directly represented by these models, as in the case of value function approximation, for simplicity, from now on we are going to assume that it always does. Also, we are only going to work with deterministic policies. So, if the function approximator is $\Psi$, then $\pi_{\theta} = \Psi(s;\theta)$ such that $\Psi: \mathcal{S} \to \mathcal{A}$.
+
 \subsubsection{Linear Model of Basis Functions}
+A well-known case of function approximation in RL is that in which $\pi_{\theta}$ is a linear function of
+the weight vector $\theta$. Specifically, we are going to work with linear combinations of gaussian radial basis functions (RBFs). If $\phi(s)$ corresponds to a vector of basis functions which is weighted by $\theta$, then $\pi_{\theta}$ can be represented as:
+
+\begin{equation}
+    \pi_{\theta}(s) = \phi(s) \cdot \theta
+\end{equation}
+
+In this case, $\phi(s)$ corresponds to normalized gaussians:
+
+\begin{equation}
+    \phi'_{i}(s) = \exp\left( -\frac{1}{2}[s - c_{i}]B^{-1}_{i}[s-c_{i}]\right) 
+    \hspace{1cm}
+    \phi_{i}(s) = \frac{\phi'_{i}(s)}{\sum_{i'=1}^{N}{\phi'_{i'}(s)}}
+\end{equation}
+
+Where $N$ is the number of basis functions and the subindex $i$ refers to the i-th basis function.
+
 \subsubsection{Artificial Neural Networks}
-\subsubsection{Feedforward Fully-Connected}
-\subsubsection{Convolutional}
-\subsubsection{Autoencoder}
-\subsubsection{Recurrent}
-Long Short-Term Memory
+
+ANNs are a widely used model for non-linear function approximation. The idea behind these models is to build a network of interconnected units that have some properties inspired on neurons. There is a large variety of models, the ones relevant to this work are the following:
+
+\begin{enumerate}
+    \item \textbf{Feedforward Fully-Connected} \newline
+    
+Feedforward Fully-Connected or Feedforward neural networks (FNNs) are the quintessential ANN model. These models are called to be feedforward because the information flows in one sense from the input, trough intermediate representations, to the output. In the mathematical formalization, a network is understood as the model generated when many functions are composed. For instance, you may have three functions ($f^{(1)}$, $f^{(2)}$, $f^{(3)}$) connected in a chain such that:
+
+\begin{equation}
+    \Psi(s) = f^{(3)}(f^{(2)}(f^{(1)}(s)))
+\end{equation}
+
+Each of these functions represents a \emph{layer}, the overall number of layers is known as the \emph{depth} of the neural network. Commonly, these layers have $n\mathrm{-dimensional}$ outputs, and each dimension of the outputs corresponds to the output of a single \emph{neuron}. A neuron is a function $h$ composed by weights $w$, a bias $b$ and a nonlinear function $\sigma$, known as the activation function:
+
+\begin{equation}
+    h(x) = \sigma(w \cdot x + b)
+\end{equation}
+
+There are different types of activation functions, such as ReLU, sigmoid or hyperbolic tangent \textbf{CITE}. Graphically, this function is described in Figure \ref{fig:neuron}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\linewidth]{imagenes/cap1/neuron.jpeg}
+    \caption{Neuron ($b$ considered as an extra dimension of $w$).}
+    \label{fig:neuron}
+\end{figure}
+
+As mentioned before, a layer have many neurons, the number of neurons in a layer is known as the \emph{width} of the layer. The inputs $x$ of a neuron are the outputs of every neuron of the past layer.  There are three types of layers: \textbf{input}, \textbf{hidden} and \textbf{output}. The input layer is the input of $\Psi$, which is $s$ in this context (which is not actually a layer). The output layer is the final function in the chain of functions that compose $\Psi$, which outputs the output of $\Psi$. And finally, the hidden layers are all the functions in between the input and output layers. Graphically, a FNN with one hidden layer is presented in Figure \ref{fig:FNN}, where every layer is denoted by $u_{j}$.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\linewidth]{imagenes/cap1/NeuralNetwork.png}
+    \caption{Feedforward Neural Network model with one hidden layer.}
+    \label{fig:FNN}
+\end{figure}
+
+It can be observed that the nonlinearity that characterizes neural networks exists because of the activation functions, which are nonlinear. This is an essential condition for neural networks to be \emph{universal approximators}. What this states is that a neural network with at least one hidden layer containing a large enough finite number of neurons can approximate any continuous function on a compact region of the network's input space to any degree of accuracy \textbf{CITE sutton 183}. This is a powerful property; nevertheless, finding the set of weights that parametrize the network in order to approximate an arbitrary function is another story, and a lot of work has been done in that regard. 
+
+Finally, going back to the concept of a parametrized policy $\pi_{\theta}$, in this case $\theta$ would correspond to the concatenation of all the weights (including biases) of the layers of a network.
+
+    \item \textbf{Convolutional} \newline
+    
+Convolutional Neural Networks (CNNs) are a specialized type of neural network. The main feature of these networks is that they are designed such that convolutions are employed in at least one layer. In the area of signal processing convolutions are a well-known tool for applying filters to signals, and at the same time, filtering signals is a well-known way of extracting features out of them. The approach proposed by CNNs is to learn the weights of these filters (also known as kernels) as a part of the network's learning process, and that by construction, these filters are applied to the inputs of the convolutional layers.
+    
+    \item Autoencoder
+    \item Recurrent
+    Long Short-Term Memory
+\end{enumerate}
+
+
+
+\subsubsection{Deep RL Era}
+Reinforcement Learning can be divided in the \emph{pre Deep RL era} and the \emph{Deep RL era}, which is the current one. A commonly used function approximator used in the pre Deep RL era were LCBFs, 
 
 \subsection{Learning from Demonstration}
 \subsubsection{The Correspondence Problem}

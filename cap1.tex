@@ -212,13 +212,14 @@ Each of these functions represents a \emph{layer}, the overall number of layers 
 
 \begin{equation}
     h(x) = \sigma(w \cdot x + b)
+    \label{eq:h}
 \end{equation}
 
 There are different types of activation functions, such as ReLU, sigmoid or hyperbolic tangent \textbf{CITE}. Graphically, this function is described in Figure \ref{fig:neuron}.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.7\linewidth]{imagenes/cap1/neuron.jpeg}
+    \includegraphics[width=0.6\linewidth]{imagenes/cap1/neuron.jpeg}
     \caption{Neuron ($b$ considered as an extra dimension of $w$).}
     \label{fig:neuron}
 \end{figure}
@@ -227,25 +228,131 @@ As mentioned before, a layer have many neurons, the number of neurons in a layer
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.7\linewidth]{imagenes/cap1/NeuralNetwork.png}
+    \includegraphics[width=0.6\linewidth]{imagenes/cap1/NeuralNetwork.png}
     \caption{Feedforward Neural Network model with one hidden layer.}
     \label{fig:FNN}
 \end{figure}
 
 It can be observed that the nonlinearity that characterizes neural networks exists because of the activation functions, which are nonlinear. This is an essential condition for neural networks to be \emph{universal approximators}. What this states is that a neural network with at least one hidden layer containing a large enough finite number of neurons can approximate any continuous function on a compact region of the network's input space to any degree of accuracy \textbf{CITE sutton 183}. This is a powerful property; nevertheless, finding the set of weights that parametrize the network in order to approximate an arbitrary function is another story, and a lot of work has been done in that regard. 
 
-Finally, going back to the concept of a parametrized policy $\pi_{\theta}$, in this case $\theta$ would correspond to the concatenation of all the weights (including biases) of the layers of a network.
+Finally, going back to the concept of a parametrized policy $\pi_{\theta}$, in this case $\theta$ would correspond to the concatenation of all the weights (including biases) of the layers of a network. \newline
 
     \item \textbf{Convolutional} \newline
     
 Convolutional Neural Networks (CNNs) are a specialized type of neural network. The main feature of these networks is that they are designed such that convolutions are employed in at least one layer. In the area of signal processing convolutions are a well-known tool for applying filters to signals, and at the same time, filtering signals is a well-known way of extracting features out of them. The approach proposed by CNNs is to learn the weights of these filters (also known as kernels) as a part of the network's learning process, and that by construction, these filters are applied to the inputs of the convolutional layers.
+
+The way to achieve this is to replace the dot product in Equation \ref{eq:h} by a convolution operation. Usually, in these problems we work with discrete data, so the discrete version of the convolution is used:
+
+\begin{equation}
+    s(x)_{i} = (x * w)_{i} = \sum_{l=0}^{L}w_{l} \cdot x_{i+l}
+\end{equation}
     
-    \item Autoencoder
-    \item Recurrent
-    Long Short-Term Memory
+The sub-index $i$ corresponds to the $i\mathrm{-}eth$ term of the input $x$. $w$ corresponds to the kernel, which has dimension $L$. It can be observed that the kernel is applied over a region of each index $i$, which means that this operation cares about the order of the data, and as a consequence, these networks are used with inputs that have spatial or time correlations, such as images or time series. CNNs are widely use for image processing problems, so is often to use convolutions over more than one axis at a time. If we have a two-dimensional image as an input it seems natural to use a two-dimensional kernel $K$ as well (to exploit spatial correlations):
+
+\begin{equation}
+    s(x)_{i} = (x * K)_{i} = \sum_{l=0}^{L}\sum_{m=0}^{M}K_{l, m} \cdot x_{i+l, j+m}
+\end{equation}
+
+In this case K has dimension $L \times M$. Figure \ref{fig:conv} shows an example of a kernel operation over a pixel.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.4\linewidth]{imagenes/cap1/convolution.jpg}
+    \caption{Convolution operation in an image.}
+    \label{fig:conv}
+\end{figure}
+
+So, in CNNs, Equation \ref{eq:h} has the following shape:
+
+\begin{equation}
+    h(x)_{i} = \sigma(s(x)_{i} + b)
+    \label{eq:h2}
+\end{equation}
+
+Each neuron will correspond to the output of a kernel applied over a region of the input; thus, the output of the full convolution operation will correspond to a set of neurons. As a consequence, the weights, which in this case is the kernel, will be shared between neurons, which does not happens in the FNN case. Is important to note that is also common to apply the convolution operation over images with arbitrary depth. For instance, RGB images have depth=3 (red, green and blue channels), so in these cases filters with arbitrary depth may be used as well. Also, considering the assumption that each filter extracts one kind of feature out of a signal, usually, several filters are applied over an input, where every filter generates a different image (set of neurons) as an output. These means that the depth of the output of a convolutional layer will be equal to the number of filters applied.
+
+To modify the output of a convolutional layer further, is common to use a \textbf{pooling function}. This function summarizes the output of the convolution operations replacing every value of the outputs with a statistic of the nearby outputs. One example of a pooling function is the \emph{max pooling}, which takes the maximum value over a rectangular neighborhood, as it can be seen in Figure \ref{fig:maxpool}. 
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.4\linewidth]{imagenes/cap1/max_pool.png}
+    \caption{Max pooling operation.}
+    \label{fig:maxpool}
+\end{figure}
+
+Pooling helps the model to be approximately invariant to translations in the input. An alternative to pooling, is to use a convolution with \textbf{stride} greater than one. The stride is the distance skipped between values of the input to where the kernel is applied, which in the default case is one (no skipping). It has been observed that replacing pooling by stride$>1$ has no loss in accuracy for several image recognition benchmarks \cite{springenberg2014striving}. Figure \ref{fig:cnn} shows a CNN used for classification.
+    
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.9\linewidth]{imagenes/cap1/cnn.png}
+\caption{Convolutional Neural Network.}
+\label{fig:cnn}
+\end{figure}
+
+    \item \textbf{Autoencoder}
+    
+An autoencoder is a special type of ANN that aims to copy the input of the network to its output i.e. aims to be the identity function. Although solving this problem may seem to be useless, it has some interesting properties. In this work, we are interested in using autoencoders for dimensionality reduction and feature learning. 
+
+This neural network is divided in two parts, the \textbf{encoder $e(x)$} and the \textbf{decoder $d(\mathcal{L})$}. When used for dimensiolanity reduction and feature learning, the encoder tries to encode the input into a space of lower dimension (a bottleneck), called the \textbf{latent space $\mathcal{L}$}, which represents a compressed representation of the input $x$, $\mathcal{L}=e(x)$. The decoder takes the latent space and tries to reconstruct the input $\widetilde x = d(\mathcal{L})$, where $\widetilde x$ is the reconstruction of $x$, see Figure \ref{fig:ae}. The objective of using autoencoders in this context is to obtain a latent space that captures the most salient features of the input. 
+    
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{imagenes/cap1/ae.png}
+    \caption{Autoencoder.}
+    \label{fig:ae}
+\end{figure}
+    
+The goal of the autoencoder is to minimize the loss function:
+
+\begin{equation}
+    L(x, \widetilde x = d(e(x)))
+\end{equation}
+
+Where $L$ is a dissimilarity function such as the mean squared error. This model may have convolutional, fully-connected, both or other types of layers.
+\newline
+    \item \textbf{Recurrent}
+    
+Recurrent Neural Networks (RNNs), unlike FNNs or CNNs, have memory. They are designed to work with sequential data. What this means, that past evaluations of the network affect the ones in the future. RNNs have an internal state, or hidden state $h_{state}^{t}$ ($t$ represents the time step), that is modified every time an input is fed to the network such that:
+
+\begin{equation}
+    h_{state}^{t} = f(h_{state}^{t-1}, x^{t}; \theta)
+\end{equation}
+
+In the \textbf{vanilla} RNN, one of the simplest models of RNNs, a neuron of a recurrent layer is understood as the $i\mathrm{-eth}$ term of the hidden state, $h_{state\mathrm{-}i}^{t}$. If compared with Equation \ref{eq:h}, an RNN neuron has the following structure:
+
+\begin{equation}
+    h_{state\mathrm{-}i}^{t}(x) = \sigma(w_{hh} \cdot h_{state\mathrm{-}i}^{t-1} + w_{xh} \cdot x^{t} + b)
+\end{equation}
+
+Where the main difference is that the term $w_{hh} \cdot h_{state\mathrm{-}i}^{t-1}$ is incorporated, and the concatenation of the weights $w_{hh}$ and $w_{xh}$ corresponds to $w$. In RNN contexts, commonly, the hidden state is represented as a whole vector directly, and not by the equations of every neuron. A weight matrix $W$ is used, and corresponds to the concatenation of the weights of every neuron, including the bias, such that:
+
+\begin{equation}
+    h_{state}^{t}(x) = \sigma(W_{hh} h_{state}^{t-1} + W_{xh} x^{t})
+\end{equation}
+
+In a vanilla RNN with one hidden state, $\sigma$ is the hyperbolic tangent function $tanh$ and one more operation is added to obtain an output $y$:
+
+\begin{equation}
+    y^{t}(x) = W_{hy}h_{state}^{t}(x)
+\end{equation}
+
+The following subsection discusses the structural problems of vanilla RNNs, and that is way is necessary to use more advanced RNN architectures, such as \textbf{Long Short-Term Memory (LSTM)} \cite{hochreiter1997long} or \textbf{Gated Recurrent Unit (GRU)} \cite{cho2014learning} networks. The architecture relevant to this work is LSTM, and one of its layers can be summarized with the following equations:
+
+\begin{equation}
+    \begin{pmatrix} i \\ f \\ o \\ g \end{pmatrix} = \begin{pmatrix} \sigma_{f} \\ \sigma_{f} \\ \sigma_{f} \\ tanh \end{pmatrix} W \begin{pmatrix} h^{t-1} \\ x^{t} \end{pmatrix} 
+\end{equation}
+
+\begin{equation}
+    c^{t} = f \odot c^{t-1} + i \odot g
+\end{equation}
+
+\begin{equation}
+    h^{t} = o \odot tanh(c^{t})
+\end{equation}
+
 \end{enumerate}
 
-
+\subsubsection{Stochastic Gradient Descent}
 
 \subsubsection{Deep RL Era}
 Reinforcement Learning can be divided in the \emph{pre Deep RL era} and the \emph{Deep RL era}, which is the current one. A commonly used function approximator used in the pre Deep RL era were LCBFs, 

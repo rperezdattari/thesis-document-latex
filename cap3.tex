@@ -169,14 +169,14 @@ In order to perform an ablation study that evaluates the contribution of the new
 
 The third evaluated variant includes the AE cost function, but never freezes the convolutional layers, so it always modifies the parameters of the complete policy network using the gradient of both cost functions (i.e. setting $\epsilon=0$ for the condition in line 17). The learning curves of the three cases of D-COACH are compared against the baseline one of a DDPG-based RL agent \cite{Lillicrap2015}, using the OpenAI implementation \cite{baselines}. The curves are the average of 30 runs for each case, showing the evolution of the return through the learning time. The time considered is measured when rendering the environments, i.e. no environment acceleration, since D-COACH is intended for learning with real systems wherein speeding up the environment is not possible.
 
-\begin{figure}[t]
+\begin{figure}[h]
     \centering
     \includegraphics[width=0.9\linewidth]{imagenes/cap3/car_racing_sim_ICRA.pdf}
     \caption{Car Racing results for simulated teacher with D-COACH and DDPG. D-COACH A: policy and AE costs, freezing conv. layers; D-COACH B: policy and AE costs; D-COACH C: only policy cost. Buffer: $K = 1000$; $b = 10$; $N = 8$. $P_{h}$: $\alpha = 0.6$; $\tau = 0.000015$.}
     \label{fig:racing_car_results}
 \end{figure}
 
-\begin{figure}[t]
+\begin{figure}[h]
     \centering
     \includegraphics[width=0.9\linewidth]{imagenes/cap3/duckie_sim_ICRA.pdf}
     \caption{Duckie Racing results for simulated teacher with D-COACH and DDPG. D-COACH A: policy and AE costs, freezing conv. layers; D-COACH B: policy and AE costs; D-COACH C: only policy cost. Buffer: $K = 1000$; $b = 10$; $N = 8$. $P_{h}$: $\alpha = 0.6$; $\tau = 0.000015$.}
@@ -195,7 +195,7 @@ The experiments with simulated teachers are useful for analyzing the evolution o
 
 In Figure \ref{fig:stacked_bar} the time dedicated for training the agents is depicted. In the cases of learning with the basic D-COACH, the blue bar indicates the time dedicated by the teachers in its first step of recording demonstrations, which for both problems is actually longer than the time used for reaching the highest level of performance with the enhanced D-COACH. In total, the new method saves around $45\%$ of the training time for the Car Racing problem, and above $80\%$ for the Duckie Racing problem. These results do not include the time dedicated to train the AE in the basic D-COACH, which would depend on the available hardware. The bar diagram is complemented with the learning curves in Figure \ref{fig:humanteachers} (for the basic D-COACH the curve is only after training the AE), wherein it is shown that the enhanced D-COACH has a similar progress with a very slight advantage over its basic version, even without considering the additional time required for the AE training step. A training session of the Car Racing problem is presented in the video \footnote{https://youtu.be/to6wXaTfJ4k}.
 
-\begin{figure}[t]
+\begin{figure}[h]
 \centering
 \subfloat[][Car Racing.]{\includegraphics[width=0.5\linewidth]{imagenes/cap3/bar_car_racing_ICRA.pdf}}
 \subfloat[][Duckie Racing.]{\includegraphics[width=0.5\linewidth]{imagenes/cap3/bar_duckie_ICRA.pdf}}
@@ -203,14 +203,14 @@ In Figure \ref{fig:stacked_bar} the time dedicated for training the agents is de
 \label{fig:stacked_bar} 
 \end{figure}
 
-\begin{figure}[t]
+\begin{figure}[h]
     \centering
     \includegraphics[width=0.9\linewidth]{imagenes/cap3/car_racing_human_teacher_ICRA.pdf}
     \caption{Results of learning with human teachers. Buffer: $K = 1000$; $b = 10$; $N = 8$.}
     \label{fig:racing_car_results}
 \end{figure}
 
-\begin{figure}[t]
+\begin{figure}[h]
     \centering
     \includegraphics[width=0.9\linewidth]{imagenes/cap3/duckie_human_teacher_ICRA.pdf}
     \caption{Results of learning with human teachers. Buffer: $K = 1000$; $b = 10$; $N = 8$.}
@@ -225,7 +225,7 @@ A real Duckiebot was used for validating the results obtained with the simulatio
 
 For the reacher case, the teacher advises corrections of the position commands of the arm in the Cartesian space. The cost function for this problem is the Euclidean distance between the end-effector of the arm and the object to track, normalized with the largest possible distance within the image (distance of opposite corners). Seven training sessions of 15 minutes were run and the results are depicted in Figure \ref{fig:reacher_exp}. The link\footnote{https://youtu.be/nc2qonaKevc} shows the learning process of the reacher task during half an hour of training. Also, a pusher task training session is shown in the link\footnote{https://youtu.be/mvlIEO1WHkA}.
 
-\begin{figure}[t]
+\begin{figure}[h]
     \centering
     \includegraphics[width=0.9\linewidth]{imagenes/cap3/reacher_ICRA.pdf}
     \caption{Evolution of the error while learning the reacher task. }
@@ -251,3 +251,10 @@ For the reacher case, the teacher advises corrections of the position commands o
 \section{High-dimensional State with Memory}
 \subsection{Cart-Pole from Pixels}
 \subsection{Partially Observed Car Racing}
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=0.9\linewidth]{imagenes/cap3/car_racing_lstm.pdf}
+    \caption{Evolution of the error while learning the reacher task. }
+    \label{fig:reacher_exp}
+\end{figure}

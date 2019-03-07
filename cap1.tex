@@ -367,7 +367,7 @@ Nevertheless, vanilla RNNs have some structural problems related to the computat
     h^{t} = o \odot tanh(c^{t})
 \end{equation}
 
-Where $i$, $f$, $o$, $g$ are called \textbf{gates} and each one of them is a vector used for internal computations of the recurrent unit. $\sigma_{f}$ corresponds to the $sigmoid$ activation function, $\odot$ is the element-wise product (Hadamard product) operator and $W$ is a weight matrix containing the submatrices $W_{i}$, $W_{f}$, $W_{o}$ and $W_{g}$. A LSTM a recurrent layer or unit has two internal states $c^{t}$ and $h^{t}$. $h^{t}$ is still known as the hidden state and $c^{t}$ is known as the cell state.
+Where $i$, $f$, $o$, $g$ are called \textbf{gates} and each one of them is a vector used for internal computations of the recurrent unit. $\sigma_{f}$ corresponds to the $sigmoid$ activation function, $\odot$ is the element-wise product (Hadamard product) operator and $W$ is a weight matrix containing the submatrices $W_{i}$, $W_{f}$, $W_{o}$ and $W_{g}$. A LSTM layer or unit has two internal states $c^{t}$ and $h^{t}$. $h^{t}$ is still known as the hidden state and $c^{t}$ is known as the cell state.
 
 \subsection{Parameter Tuning}
 
@@ -393,10 +393,16 @@ Before the Deep RL era, ANNs where not a predominant function approximator for s
 
 In the context of this work, Interactive Machine Learning (IML) is understood as a research area that gathers all the techniques in which humans/users take part in the agent's learning process for solving sequential decision-making problems. Other works refer to IML as an area that focuses on learning classifiers with the help of users \cite{fails2003interactive, ware2001interactive, amershi2012regroup, ngo2014efficient}; that is out of the scope of this work.  
 
-As RL, IML can also be studied under the framework of MDPs. The main difference with RL is that in this case having an explicitly defined reward function is not a requirement. Some approaches may combine the information gathered from the human with the one given by a reward function, while others, may not need a reward function at all. 
+As RL, IML can also be studied under the framework of MDPs. The main difference with RL is that in this case having an explicitly defined reward function is not a requirement. Some approaches may combine the information gathered from the human with the one given by a reward function, while others, may not need a reward function at all. Figure \ref{fig:LfF} summarizes the LfF approach.
 
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.9\linewidth]{imagenes/cap1/b_cloning.png}
+    \caption{Behavior cloning.}
+    \label{fig:b_cloning}
+\end{figure}
 
-In this work, we divide IML into two areas: \textbf{Learning from Demonstration (LfD)} and \textbf{Learning from Feedback (LfF)}.
+In this work, we divide IML into two areas: \textbf{Learning from Demonstration (LfD)} and \textbf{Learning from Feedback (LfF)}. 
 
 \subsection{Learning from Demonstration}
 
@@ -415,7 +421,7 @@ When the platform of the agent is different to the one in which the demonstratio
 
 \subsubsection{Distributional Drift}
 
-The \textbf{Distributional Drift} is an issue that every LfD approach could have if is not taken into account. This problem arises because the probability distribution of the trajectory followed by the policy $p_{\pi_{\theta}}$ "drifts" from the one of the demonstrator $p_{data}$. This happens because even though the agent imitates the demonstrator, is very difficult for the imitation to be perfect. Thus, small errors over several states accumulate into a larger error that eventually makes the agent to fail. This phenomenon can be observed in Figure \ref{fig:drift}, where the drift is shown over one dimension of the state.
+The \textbf{Distributional Drift} is an issue that every LfD approach could have if is not taken into account. This problem arises because the probability distribution of the trajectory followed by the policy $p_{\pi_{\theta}}$ "drifts" from the one of the demonstrator $p_{data}$. This happens because even though the agent imitates the demonstrator, is very difficult for the agent to make a perfect imitation. Thus, small errors over several states accumulate into a larger error that eventually makes the agent to fail. This phenomenon can be observed in Figure \ref{fig:drift}, where the drift is shown over one dimension of the state.
 
 \begin{figure}[H]
     \centering
@@ -437,23 +443,44 @@ One of the problems that DAgger presents in real-world applications is that the 
 
 \subsection{Learning from Feedback}
 
-We define LfF as the paradigms in where policies are shaped by occasional human feedback. In this case there are no demonstrations; instead, corrections or evaluations are given by a teacher over the decisions made by the learning agent.
+We define LfF as the paradigms in where policies are shaped by occasional human feedback. In this case there are no demonstrations; instead, \textbf{corrections} or \textbf{evaluations} are given by a teacher over the decisions made by the learning agent.
 
 \subsubsection{Evaluative Feedback}
 
-Evaluative feedback has been used similarly to RL in methods wherein a human teacher communicates the desirability of the executed action or policy, with validations in problems of state spaces of either low dimensionality \cite{Knox:2009:ISA:1597735.1597738,akrour2011preference,macglashan2017interactive} or high dimensionality \cite{Christiano2017,Warnell2017}
+Evaluative feedback has been used similarly to RL in methods wherein a human teacher communicates the desirability of the executed action or policy. There are different evaluative feedback approaches, some of them are:
+
+\begin{itemize}
+    \item \textbf{Interactive Reinforcement Learning:} RL-based methodologies in where the reward signals are given by a human.
+    \item \textbf{Human Reinforcement Modeling:} A reward function is modeled from the feedback given by a human. Then, this model is used as the reward function in a RL-based approach.
+    \item \textbf{The \emph{shaping} approach:} This is a LfF approach known as TAMER \cite{Knox:2009:ISA:1597735.1597738}. The policy is interactively shaped with evaluations that the teacher provides occasionally, not like in RL, where the policy is updated with information received every time step from the reward function.
+\end{itemize}
+
+
+Evaluative feedback approaches have been validated in problems of state spaces of low dimensionality \cite{Knox:2009:ISA:1597735.1597738,akrour2011preference,macglashan2017interactive} and high dimensionality \cite{Christiano2017,Warnell2017}.
 
 \subsubsection{Corrective Feedback}
-When teaching with human corrective advice, if the agent executes an action $a$ that the human considers to be erroneous, then s/he would indicate the direction in which the action should be corrected (thus, COACH was proposed for problems with continuous actions). Each dimension of the action would have a corresponding correction signal $h$ with values $0$, $-1$ or $1$ which produces an error signal with arbitrary magnitude $e$ that is used to shape directly the policy. Thus, the error would be: 
+
+In corrective feedback approaches, the teacher advices corrections directly in the action's domain. This information indicates how to modify an action (increase or decrease it value), instead of evaluating it. Thus, this kind of feedback is designed to work in continuous-action domains. 
+
+If the idea behind corrective feedback is applied in discrete-action domains (that are not discretized continuous spaces), such as choosing between the actions $\{left, up, right\}$, the feedback signals  are corrections and demonstrations at the same time \cite{chernova2009interactive, mericcli2010complementary}. This kind of feedback is known as \textbf{corrective demonstrations} and it also belongs to the area of LfD. 
+
+Given that in this work we work with continuous-action domains, we are going to used the term corrective feedback under this context.  
+
+Methodologies such as \textbf{Advice Operators} \cite{Argall2009, Argall2008} have been proposed to solve problems using this methodology. This work studies another approach known as the \textbf{COrrective Advice Communicated by Humans (COACH)} \cite{Celemin2018AnInteractive} framework, which is described below. 
+
+ To the best of our knowledge, corrective feedback has been only validated in problems with state spaces of low dimensionality, such as the ones covered in the aforementioned approaches. 
+
+\subsubsection{COrrective Advice Communicated by Humans}
+In COACH, if the agent executes an action $a$ that the human considers to be erroneous, then s/he would indicate the direction in which the action should be corrected (thus, COACH was proposed for problems with continuous actions). Each dimension of the action would have a corresponding correction signal $h$ with values $0$, $-1$ or $1$ which produces an error signal with arbitrary magnitude $e$ that is used to shape directly the policy. Thus, the error would be: 
+
 \begin{equation}\label{eq:error}
     error=h \cdot e.
 \end{equation}
 
 $h=0$ indicates that no correction has been advised. $h=\pm 1$ indicates the direction of the advised correction.
 
-\section{COrrective Advice Communicated by Humans (COACH)}
-In this framework no value function is modeled, since no reward/cost is used in the learning process \cite{Celemin2018AnInteractive}. A parametrized policy is directly learned in the parameter space, as in Policy Search (PS) RL. 
-The classic COACH algorithm shapes two functions parametrized as a linear model of basis functions. The objective of the first function is to learn the policy of the agent $\pi(s)=f^{\top}\theta$; the objective of the second function, $H(s)=f^{\top}\psi$, is to learn a prediction of the human feedback. The vector of basis functions $f(s)$, for simplicity is called $f$. The parameter vectors $\theta$ and $\psi$ are updated to shape the models. As it can be seen, $f$ is the same vector for both the Policy Model $\pi(s)$ and the Human Feedback Model  $H(s)$. The Human Feedback Model is used to adapt the size of the error signal that is then used to update the weights of $\pi(s)$. Both functions are updated using stochastic gradient descent each time feedback is received. The pseudocode of COACH is shown in Algorithm \ref{algorithm:COACH}.
+In this framework no value function is modeled, since no reward/cost is used in the learning process \cite{Celemin2018AnInteractive}. A parametrized policy is directly learned in the parameter space, as in Policy Gradients RL. 
+The classic COACH algorithm shapes two functions parametrized as a linear model of basis functions. The objective of the first function is to learn the policy of the agent $\pi_{\theta}(s)=\phi(s) \cdot \theta$; the objective of the second function, $H_{\psi}(s)=\phi(s) \cdot \psi$, is to learn a prediction of the human feedback. The parameter vectors $\theta$ and $\psi$ are updated to shape the models. As it can be seen, $\phi(s)$ is the same vector for both the Policy Model $\pi(s)$ and the Human Feedback Model  $H(s)$. The Human Feedback Model is used to adapt the size of the error signal that is then used to update the weights of $\pi(s)$. Both functions are updated using stochastic gradient descent each time feedback is received. The pseudocode of COACH is shown in Algorithm \ref{algorithm:COACH}.
 
 \begin{algorithm}[H]
 \caption{Basic Structure of COACH}\label{algorithm:COACH}
@@ -463,11 +490,11 @@ The classic COACH algorithm shapes two functions parametrized as a linear model 
 \State \textbf{observe} state $s_{t}$
 \State \textbf{execute} action $a_{t}=\pi(s_{t})$
 \State \textbf{feedback} human corrective advice $h_{t}$
-\If{$h_{t}$ != 0}
-\State \textbf{update} $H(s_{t})$ with $\Delta \psi = \beta\cdot (h_{t}-H(s_{t}))\cdot f$
+\If{$h_{t}$ is not 0}
+\State \textbf{update} $H(s_{t})$ with $\Delta \psi = \beta\cdot (h_{t}-H(s_{t}))\cdot \phi(s_{t})$
 \State $\alpha_{t} = |H(s_{t+1})|$
 \State $error_{t} = h_{t}\cdot e$
-\State \textbf{update} $\pi(s_{t})$ with $\Delta \theta = \alpha_{t} \cdot error_{t} \cdot f$
+\State \textbf{update} $\pi(s_{t})$ with $\Delta \theta = \alpha_{t} \cdot error_{t} \cdot \phi(s_{t})$
 \EndIf
 \EndFor
 \end{algorithmic}

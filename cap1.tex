@@ -26,7 +26,7 @@ In a nutshell, a MDP can by defined by the tuple $MDP=(\mathcal{S},\matchcal{A},
     \label{fig:msim}
 \end{figure}
 
-\subsection{Reinforcement Learning}
+\section{Reinforcement Learning}
 Reinforcement Learning aims to use the MDP framing of sequential decision-making problems so that agents learn to solve tasks from \emph{experience}. In this case, experience is understood as the agent-environment interaction (see Figure \ref{fig:agent-environment}), which results in the generation of reward values that indicates the quality of the decisions made by the agent. 
 
 \begin{figure}[h]
@@ -61,7 +61,7 @@ $\gamma$ allows to control the horizon in which the agent maximizes the reward.
 
 \newpage
 
-\subsubsection{Learning Policies}
+\subsection{Learning Policies}
 
 Under this framework, there are different approaches for learning policies:
 
@@ -172,12 +172,12 @@ The key idea of experience replay is to store old transitions $(s, a, r, s')$ in
     \item\textbf{Data efficiency:} depending on the the parametrized model of $\pi_{\theta}$, it may not be efficient to update its parameters with a set of samples just once. To successfully extract all the information contained in the samples, it would be necessary to update the model several times from them. This is achieved when using experience replay.
 \end{itemize}
 
-\subsection{Function Approximation}
+\section{Function Approximation}
 Although $\pi$ can be represented by a lookup table, where every state has a corresponding action stored in a table, this representation is not scalable to complex problems with large state/action spaces. This is mainly because the states and/or actions are too many to be stored in memory and/or it would take too long to adequately explore the states. Thus, in robotics contexts, where state/action spaces are most likely continuous, the standard approach is to use function approximation. As mentioned before, this means that the policy is a parametrized model $\pi_{\theta}$.
 
 There is a large list of different function approximators, but in this work two of them are the most relevant: \textbf{linear models of basis functions (LCBFs)} and \textbf{artificial neural networks (ANNs)}. Although the policy may not be directly represented by these models, as in the case of value function approximation, for simplicity, from now on we are going to assume that it always does. Also, we are only going to work with deterministic policies. So, if the function approximator is $\Psi$, then $\pi_{\theta} = \Psi(s;\theta)$ such that $\Psi: \mathcal{S} \to \mathcal{A}$.
 
-\subsubsection{Linear Model of Basis Functions}
+\subsection{Linear Model of Basis Functions}
 A well-known case of function approximation in RL is that in which $\pi_{\theta}$ is a linear function of
 the weight vector $\theta$. Specifically, we are going to work with linear combinations of gaussian radial basis functions (RBFs). If $\phi(s)$ corresponds to a vector of basis functions which is weighted by $\theta$, then $\pi_{\theta}$ can be represented as:
 
@@ -196,12 +196,18 @@ In this case, $\phi(s)$ corresponds to normalized gaussians:
 
 Where $N$ is the number of basis functions and the subindex $i$ refers to the i-th basis function.
 
-\subsubsection{Artificial Neural Networks}
+\subsection{Artificial Neural Networks}
 
 ANNs are a widely used model for non-linear function approximation. The idea behind these models is to build a network of interconnected units that have some properties inspired on neurons. There is a large variety of models, the ones relevant to this work are the following:
 
-\begin{enumerate}
-    \item \textbf{Feedforward Fully-Connected} \newline
+\begin{itemize}
+    \item Feedforward Fully-Connected
+    \item Convolutional
+    \item Autoencoder
+    \item Recurrent
+\end{itemize}
+
+\subsubsection{Feedforward Fully-Connected}
     
 Feedforward Fully-Connected or Feedforward neural networks (FNNs) are the quintessential ANN model. These models are called to be feedforward because the information flows in one sense from the input, trough intermediate representations, to the output. In the mathematical formalization, a network is understood as the model generated when many functions are composed. For instance, you may have three functions ($f^{(1)}$, $f^{(2)}$, $f^{(3)}$) connected in a chain such that:
 
@@ -238,7 +244,7 @@ It can be observed that the nonlinearity that characterizes neural networks exis
 
 Finally, going back to the concept of a parametrized policy $\pi_{\theta}$, in this case $\theta$ would correspond to the concatenation of all the weights (including biases) of the layers of a network. \newline
 
-    \item \textbf{Convolutional} \newline
+\subsubsection{Convolutional}
     
 Convolutional Neural Networks (CNNs) are a specialized type of neural network. The main feature of these networks is that they are designed such that convolutions are employed in at least one layer. In the area of signal processing convolutions are a well-known tool for applying filters to signals, and at the same time, filtering signals is a well-known way of extracting features out of them. The approach proposed by CNNs is to learn the weights of these filters (also known as kernels) as a part of the network's learning process, and that by construction, these filters are applied to the inputs of the convolutional layers.
 
@@ -290,7 +296,7 @@ Pooling helps the model to be approximately invariant to translations in the inp
 \label{fig:cnn}
 \end{figure}
 
-    \item \textbf{Autoencoder}
+\subsubsection{Autoencoder}
     
 An autoencoder is a special type of ANN that aims to copy the input of the network to its output i.e. aims to be the identity function. Although solving this problem may seem to be useless, it has some interesting properties. In this work, we are interested in using autoencoders for dimensionality reduction and feature learning. 
 
@@ -310,8 +316,8 @@ The goal of the autoencoder is to minimize the loss function:
 \end{equation}
 
 Where $L$ is a dissimilarity function such as the mean squared error. This model may have convolutional, fully-connected, both or other types of layers.
-\newline
-    \item \textbf{Recurrent}
+
+\subsubsection{Recurrent}
     
 Recurrent Neural Networks (RNNs), unlike FNNs or CNNs, have memory. They are designed to work with sequential data. What this means, that past evaluations of the network affect the ones in the future. RNNs have an internal state, or hidden state $h_{state}^{t}$ ($t$ represents the time step), that is modified every time an input is fed to the network such that:
 
@@ -363,9 +369,7 @@ Nevertheless, vanilla RNNs have some structural problems related to the computat
 
 Where $i$, $f$, $o$, $g$ are called \textbf{gates} and each one of them is a vector used for internal computations of the recurrent unit. $\sigma_{f}$ corresponds to the $sigmoid$ activation function, $\odot$ is the element-wise product (Hadamard product) operator and $W$ is a weight matrix containing the submatrices $W_{i}$, $W_{f}$, $W_{o}$ and $W_{g}$. A LSTM a recurrent layer or unit has two internal states $c^{t}$ and $h^{t}$. $h^{t}$ is still known as the hidden state and $c^{t}$ is known as the cell state.
 
-\end{enumerate}
-
-\subsubsection{Parameter Tuning}
+\subsection{Parameter Tuning}
 
 Until now, we have discussed that policies can by represented as parametrized models, called function approximators, and that the two most relevant to this work are LCBFs and ANNs. Nevertheless, we have not discussed on how to tune the parameters of these models in order for them to approximate a specific function.
 
@@ -379,16 +383,66 @@ When using LCBFs, this computation is trivial, such that the gradient of \ref{eq
 
 But, in the case of ANNs computing the gradient is not direct. Given that we have a function composed by layers, is necessary to propagate the error through all of these layers in order to update all of the weights of the network. \textbf{Backpropagation} \cite{rumelhart1988learning} is the technique used to achieve this and, in principle, it uses the chain rule to quantify how much changes in past layers affect later ones. Nowadays, there are several computer tools that have this algorithm incorporated and that automatically computes the gradients of ANNs using symbolic math and differentiable programming, such as Tensorflow \cite{tensorflow2015-whitepaper} or PyTorch \cite{paszke2017automatic}.
 
-\subsubsection{Deep RL Era}
+\subsection{Deep RL Era}
+
 Reinforcement Learning can be divided in the \emph{pre Deep RL era} and the \emph{Deep RL era}, which is the current one. In the year 2012, the first work known of successfully solving sequential decision-making problems with high-dimensional state spaces using CNNs was presented \cite{Mnih2015}. This was a consequence of the new advances that where being made in the area of ANNs or \textbf{Deep Learning (DL)}. When ANNs have several layers, which was the case for the mentioned work, they are called \textbf{Deep Neural Networks (DNNs)}. The area that combines DL with RL is called \textbf{Deep RL}. Deep RL gives agents the possibility to build rich state representations of the environment without feature engineering on the side of the designer, which was always necessary in classical RL. This drew a lot of attention and made Deep RL increasingly popular over the past few years \cite{franccois2018introduction}.
 
 Before the Deep RL era, ANNs where not a predominant function approximator for solving sequential decision-making problems. In the pre Deep RL era, one of the most widely used function approximators were LCBFs, as stated in a survey of the year 2013 \cite{kober2013reinforcement}. 
 
+\section{Interactive Machine Learning}
+
+In the context of this work, Interactive Machine Learning (IML) is understood as a research area that gathers all the techniques in which humans/users take part in the agent's learning process for solving sequential decision-making problems. Other works refer to IML as an area that focuses on learning classifiers with the help of users \cite{fails2003interactive, ware2001interactive, amershi2012regroup, ngo2014efficient}; that is out of the scope of this work.  
+
+As RL, IML can also be studied under the framework of MDPs. The main difference with RL is that in this case having an explicitly defined reward function is not a requirement. Some approaches may combine the information gathered from the human with the one given by a reward function, while others, may not need a reward function at all. 
+
+
+In this work, we divide IML into two areas: \textbf{Learning from Demonstration (LfD)} and \textbf{Learning from Feedback (LfF)}.
+
 \subsection{Learning from Demonstration}
-\subsubsection{The Correspondence Problem}
+
+LfD is a learning paradigm in which a demonstrator provides labelled data of a desired policy. Then, the agent tries to copy the demonstrator's behavior by shaping its policy in a supervised learning manner, using as database the data provided by the demonstrator (see Figure \ref{fig:b_cloning}). This is the most basic LfD approach and it takes the name of \textbf{Behavior Cloning}.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.9\linewidth]{imagenes/cap1/b_cloning.png}
+    \caption{Behavior cloning.}
+    \label{fig:b_cloning}
+\end{figure}
+
+\subsubsection{Imitation Learning}
+
+When the platform of the agent is different to the one in which the demonstrations are made, we talk about \textbf{Imitation Learning}. In this case, the learning agent must identify a mapping between the demonstrator and itself. This is a setting that arises naturally in real-world problems. For instance, let's suppose that we want to teach a robot how to walk. Using a camera, we could record a human making demonstrations (just by walking), but then, the robot should figure out how to map that observations into labeled data over its own state and action spaces. The problem of identifying this mapping is one of the main difficulties of LfD approaches and is known as \textbf{The Correspondence Problem}.
+
 \subsubsection{Distributional Drift}
+
+The \textbf{Distributional Drift} is an issue that every LfD approach could have if is not taken into account. This problem arises because the probability distribution of the trajectory followed by the policy $p_{\pi_{\theta}}$ "drifts" from the one of the demonstrator $p_{data}$. This happens because even though the agent imitates the demonstrator, is very difficult for the imitation to be perfect. Thus, small errors over several states accumulate into a larger error that eventually makes the agent to fail. This phenomenon can be observed in Figure \ref{fig:drift}, where the drift is shown over one dimension of the state.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\linewidth]{imagenes/cap1/drift.png}
+    \caption{Distributional Drift.}
+    \label{fig:drift}
+\end{figure}
+
+A well-known algorithm that tackles this problem is called \textbf{DAgger} \cite{ross2011reduction}. This approach matches $p_{\pi_{\theta}}$ with $p_{data}$, such that $p_{\pi_{\theta}} = p_{data}$. The main idea is that instead of collecting samples from the demonstrator, collect them by running $\pi_{\theta}$ and then label them with the demonstrator. Samples are collected, labeled, added to the database $\mathcal{D}$ and used for training iteratively, in order to approach asymptotically to $p_{data}$. The basic structure of DAgger is the following:
+
+\begin{enumerate}
+    \item Train $\pi_{\theta}(a_{t}|o_{t})$ from human data $\mathcal{D}=\{o_{1},a_{1},...,o_{T},a_{T}\}$
+    \item Run $\pi_{\theta}(a_{t}|o_{t})$ to get dataset $\mathcal{D}_{\pi_{\theta}}=\{o_{1},...,o_{M}\}$
+    \item Ask human to label $\mathcal{D}_{\pi_{\theta}}$ with actions $a_{t}$
+    \item Aggregate: $\mathcal{D} \leftarrow \mathcal{D} \cup \mathcal{D_{\pi_{\theta}}}$
+\end{enumerate}
+
+One of the problems that DAgger presents in real-world applications is that the process of labeling the data can be challenging or unfeasible. For instance, robots commonly execute continuous actions, but for a human is not intuitive to assign a continuous valued label to an observation.
+
 \subsection{Learning from Feedback}
+
+We define LfF as the paradigms in where policies are shaped by occasional human feedback. In this case there are no demonstrations; instead, corrections or evaluations are given by a teacher over the decisions made by the learning agent.
+
 \subsubsection{Evaluative Feedback}
+
+Evaluative feedback has been used similarly to RL in methods wherein a human teacher communicates the desirability of the executed action or policy, with validations in problems of state spaces of either low dimensionality \cite{Knox:2009:ISA:1597735.1597738,akrour2011preference,macglashan2017interactive} or high dimensionality \cite{Christiano2017,Warnell2017}
+
 \subsubsection{Corrective Feedback}
 When teaching with human corrective advice, if the agent executes an action $a$ that the human considers to be erroneous, then s/he would indicate the direction in which the action should be corrected (thus, COACH was proposed for problems with continuous actions). Each dimension of the action would have a corresponding correction signal $h$ with values $0$, $-1$ or $1$ which produces an error signal with arbitrary magnitude $e$ that is used to shape directly the policy. Thus, the error would be: 
 \begin{equation}\label{eq:error}

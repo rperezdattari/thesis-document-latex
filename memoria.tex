@@ -22,6 +22,15 @@ Memoria para optar al Título de Ingeniero Civil Eléctrico}
 \usepackage{algorithm}
 \usepackage{subfig}
 \usepackage{blindtext, graphicx}
+\usepackage{color}
+\definecolor{mygray}{RGB}{200, 200, 200}
+\definecolor{mygreen}{RGB}{1, 200, 1}
+\definecolor{lightgray}{gray}{0.8}
+\definecolor{lightlightgray}{gray}{0.9}
+\newcommand{\new}[1]{\color{blue}{#1}\color{black}}
+\newcommand{\replace}[1]{\color{mygray}{#1}\color{black}} % replace text, or not needed
+\newcommand{\remove}[1]{\color{red}{#1}\color{black}}
+\newcommand{\comment}[1]{\color{mygreen}{#1}\color{black}}
 \newcommand{\note}[1]{\color{red}\textbf{{#1}}\color{black}}
 
 \titlespacing*{\section}{0pt}{\baselineskip}{\baselineskip}
@@ -66,6 +75,7 @@ A mi abuelo Ernesto.
 \input{cap2.tex}
 \input{cap3.tex}
 \input{cap4.tex}
+%\input{cap5.tex}
 \input{conclu.tex}
 
 \nocite{*}

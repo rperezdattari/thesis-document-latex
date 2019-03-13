@@ -144,7 +144,7 @@ Reinforcement Learning approaches may be either Model-Free or Model-Based.
 
 A model of the environment is a function $M: \mathcal{S} \times \mathcal{A} \to \mathcal{S}$ that predicts the next state as a function of the current state and action to take:
 
-\begin{equation}
+\begin{equation} \label{eq:model}
     M(s_{t},a_{t}) = s_{t+1}  
 \end{equation}
 
@@ -264,7 +264,7 @@ The way to achieve this is to replace the dot product in Equation \ref{eq:h} by 
 The sub-index $i$ corresponds to the $i\mathrm{-}eth$ term of the input $x$. $w$ corresponds to the kernel, which has dimension $L$. It can be observed that the kernel is applied over a region of each index $i$, which means that this operation cares about the order of the data, and as a consequence, these networks are used with inputs that have spatial or time correlations, such as images or time series. CNNs are widely use for image processing problems, so is common to use convolutions over more than one axis at a time. If we have a two-dimensional image as an input it seems natural to use a two-dimensional kernel $K$ as well (to exploit spatial correlations):
 
 \begin{equation}
-    s(x)_{i} = (x * K)_{i} = \sum_{l=0}^{L}\sum_{m=0}^{M}K_{l, m} \cdot x_{i+l, j+m}
+    s(x)_{i,j} = (x * K)_{i,j} = \sum_{l=0}^{L}\sum_{m=0}^{M}K_{l, m} \cdot x_{i+l, j+m}
 \end{equation}
 
 In this case K has dimension $L \times M$. Figure \ref{fig:conv} shows an example of a kernel operation over a pixel.
@@ -323,6 +323,7 @@ This neural network is divided in two parts, the \textbf{encoder $e(x)$} and the
 The goal of the autoencoder is to minimize the loss function:
 
 \begin{equation}
+\label{eq:ae}
     L(x, \widetilde x = d(e(x)))
 \end{equation}
 
@@ -339,7 +340,7 @@ Recurrent Neural Networks (RNNs), unlike FNNs or CNNs, have memory. They are des
 In the \textbf{vanilla} RNN, one of the simplest models of RNNs, a neuron of a recurrent layer is understood as the $i\mathrm{-eth}$ term of the hidden state, $h_{state\mathrm{-}i}^{t}$. If compared with Equation \ref{eq:h}, an RNN neuron has the following structure:
 
 \begin{equation}
-    h_{state\mathrm{-}i}^{t}(x) = \sigma(w_{hh} \cdot h_{state\mathrm{-}i}^{t-1} + w_{xh} \cdot x^{t} + b)
+    h_{state\mathrm{-}i}^{t}(x) = \sigma(w_{hh} \cdot h_{state}^{t-1} + w_{xh} \cdot x^{t} + b)
 \end{equation}
 
 Where the main difference is that the term $w_{hh} \cdot h_{state\mathrm{-}i}^{t-1}$ is incorporated, and the concatenation of the weights $w_{hh}$ and $w_{xh}$ corresponds to $w$. Figure \ref{fig:rnn_unfolded} represents a vanilla RNN in its \emph{unfolded} representation.

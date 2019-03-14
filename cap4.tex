@@ -64,26 +64,59 @@ In the high-dimensional case the agent needs to learn two embeddings: the one of
 
 Instead of using a cost for the model and one for the autoencoder, we use the autoencoding cost but for reconstructing $s_{t+1}$. So, Equation \ref{eq:ae} instead of being $L(x_{t},\widetilde x_{t})$ it would be  $L(x_{t},\widetilde x_{t+1})$. The idea behind is to give memory to the autoencoder, so that can reconstruct future observations. By doing this, the output of the recurrent layers embed both the high-dimensional input and past observations.
 
+\subsection{The Algorithm}
+
 \section{Experiments and Results}
+Simulated teachers were used in three different problems for validating this version of D-COACH. The main idea behind these experiments is to compare D-COACH with and without memory in partially observed problems. For high-dimensional states, the online state learning version of D-COACH without memory is used, given that is faster to use and its performance is similar to the offline state learning version. 
+
+\begin{enumerate}
+    \item \textbf{Partially Observed Cart-Pole:} A partially observed low-dimensional state scenario. This is the same environment used in Chapter 1 with a modification in the observation space of the agent. In the standard fully-observable cart-pole the state has four dimensions, which consist on the position $x$ and velocity $\dot x$ of the cart and the angle $\theta$ and angular velocity $\dot \theta$ of the pole, such that $s=[x, \dot x, \theta, \dot \theta]$. In this case, we take out the derivatives present in the state, such that $s=[x, \theta]$.
+    \item \textbf{Partially Observed Cart-Pole from Pixels:} Again, the cart-pole environment is modified to use as input raw pixels (high-dimensional state). 
+    \item \textbf{Partially Observed Car Racing:} A partially observed high-dimensional state scenario. The Car Racing environment previously used is modified such that the indicators in the bottom of the image are erased. 
+    
+\end{enumerate}
+
+\subsection{Validation Low-Dimensional State}
+
+D-COACH with model is tested in the partially observed cart-pole because is a way to validate if the proposed methodology works in a simple setting. Figure \ref{fig:ld_cartpole_model} shows the learning curves of D-COACH with and without model. 
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.9\linewidth]{imagenes/cap3/cartpole_LD_model.pdf}
     \caption{Evolution of the error while learning the reacher task. }
-    \label{fig:reacher_exp}
+    \label{fig:ld_cartpole_model}
 \end{figure}
+
+D-COACH without model is not able to learn a well performing policy in this case. This was something to expect given that the velocities of both the cart and the pole are essential for making good decisions in a problem of this characteristics. Figure \ref{fig:cp_ex} shows and example of two scenarios in where at time step 2 the observation would be the same in the partially observed cart-pole (if we only focus on the angle of the pole). In this example the angular velocity of the pole changes direction between scenarios, but an agent without memory is not able to tell the difference. As a consequence, in $t=2$, it would make the same decision in two opposite scenarios.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.9\linewidth]{imagenes/cap4/cartpole_ex.png}
+    \caption{Evolution of the error while learning the reacher task. }
+    \label{fig:cp_ex}
+\end{figure}
+
+In contrast, if the agent makes decisions based on previous observations it can understand that these two scenarios are different, and as a consequence, make better decisions. This is shown in the blue curve of Figure \ref{fig:cp_ex}, where the agent is able to learn a well performing policy in about 14 minutes. 
+
+Finally, in  Figure \ref{fig:cp_ex} both curves, at the end of the first minute, achieve a peak in performance, which is followed by a deterioration. In the case of the policy with model the agent is able to recover and learn a good behavior eventually, while the policy with no memory is not. This peak occurs because, at the beginning of the learning process, the percentage of time steps in which the simulated teacher gives feedback is high ($\sim 50-60 \%$). These corrections modify the policy instantly, so the agent is "guided" by the teacher. As the percentage of feedback signals decreases, also does this "guidance" effect. If the agent is able to learn a well performing policy, then it should recover (like the blue curve); otherwise, it should not. Depending on the parameters of the function that defines the probability of the simulated teacher of making a correction this effect may appear, as in this case.
+
+\subsection{Validation High-Dimensional State}
+In this section we validate D-COACH with memory in two different problems. Cart-pole is a problem that was not originally designed to be solved using as input raw pixels of an image, so we do not expect to obtain a perfect performance in this case. The main goal of testing D-COACH with this problem is to observe if the proposed model (autoencoder + LSTM) is able to embed both the past and high-dimensional inputs adequately. As it was seen in Figure \ref{fig:cp_ex}, it should not be possible (or much more difficult) to solve the cart-pole problem mwith partial observability.
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.9\linewidth]{imagenes/cap3/cartpole_HD_model.pdf}
     \caption{Evolution of the error while learning the reacher task. }
-    \label{fig:reacher_exp}
+    \label{fig:cp_hd}
 \end{figure}
 
+Figure \ref{fig:cp_hd} shows a much more slower learning speed if we compare these agents with the ones of Figure \ref{fig:cp_ex}. This is something to expect given that now the agents are also learning to extract features from the image. Also, model-free D-COACH shows a faster learning speed at the beginning, but after 8 minutes of learning it is outperformed by model-based D-COACH. This shows that D-COACH takes longer to learn a time/space embedding, than just a space embedding. But, in POMDPs, eventually, model-based D-COACH should outperform its model-free version.
+
+Finally, model-based D-COACH was validated in the partially observed Car Racing problem. Figure \ref{fig:po_cr} shows that model-free D-COACH is able to learn a well-performing policy even though the state is partially observed. Nevertheless, model-based D-COACH shows that it is possible to obtain an even better performance if memory is added to the policy. The difference between both curves shows that model-based D-COACH is a more robust and powerful approach in problems where model-free D-COACH could appear to be sufficient.
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.9\linewidth]{imagenes/cap3/car_racing_lstm.pdf}
     \caption{Evolution of the error while learning the reacher task. }
-    \label{fig:reacher_exp}
+    \label{fig:po_cr}
 \end{figure}

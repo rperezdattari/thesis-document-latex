@@ -66,6 +66,37 @@ Instead of using a cost for the model and one for the autoencoder, we use the au
 
 \subsection{The Algorithm}
 
+In Algorithm \ref{algorithm:DeepCOACH-M}, the pseudocode of model-based D-COACH is presented.
+
+\begin{algorithm}[h]
+\caption{D-COACH }\label{algorithm:DeepCOACH-M}
+\begin{algorithmic}[1]
+\State \textbf{Require:} error magnitude $e$, buffer update interval $b$, buffer sampling size $N$, buffer size $K$, model dataset size $L$.
+\State \textbf{Init:} $B = []$  \emph{\# initialize memory buffer}
+\For{t = 1,2,...}{}
+\State \textbf{observe} state $s_{t}$
+\State \textbf{execute} action $a_{t}=\pi(s)_{t}$
+\State \textbf{feedback} human corrective advice $h_{t}$
+\If{$h_{t}$ is not \textbf{0}}
+\State $\mathit{error}_{t} = h_{t}\cdot e$
+\State $y_{label(t)} = a_{t} + \mathit{error}_{t}$ 
+\State \textbf{update} $\pi(s)$ using SGD with pair ($s_{t}$, $y_{\mathit{label}(t)}$) 
+\State \textbf{update} $M(s,a)$ using SGD with a mini-batch sampled from $\mathcal{D}$
+\State \textbf{update} $\pi(s)$ using SGD with a mini-batch sampled from $\mathcal{B}$
+\State \textbf{append} $(s_{t}, y_{\mathit{label}(t)})$ to $B$
+\If{length($B$) $> K$ }
+\State $B = B[2:K+1]$
+\EndIf
+\EndIf
+\If{mod(t, b) is 0 and $B$ is not $\emptyset$}
+\State \textbf{update} $M(s,a)$ using SGD with a mini-batch sampled from $\mathcal{D}$
+\State \textbf{update} $\pi(s)$ using SGD with a mini-batch sampled from $\mathcal{B}$
+\EndIf
+\EndFor
+\end{algorithmic}
+\end{algorithm}
+
+
 \section{Experiments and Results}
 Simulated teachers were used in three different problems for validating this version of D-COACH. The main idea behind these experiments is to compare D-COACH with and without memory in partially observed problems. For high-dimensional states, the online state learning version of D-COACH without memory is used, given that is faster to use and its performance is similar to the offline state learning version. 
 
@@ -120,3 +151,5 @@ Finally, model-based D-COACH was validated in the partially observed Car Racing 
     \caption{Evolution of the error while learning the reacher task. }
     \label{fig:po_cr}
 \end{figure}
+
+\section{Discussion}

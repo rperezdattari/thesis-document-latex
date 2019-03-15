@@ -1,3 +1,23 @@
 \begin{conclusion}
+We presented a framework for learning continuous-action policies using corrective feedback to shape DNN policies in high and low dimensional state spaces. This work was inspired in the COrrective Advice Communicated by Humans (COACH) framework, from where two ideas were taken: (1) the use of binary corrective feedback in action spaces for shaping policies, and (2) the use of past corrections to modify the effects of newer ones. In the COACH framework, these ideas were validated in problems with low-dimensional state spaces using linear combination of basis functions (LCBFs) as function approximators. The novelty of this work is that Deep Neural Networks (DNNs) were used instead, combining ideas of the Deep Reinforcement Learning (DRL) era with the ones of COACH, creating Deep COACH (D-COACH). With D-COACH, we showed that by combining Deep Learning with COACH is possible to extrapolate the ideas of COACH to learn policies in high-dimensional state spaces and in Partially Observable Markov Decision Processes (POMDPs) within the tens of minutes. 
+
+First, D-COACH was validated in a low-dimensional state problem (cart-pole). This is a simple widely-studied problem that is useful to test early versions of sequential decision making learning algorithms. This problem had also been previously solved using COACH, which made it a good candidate to compare the performance of D-COACH with the one of COACH. This experiment showed that D-COACH worked well in low-dimensional state problems and with a performance similar to the one of COACH. 
+
+For high-dimensional state problems, two variations of D-COACH were proposed and compared: online state learning and offline state learning. Both variations obtained similar final performances in the Car Racing and the Duckie Racing problems. The main advantage found in the online state learning version over the offline state version, is that it is an approach that requires less time and effort from the human user. Everything is learned from scratch and interactively, while in the offline state learning case a database of the agent exploring the environment must be obtained and used to train an autoencoder before starting the interactive learning process of the policy. Online state learning D-COACH had an extra validation in a 3DoF arm, where an agent learned to solve the reacher and pusher tasks from scratch.
+
+Finally, a last variation of D-COACH (model-based) for POMDPs in where the observations do not capture time-dependent phenomena from the state was proposed. The approach was to give memory to the agent by adding recurrent layers, LSTMs, to the DNN models. By comparing model-free with model-based D-COACH in low and high dimensional state problems using a simulated teacher, we observed that learning a model of the dynamics of the environment could be crucial in some cases for obtaining well performing policies. Also, that in other cases it may improve the performance of the agent. 
+
+
+
+what was done
+
+what about the experiments humans not perfect 
+
+D-COACH + credit assigner + human model + RL
+
+HD action spaces
+
+CPU / GPU
+
 
 \end{conclusion}

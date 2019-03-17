@@ -59,8 +59,8 @@ Two different updates are computed, one for the layers involved in the policy co
 \State $y_{\mathrm{label}(t)} = a_{t} + \mathrm{error}_{t}$ 
 \State \textbf{update} \emph{policy} using SGD with pair ($s_{t}$, $y_{\mathrm{label}(t)}$) 
 \State \textbf{call} batch\_update
-\EndIf
 \State \textbf{append} $(s_{t}, y_{\mathrm{label}(t)})$ to $B$
+\EndIf
 \If{length($B$) $> K$ }
 \State $B = B[2:K+1]$
 \EndIf

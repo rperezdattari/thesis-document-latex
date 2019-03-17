@@ -88,31 +88,39 @@ Instead of using a cost for the model and one for the autoencoder, we use the au
 
 \subsection{The Algorithm}
 
-In Algorithm \ref{algorithm:DeepCOACH-M}, the pseudocode of model-based D-COACH is presented.
+In Algorithm \ref{algorithm:DeepCOACH-M}, the pseudocode of model-based D-COACH is presented. The hidden state of the LSTM is denoted as  $h^{\mathrm{LSTM}}$ and the human corrective feedback as  $h$.
 
 \begin{algorithm}[h]
-\caption{D-COACH }\label{algorithm:DeepCOACH-M}
+\caption{Model-based D-COACH for POMDPs}\label{algorithm:DeepCOACH-M}
 \begin{algorithmic}[1]
-\State \textbf{Require:} error magnitude $e$, buffer update interval $b$, buffer sampling size $N$, buffer size $K$, model dataset size $L$.
-\State \textbf{Init:} $B = []$  \emph{\# initialize memory buffer}
+\State \textbf{Require:} error magnitude $e$, policy buffer update interval $b$, policy buffer sampling size $N$, policy buffer min. size $k$, policy buffer max. size $K$, model buffer update interval $d$, model buffer sampling size $M$, model buffer min. size $l$, model buffer max. size $L$, training sequence length $\tau$.
+\State \textbf{Init:} $\mathcal{B} = []$  \emph{\# initialize policy memory buffer}
+\State \textbf{Init:} $\mathcal{D} = []$  \emph{\# initialize model memory buffer}
 \For{t = 1,2,...}{}
-\State \textbf{observe} state $s_{t}$
-\State \textbf{execute} action $a_{t}=\pi(s)_{t}$
+\State \textbf{observe} observation $o_{t}$
+\State \textbf{execute} action $a_{t}=\pi(o_{t}, h^{\mathrm{LSTM}}_{t-1})$
 \State \textbf{feedback} human corrective advice $h_{t}$
+\State \textbf{compute} $h^{\mathrm{LSTM}}_{t}$ from $M(o_{t}, a_{t},h^{\mathrm{LSTM}}_{t-1})$
+\State \textbf{append} $(o_{t-1},...,o_{t-\tau},a_{t-1},...,a_{t-\tau},o_{t})$ to $\mathcal{D}$
+\If{length($\mathcal{D}$) $> L$ }
+\State $\mathcal{D} = \mathcal{D}[2:L+1]$
+\EndIf
 \If{$h_{t}$ is not \textbf{0}}
 \State $\mathit{error}_{t} = h_{t}\cdot e$
 \State $y_{label(t)} = a_{t} + \mathit{error}_{t}$ 
-\State \textbf{update} $\pi(s)$ using SGD with pair ($s_{t}$, $y_{\mathit{label}(t)}$) 
-\State \textbf{update} $M(s,a)$ using SGD with a mini-batch sampled from $\mathcal{D}$
-\State \textbf{update} $\pi(s)$ using SGD with a mini-batch sampled from $\mathcal{B}$
-\State \textbf{append} $(s_{t}, y_{\mathit{label}(t)})$ to $B$
-\If{length($B$) $> K$ }
-\State $B = B[2:K+1]$
+\State \textbf{update} $\pi$ using SGD with $(o_{t}, h^{\mathrm{LSTM}}_{t-1}, y_{\mathit{label}(t)})$ 
+\State \textbf{update} $M$ using SGD with a mini-batch of sequences sampled from $\mathcal{D}$
+\State \textbf{update} $\pi$ using SGD with a mini-batch of sequences sampled from $\mathcal{B}$
+\State \textbf{append} $(o_{t},...,o_{t-\tau},a_{t-1},...,a_{t-\tau}, y_{\mathit{label}(t)})$ to $\mathcal{B}$
+\If{length($\mathcal{B}$) $> K$ }
+\State $\mathcal{B} = \mathcal{B}[2:K+1]$
 \EndIf
 \EndIf
-\If{mod(t, b) is 0 and $B$ is not $\emptyset$}
-\State \textbf{update} $M(s,a)$ using SGD with a mini-batch sampled from $\mathcal{D}$
-\State \textbf{update} $\pi(s)$ using SGD with a mini-batch sampled from $\mathcal{B}$
+\If{mod(t, b) is 0 and length($\mathcal{B}$) $\geq$ $k$}
+\State \textbf{update} $\pi$ using SGD with a mini-batch of sequences sampled from $\mathcal{B}$
+\EndIf
+\If{mod(t, d) is 0 and length($\mathcal{D}$) $\geq$ $l$}
+\State \textbf{update} $M$ using SGD with a mini-batch of sequences sampled from $\mathcal{D}$
 \EndIf
 \EndFor
 \end{algorithmic}

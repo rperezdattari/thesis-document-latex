@@ -181,3 +181,8 @@ Finally, model-based D-COACH was validated in the partially observed Car Racing 
 \end{figure}
 
 \section{Discussion}
+In this chapter we introduced a variation of D-COACH with memory, model-based D-COACH. The main objective was to extend D-COACH in order for it to work in the set of POMDPs where the state is described by time-dependent phenomena. Low-dimensional and high-dimensional problems were covered, introducing a different model architecture for each case. 
+
+Model-based D-COACH offers a framework that learns both the policy and the model online. This makes it easy for humans to interact in the learning process of the agents, given that no human effort is needed in extra learning steps as in the offline state learning version of D-COACH (Chapter 2). The experiments show that the proposed method is effective for enhancing the performance of agents in POMDPs. As discussed previously, memory-based approaches may be key to solve problems in real-world scenarios, where is common to face problems with partial observability. 
+
+As it is stated in the overview of this chapter, RNNs have an extra overhead when training, because sequences must be used for updating the weights of the recurrent layers. Given that D-COACH is an IML approach, updates are done in real-time while the teacher is providing feedback. We found that the overhead produced when updating the recurrent layers is too high for running this approach in CPU; thus, a GPU was used. This is a disadvantage with respect to the previously proposed variations of D-COACH, given that those models are able to run in real-time using CPUs. 

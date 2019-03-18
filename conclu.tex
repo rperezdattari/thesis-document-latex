@@ -1,5 +1,7 @@
 \begin{conclusion}
-We presented a framework for learning continuous-action policies using corrective feedback to shape DNN policies in high and low dimensional state spaces. This work was inspired in the COrrective Advice Communicated by Humans (COACH) framework, from where two ideas were taken: (1) the use of binary corrective feedback in action spaces for shaping policies, and (2) the use of past corrections to modify the effects of newer ones. In the COACH framework, these ideas were validated in problems with low-dimensional state spaces using linear combination of basis functions (LCBFs) as function approximators. The novelty of this work is that Deep Neural Networks (DNNs) were used instead, combining ideas of the Deep Reinforcement Learning (DRL) era with the ones of COACH, creating Deep COACH (D-COACH). With D-COACH, we showed that by combining Deep Learning with COACH is possible to extrapolate the ideas of COACH to learn policies in high-dimensional state spaces and in Partially Observable Markov Decision Processes (POMDPs) within the tens of minutes. 
+We presented a framework for learning continuous-action policies using corrective feedback to shape DNN policies in high and low dimensional state spaces. This work was inspired in the COrrective Advice Communicated by Humans (COACH) framework, from where two ideas were taken: (1) the use of binary corrective feedback in action spaces for shaping policies, and (2) the use of past corrections to modify the effects of newer ones. In the COACH framework, these ideas were validated in problems with low-dimensional state spaces using linear combination of basis functions (LCBFs) as function approximators. The novelty of this work is that Deep Neural Networks (DNNs) were used instead, combining ideas of the Deep Reinforcement Learning (DRL) era with the ones of COACH, creating Deep COACH (D-COACH). With D-COACH, we showed that by combining Deep Learning with COACH it is possible to extrapolate the ideas of COACH to learn policies in high-dimensional state spaces and in Partially Observable Markov Decision Processes (POMDPs) within the tens of minutes. 
+
+The hypothesis of this thesis was supported with several experiments. We showed that human corrective feedback can be used to learn well performing DNN policies in a time-efficient and reward function free way.
 
 First, D-COACH was validated in a low-dimensional state problem (cart-pole). This is a simple widely-studied problem that is useful to test early versions of sequential decision making learning algorithms. This problem had also been previously solved using COACH, which made it a good candidate to compare the performance of D-COACH with the one of COACH. This experiment showed that D-COACH worked well in low-dimensional state problems and with a performance similar to the one of COACH. 
 
@@ -7,17 +9,19 @@ For high-dimensional state problems, two variations of D-COACH were proposed and
 
 Finally, a last variation of D-COACH (model-based) for POMDPs in where the observations do not capture time-dependent phenomena from the state was proposed. The approach was to give memory to the agent by adding recurrent layers, LSTMs, to the DNN models. By comparing model-free with model-based D-COACH in low and high dimensional state problems using a simulated teacher, we observed that learning a model of the dynamics of the environment could be crucial in some cases for obtaining well performing policies. Also, that in other cases it may improve the performance of the agent. 
 
+Even though the algorithms proposed in this work were validated and supported the hypothesis of this thesis, we believe that there is still a lot of work and research left to be done in this area. There are some ideas proposed in the COACH framework that we did not study with D-COACH and are worth mentioning:
 
+\begin{itemize}
+    \item \textbf{Human Model:} In D-COACH we replaced the Human Model with a replay buffer, as mentioned in Chapter 2. Even though both approaches use information given by past corrections to modify the effects of newer ones, they do not do it in the same way. The Human Model modifies the learning rate of the policy; the replay buffer updates the policy constantly by replaying past corrections. Including a Human Model in D-COACH could help with the dilemma of setting either a too large or too small magnitude of the learning rate when updating the policy with SGD. In this case, we did not include a Human Model because this would have meant to add a second DNN model in charge of learning it. Thus, the overhead of D-COACH would have increased and for a first approach we prioritized a lighter model.
+    \item \textbf{Credit assigner:} Module proposed in TAMER approaches \cite{Knox:2009:ISA:1597735.1597738} which COACH adopted. This module associates feedback not only with the last state-action pair, but with past state-action pairs as well. The objective is to characterize the the human delay with a probability that weights correction signals with a sequence of state-action pairs. This could help with the data-efficiency of D-COACH. Nevertheless, given that D-COACH was able to work fine without this module, studying the advantages of adding it to the framework was left for future work. 
+    \item \textbf{D-COACH + DRL:} In \cite{celemin2018fast}, a hybrid RL framework with COACH is proposed. The basic idea is to use corrective feedback along with RL algorithms in order to speed up the learning process. The same concept could be applied and studied with D-COACH. 
+\end{itemize}
 
-what was done
+In contrast, the are some shortcomings that D-COACH presents that would be beneficial to study in future research:
+\begin{itemize}
+    \item \textbf{High-dimensional action spaces:} One of the main shortcomings of D-COACH was inherited from COACH. Both approaches are limited to work in problems with low-dimensional action spaces due to that humans must provide corrections in the action space. If the action space of a problem is too large, then is not intuitive for a human to give feedback, and he/she may not be able to correct the agent. Modules that interpret feedback from a correction space to the agent's action space can be added to tackle this shortcoming, such using inverse kinematics modules. But this is not always possible or trivial to do, so more research in this area could  enhance the capabilities of D-COACH.
+    \item \textbf{Long-term planning:} Given that the size of the replay buffer of D-COACH is limited due to its on-policy nature, it may be challenging (or not possible) to solve problems with \textbf{PENSAR no necesariamente es long term planning}
+\end{itemize}
 
-what about the experiments humans not perfect 
-
-D-COACH + credit assigner + human model + RL
-
-HD action spaces
-
-CPU / GPU
-
-
+Beyond the limitations of D-COACH and the future research that can be done in this area, the variations of D-COACH presented in this work showed to be a valid alternative for teaching robots to solve sequential decision-making problems using DNN policies. Human teachers were able to interact with real-world platforms (Duckie Racing and 3DoF arm) and guide them through the learning process for solving tasks.
 \end{conclusion}

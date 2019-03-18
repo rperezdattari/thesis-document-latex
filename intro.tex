@@ -33,4 +33,15 @@ The general objective of this work is to develop and validate an algorithm that 
 Human corrective feedback can be used to learn well performing deep neural network policies. As a consequence, an algorithm of this kind will effectively inherit the learning properties of using human corrective feedback and the function approximation properties of deep neural networks. Combining both approaches will result in a time-efficient and reward function free learning algorithm capable of solving problems using complex observations, such as raw pixels from an image.
 
 \section{Outline}
+This thesis is divided in four chapters. Chapters 2-4 introduce and evaluate three different variations of D-COACH:
+
+\begin{itemize}
+    \item \textbf{Chapter 1} presents the theoretical framework of this work. Both the areas of sequential decision-making and deep learning are revised in order to use them as baselines for the development of the thesis.
+    \item \textbf{Chapter 2} introduces the first variation of D-COACH proposed in this work. The ideas taken from the COACH framework are discussed and the formulation of D-COACH is presented. This approach is validated using simulated and real-world platforms.
+    \item \textbf{Chapter 3} proposes an enhanced variation of the D-COACH introduced in Chapter 2, tackling one of its main shortcomings. This new version of the algorithm is able to learn policies from scratch in problems with high-dimensional state spaces in one learning step, while the previous version of D-COACH had an extra offline learning step.
+    \item \textbf{Chapter 4} introduces a variation of D-COACH that adds memory to the agents in order for them to solve tasks in partially observable environments. In contrast, Chapters 2 and 3 assume that the environments are fully observable, which is not true in many real-world scenarios.
+\end{itemize}
+
+Finally, the conclusions and the future work of this thesis are discussed. 
+
 \end{intro}

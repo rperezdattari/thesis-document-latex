@@ -144,7 +144,7 @@ Model-based D-COACH is tested in the partially observed cart-pole because is a w
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.9\linewidth]{imagenes/cap3/cartpole_LD_model.pdf}
-    \caption{Evolution of the error while learning the reacher task. }
+    \caption{Partially observed cart-pole results for simulated teacher comparing model-based and model-free D-COACH.  Buffer: $K = 200$; $k=5$; $b = 10$; $N = 50$; $L=1\mathrm{e}5$; $l=5$; $d=1$; $M=50$; $\tau=8$; $P_{h}$: $\alpha = 0.35$; $\tau = 0.0003$.}
     \label{fig:ld_cartpole_model}
 \end{figure}
 
@@ -153,7 +153,7 @@ Model-free D-COACH is not able to learn a well performing policy in this case. T
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.9\linewidth]{imagenes/cap4/cartpole_ex.png}
-    \caption{Evolution of the error while learning the reacher task. }
+    \caption{Cart-pole partial observabilty example.}
     \label{fig:cp_ex}
 \end{figure}
 
@@ -165,7 +165,7 @@ In this section we validate model-based D-COACH in two different problems. Cart-
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.9\linewidth]{imagenes/cap3/cartpole_HD_model.pdf}
-    \caption{Evolution of the error while learning the reacher task. }
+    \caption{Partially observed cart-pole from pixels results for simulated teacher comparing model-based and model-free D-COACH.  Buffer: $K = 1000$; $k=20$; $b = 1$; $N = 20$; $L=1\mathrm{e}5$; $l=20$; $d=1$; $M=50$; $\tau=4$; $P_{h}$: $\alpha = 0.3$; $\tau = 0.000015$.}
     \label{fig:cp_hd}
 \end{figure}
 
@@ -176,7 +176,7 @@ Finally, model-based D-COACH was validated in the partially observed Car Racing 
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.9\linewidth]{imagenes/cap3/car_racing_lstm.pdf}
-    \caption{Evolution of the error while learning the reacher task. }
+    \caption{Partially observed car racing results for simulated teacher comparing model-based and model-free D-COACH.  Buffer: $K = 2000$; $k=20$; $b=10$; $N = 8$; $L=1\mathrm{e}5$; $l=20$; $d=1$; $M=8$; $\tau=10$; $P_{h}$: $\alpha = 0.9$; $\tau = 0.000015$.}
     \label{fig:po_cr}
 \end{figure}
 

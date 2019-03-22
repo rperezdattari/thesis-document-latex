@@ -165,6 +165,8 @@ Figure \ref{fig:free_based_model} summarizes the difference between both approac
 \footnotetext{Image taken from \url{http://www0.cs.ucl.ac.uk/staff/d.silver/web/Teaching_files/dyna.pdf}}
 
 \subsubsection{Experience Replay \cite{atari, lin1993reinforcement, zhang2017deeper}}
+\label{sss:ER}
+
 The anatomy of Reinforcement Learning (Figure \ref{fig:RL_anatomy}) suggests that every time the policy is improved, obtaining new samples is necessary to improve it again. This is only true in \emph{on-policy} algorithms. On-policy algorithms are those in which a policy can only be updated with data gathered by itself. Data gathered before the last update corresponds to data gathered by a past version of the current policy; thus, gathered by a different policy. So if the policy is changed, even a little bit, generating new samples becomes necessary. 
 
 In contrast, \emph{off-policy} algorithms are able to improve a policy without the aforementioned restriction; thus, using samples collected by other policies or by past versions of itself. Under this context is where is useful to use an \emph{experience replay}.
@@ -485,6 +487,7 @@ Methodologies such as \textbf{Advice Operators} \cite{Argall2009, Argall2008} ha
  To the best of our knowledge, corrective feedback has been only validated in problems with state spaces of low dimensionality, such as the ones covered in the aforementioned approaches. 
 
 \subsubsection{COrrective Advice Communicated by Humans}
+\label{sss:COACH}
 In COACH, if the agent executes an action $a$ that the human considers to be erroneous, then s/he would indicate the direction in which the action should be corrected (thus, COACH was proposed for problems with continuous actions). Each dimension of the action would have a corresponding correction signal $h$ with values $0$, $-1$ or $1$ which produces an error signal with arbitrary magnitude $e$ that is used to shape directly the policy. Thus, the error would be: 
 
 \begin{equation}\label{eq:error}

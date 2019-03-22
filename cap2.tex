@@ -1,98 +1,92 @@
-\chapter{Using Neural Networks to Enhance COACH (D-COACH v1)}
+\chapter{Using Deep Neural Networks to Enhance COACH (D-COACH v1)}
 In this chapter, we propose to extend the use of human corrective feedback during task execution to learn policies with state spaces of low and high dimensionality in $\text{continuous-action}$ problems (which is the case for most of the problems in robotics) using deep neural networks.
 
  We combine Deep Learning (DL) with the corrective advice based learning framework called COrrective Advice Communicated by Humans (COACH) \cite{Celemin2018AnInteractive}, thus creating the Deep COACH (D-COACH) framework. In this approach, no reward functions are needed and the amount of learning episodes is significantly reduced in comparison to alternative Reinforcement Learning (RL) approaches.
 
 \section{Overview}
-In previous years, learning algorithms for solving sequential decision-making problems heavily relied on carefully handcrafted features based on human intuition and knowledge about them to obtain good performances. Also, when using linear combination of basis functions (LCBFs) as function approximator, which was one of the most commonly used function approximator, for each problem it was necessary to select a specific set of basis functions. Choosing a well-performing set of basis functions is a process that may require expert knowledge or several tests, which may become very time-consuming or unfeasible as the size of the state-action space increases. This is also a consequence of the \emph{Curse of Dimensionality} \cite{Bellman1957} which states that as the number of the dimensions of a space grows (state and/or action spaces in this case), exponentially more data and computation are needed to completely cover it. In LCBFs, this often means that the number of parameters $\theta$ grows exponentially as the number of dimensions increase. As a consequence, learning algorithms needed handcrafted features in low-dimensional state spaces to adequately converge.
+In previous years, learning algorithms for solving sequential decision-making problems heavily relied on carefully handcrafted features based on human intuition and knowledge about them to obtain good performances. Also, when using linear combination of basis functions (LCBFs) as function approximator, which was one of the most commonly used function approximator, for each problem it was necessary to select a specific set of basis functions. Choosing a well performing set of basis functions is a process that may require expert knowledge or several tests, which may become very time consuming or unfeasible as the size of the $\text{state-action}$ space increases. This is also a consequence of the \emph{Curse of Dimensionality} \cite{Bellman1957} which states that as the number of the dimensions of a space grows (state and/or action spaces in this case), exponentially more data and computation are needed to completely cover it. In LCBFs, this often means that their number of parameters $\theta$ grows exponentially as the number of dimensions increase. As a consequence, for most of the cases, learning algorithms needed handcrafted features in low-dimensional state spaces to adequately converge.
 
 Given that COACH uses LCBFs as function approximator, it does not scale up well to problems with high-dimensional state spaces. However, the ideas proposed in COACH for shaping policies are independent of the function approximator that is used. With nowadays techniques, it has been shown that by approximating policies with Deep Neural Networks (DNNs) it is possible to solve problems with high-dimensional state spaces and with unprocessed raw information. So it seems as a natural step to extrapolate the ideas proposed in COACH to DNNs. 
 
-\section{D-COACH}
-The approach taken in this work was not to copy the COACH framework step by step and just replace the LCBFs with DNNs as function approximators. Instead, the approach was to take these ideas and combine them with DL techniques that have worked in sequential decision-making problems. 
+\section{Methodology}
+COACH is an algorithm designed to work with LCBFs that has different versions and variations. Consequently, in order to extrapolate its ideas to DNNs, it is necessary to see which of those can be used and why.
 
-COACH is an algorithm that has different versions and variations. In this work we use COACH in its basic structure, shown in Algorithm \ref{algorithm:COACH}. There are two main ideas proposed in this version:
+Given that in this thesis we are introducing the first approach that combines COACH with DNNs, we decided to design an algorithm based on the basic structure of COACH, shown in Algorithm \ref{algorithm:COACH} (Chapter \ref{sss:COACH}). We believe that there is still space to incorporate more ideas into D-COACH using the work presented in this thesis as a baseline.
+
+The basic structure of COACH proposes two main ideas:
 
 \begin{enumerate}
-    \item Using corrective feedback to shape policies.
-    \item Using past corrections to modify the effects of newer ones (Human Feedback Model).  
+    \item \textbf{Using corrective feedback to shape policies:} COACH was built from this idea, so it is not possible not to consider it. D-COACH uses corrective feedback \emph{almost} exactly as COACH. In COACH, it is proposed that each dimension of the action space should be trained independently, which has the advantage of creating a working framework that does not need any prior information about the problem in order to give corrections. We call this type of policy updating \emph{decoupled} training, so a correction in an specific action dimension does not modify the magnitude of the actions in other axes for the same corresponding state. However, in this work we consider that for some problems it may be advantageous to exploit prior user knowledge about relations between the different dimensions of the actions. In this way, a correction in one of the action axes may be used to update more than one dimension. We call this case \emph{coupled} training.
+    
+    \item \textbf{Using past corrections to modify the effects of newer ones:} In COACH, this idea is reflected in the Human Model; in D-COACH, a replay buffer (or experience replay, see Chapter \ref{sss:ER}) is incorporated into the algorithm, which is a technique that has been strongly validated with several DRL approaches \cite{atari, haarnoja2018soft, Lillicrap2015}. Even though both the Human Model and the replay buffer use information given by past corrections to modify the effects of newer ones, they do not do it in the same way. The Human Model modifies the learning rate of the policy adaptively; the replay buffer updates the policy constantly by replaying past corrections. Including a Human Model into $\text{D-COACH}$ could help with the dilemma of setting either a too large or too small learning rate for updating the weights of a policy. In this case, we did not include a Human Model because this would have meant to add a second DNN model in charge of learning it. Thus, the overhead of D-COACH would have increased and we prioritized a lighter framework.
 \end{enumerate}
-
-\subsection{Corrective Feedback}
-D-COACH uses corrective feedback \emph{almost} exactly as COACH. In COACH, it is proposed that each dimension of the action space should be trained independently \cite{Celemin2017}, which has the advantage of creating a working framework that does not need any prior information about the problem in order to give corrections. We call this type of policy updating \textbf{decoupled} training, so a correction in an specific action dimension does not modify the magnitude of the actions in other axes for the same corresponding state
-
-However, in this work we consider that for some problems it may be advantageous to exploit prior user knowledge about relations between the different dimensions of the actions. In this way, a correction in one of the action axes may be used to update more than one dimension. We call this case \textbf{coupled} training.
-
-\subsection{Past Corrections}
-In D-COACH, the idea of using information given by past corrections to modify the effects of newer ones is used in the form of an experience replay module. This is a technique that has been strongly validated in several DRL problems \cite{atari}\textbf{MORE CITES}. This module consists on a memory buffer from which the agent samples past corrections and replays them, in a similar manner as used in DRL problems \cite{atari}.
-
-
-\textbf{Even though COACH works well in low-dimensional state problems, the set of basis functions used in the LCBF must be selected independently for every problem. In some cases this could be time consuming or tedious. This engineering step is not necessary when using DNNs; thus, the same DNN architecture could be reused in different problems, saving time to the designers/engineers.}
 
 
 \subsection{Low-Dimensional vs High-dimensional States}
-So far, we have not made any distinction between using D-COACH for high-dimensional or low-dimensional state problems. A common approach is to use FNN networks for low-dimensional problems and CNN networks to high-dimensional problems and that is the one taken in this work. 
+When using DNNs, problems are often separated depending on the nature of their network inputs. When these inputs are processed data (such as handcrafted features in RL) a common approach is to use FNNs; When they are unprocessed raw information, CNNs are the most common option. In the RL context, given that the input of the networks is the state/observation of the environment, we use the term \emph{low-dimensional states} to refer to the input of the former, and \emph{high-dimensional states} to refer to the input of the later. Thus, FNNs are used in problems with low-dimensional state spaces and CNNs in problems with high-dimensional state spaces. Nevertheless, it is important to notice that handcrafted features are not necessarily low-dimensional and that FNNs may be also used in those cases. This is a commonly made association because the input of classic RL approaches were handcrafted features whose size was limited by the curse of dimensionality (and the computational power available at that time), and, as a consequence, they were low-dimensional.
 
-Using FNN architectures with low-dimensional states is a straightforward problem in the sense that the input is already prepossessed information, such as positions, velocities, angles, etc. One the other hand, training CNN policies with human feedback is a challenging problem: both the state representation from raw data (this work focuses on applications that observe raw images), and the policy must be learned with data generated by a human teacher. Deep neural networks have shown to need large sets of data and experience to adequately converge from complex inputs. The requirement of massive amounts of trials can be problematic because human users cannot keep on assisting the training for a long time due to stress, fatigue, or other factors that may lead to a lack of concentration. To tackle this shortcoming, state representation strategies are employed. The state representation of the policy is trained with additional criteria, adding an autoencoder to help with the training of the convolutional layers (or encoding layers) of the network. 
+Training CNN policies is a more challenging problem than training FNN policies. Both the state representation from raw data (this work focuses on applications with raw images as observation) and the policy must be learned from information interactively given by a human. DNNs have shown to need large sets of data and experience to adequately converge in complex problems, such as those with $\text{high-dimensional}$ inputs. The requirement of massive amounts of trials can be problematic because human users cannot keep on assisting the training for a long time due to stress, fatigue, or other factors that may lead to a lack of concentration.
 
-\subsubsection{Offline State Learning}
-The training of the autoencoder is done in a 3-step sequential process. In the first step a session of demonstrations is recorded. Then in a second step, the convolutional layers are trained  with the recorded data, while tuning an  autoencoder  used  for state representation of reduced dimensionality, (Figure \ref{fig:ms}(a)). The state is embedded in the latent space of an autoencoder. Finally, in the third step, the convolutional layers of the trained encoder are frozen, then the subsequent non-convolutional layers (right hand side of Figure \ref{fig:ms}(b)) are trained interactively based on the corrections that the teacher advises to the agent. Figure \ref{fig:ms} depicts the second and third steps of this strategy. 
+To address this limitation, we employ \emph{state representation strategies} in problems with high-dimensional states/observations. The convolutional layers of a CNN can be interpreted as operations that extract the most relevant features out of a high-dimensional input. Thus, the output of these layers (which is commonly linked to a FNN in regression problems) can be seen as a representation of the state in a new space where the problem is easier to solve. This is what we call the state representation. So, in this context, state representation strategies refer to techniques employed for assisting the learning process of the state representation. In this work, the state representation of the policy is trained with additional criteria, adding an autoencoder to help with the training of the convolutional layers (or encoding layers) of the network.
 
-\begin{figure}
+\subsubsection{Offline State Representation Learning}
+The D-COACH version introduced in this Chapter proposes to learn policies in a 3-step sequential process. In the first step, a session of demonstrations where observations of the environments are captured is recorded. Then, in a second step, the convolutional layers of the policy/autoencoder are trained with the recorded data, while tuning an  autoencoder  used  for state representation of reduced dimensionality, (Figure \ref{fig:ms}(a)). The state is embedded in the latent space of an autoencoder. Finally, in the third step, the convolutional layers of the trained encoder are frozen, then the subsequent non-convolutional layers (right hand side of Figure \ref{fig:ms}(b)) are trained interactively based on the corrections that the teacher advises to the agent. Figure \ref{fig:ms} depicts the second and third steps of this strategy. This kind of sequential strategy has been proven to work in decision-making problems \cite{Warnell2017,Finn2015,Ha2018}.
+
+\begin{figure}[h]
 \centering
 \subfloat[][Autoencoder network for learning the state representation of the policy based on the demonstrations database.]{\includegraphics[width=0.45\linewidth]{imagenes/cap2/m1_p1.pdf}}
 \hspace{0.1cm}
 \subfloat[][Interactive training of the policy using the trained convolutional layers.]{\includegraphics[width=0.45\linewidth]{imagenes/cap2/m1_p2.pdf}}
-\caption{D-COACH offline state learning.} 
+\caption{D-COACH offline state representation learning.} 
 \label{fig:ms} 
 \end{figure}
 
-This kind of sequential strategy has been proven to work in decision-making problems \cite{Warnell2017,Finn2015,Ha2018}.
-
-\subsection{The Algorithm}
-The policies are updated every time feedback is received and also by sampling from a memory buffer $B$ with a fixed frequency every $b$ time steps. Every time the user advises a correction, the buffer $B$ is fed with the current state and a label generated by adding the action taken with the error correction $y_{label}=a+\mathit{error}$.
-
-The high-dimensional case can be seen as an extension of the low-dimensional case, where an offline state learning process must be added. Figure \ref{fig:network_diagram} summarizes the D-COACH network structure.
+In the case of low-dimensional state problems, the state is fed into a FNN, skipping the autoencoder related steps and training the policy with interactive feedback directly. Figure \ref{fig:network_diagram} summarizes the network architecture for both low-dimensional and high-dimensional state problems.
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=1.0\linewidth]{imagenes/cap2/ISER_diagram.pdf}
+    \includegraphics[width=0.9\linewidth]{imagenes/cap2/ISER_diagram.pdf}
     \caption{D-COACH neural networks architecture. Variations between environments are specified with the acronyms CP (Cart-Pole), CR (Car Racing) and DR (Duckie Racing). HD STATE: high-dimensional state space. LD STATE: low-dimensional state space.}
     \label{fig:network_diagram}
 \end{figure}
 
-In Algorithm \ref{algorithm:DeepCOACH}, the pseudocode of the offline state learning version of D-COACH is presented.
+\subsection{The Algorithm}
+In D-COACH v1, the policies are updated every time feedback is received and also by sampling from a memory buffer $\mathcal{B}$ with a fixed frequency every $b$ time steps. Every time the user advises a correction, the buffer $\mathcal{B}$ is fed with the current state and a label generated by adding the action taken with the error correction $y_{label}=a+\mathit{error}$.
 
-\begin{algorithm}[t]
-\caption{D-COACH }\label{algorithm:DeepCOACH}
+The high-dimensional case can be seen as an extension of the low-dimensional case, where an offline state learning process must be added. Algorithm \ref{algorithm:DeepCOACH} presents the D-COACH v1 pseudocode.
+
+\begin{algorithm}[h]
+\caption{D-COACH v1: Offline State Representation Learning}\label{algorithm:DeepCOACH}
 \begin{algorithmic}[1]
-\State \textbf{Require:} error magnitude $e$, buffer update interval $b$, buffer sampling size $N$, buffer size $K$, pre-trained encoder parameters (if convolutional) 
-\State \textbf{Init:} $B = []$  \emph{\# initialize memory buffer}
+\State \textbf{Require:} error magnitude $e$, buffer update interval $b$, buffer sampling size $N$, buffer min. size $k$, buffer max. size $K$, pre-trained encoder parameters (if convolutional) 
+\State \textbf{Init:} $\mathcal{B} = []$  \emph{\# initialize memory buffer}
 \For{t = 1,2,...}{}
 \State \textbf{observe} state $s_{t}$
-\State \textbf{execute} action $a_{t}=\pi(s)_{t}$
+\State \textbf{execute} action $a_{t}=\pi(s_{t})$
 \State \textbf{feedback} human corrective advice $h_{t}$
 \If{$h_{t}$ is not \textbf{0}}
 \State $\mathit{error}_{t} = h_{t}\cdot e$
 \State $y_{label(t)} = a_{t} + \mathit{error}_{t}$ 
 \State \textbf{update} $\pi(s)$ using SGD with pair ($s_{t}$, $y_{\mathit{label}(t)}$) 
-\State \textbf{update} $\pi(s)$ using SGD with a mini-batch sampled from $B$
+\State \textbf{update} $\pi(s)$ using SGD with a mini-batch sampled from $\mathcal{B}$
 \State \textbf{append} $(s_{t}, y_{\mathit{label}(t)})$ to $B$
-\If{length($B$) $> K$ }
-\State $B = B[2:K+1]$
+\If{length($\mathcal{B}$) $> K$ }
+\State $\mathcal{B} = \mathcal{B}[2:K+1]$
 \EndIf
 \EndIf
-\If{mod(t, b) is 0 and $B$ is not $\emptyset$}
-\State \textbf{compute} $\pi(s)$ using SGD with a mini-batch sampled from $B$
+\If{mod(t, b) is 0 and length($\mathcal{B}$) $\geq k$}
+\State \textbf{update} $\pi(s)$ using SGD with a mini-batch sampled from $\mathcal{B}$
 \EndIf
 \EndFor
 \end{algorithmic}
 \end{algorithm}
 
 \section{Experiments and Results}
+%\textbf{Even though COACH works well in low-dimensional state problems, the set of basis functions used in the LCBF must be selected independently for every problem. In some cases this could be time consuming or tedious. This engineering step is not necessary when using DNNs; thus, the same DNN architecture could be reused in different problems, saving time to the designers/engineers.}
+
 Our proposed algorithm is validated experimentally in three different problems: (i) Cart-Pole (continuous action), which is a simulated task with low-dimensional state space; (ii) Car Racing, a simulated task with high-dimensional state space (raw pixels of an image); and (iii) Duckie Racing, a task with a real robot featuring a high-dimensional state space (raw pixels of an image). 
 
-The experiments with the simulated agents are intended to compare the complete D-COACH presented in Algorithm \ref{algorithm:DeepCOACH}, along with a version of it without buffer (ignoring lines 2 and 11-16), and with a well known DRL agent (Deep Deterministic Policy Gradient DDPG \cite{Lillicrap2015} implemented by OpenAI \cite{baselines}). The comparison is carried out by plotting the cumulative reward obtained at each episode by the agent as a function of time. In the case of D-COACH, the obtained reward is only used as a performance metric. Also, the results are presented as a function of time instead of episodes (except in the Duckie Racing experiment), because episodes can have variable duration depending on the policy. Hence, the episode scale would not properly show the time taken by the learning process, which is an important characteristic, since D-COACH is meant to work with real robots. The simulated environments, Cart-Pole and Car Racing, were ran at $22.5$ and $20.5$ FPS, respectively. These experiments were carried out using human teachers and simulated teachers. Humans had approximately 5 minutes to practice teaching in each environment. The learning curves of agents trained by 10 human teachers were obtained and averaged; the learning curves of agents trained by a simulated teacher were repeated 30 times and averaged. Along with the algebraic mean, the confidence intervals that represent the $60^{th}$ percentile of the data were plotted. In the case of the Car Racing problem, it was observed that coupled training was advantageous when the teachers were humans. The designed coupled signals are shown in Table \ref{table:coupled_car_racing}.
+The experiments with the simulated agents are intended to compare the complete D-COACH presented in Algorithm \ref{algorithm:DeepCOACH}, along with a version of it without replay buffer (ignoring lines 2 and 11-16), and with a well known DRL agent (Deep Deterministic Policy Gradient DDPG \cite{Lillicrap2015} implemented by OpenAI \cite{baselines}). The comparison is carried out by plotting the cumulative reward obtained at each episode by the agent as a function of time. In the case of D-COACH, the obtained reward is only used as a performance metric. Also, the results are presented as a function of time instead of episodes (except in the Duckie Racing experiment), because episodes can have variable duration depending on the policy. Hence, the episode scale would not properly show the time taken by the learning process, which is an important characteristic, since D-COACH is meant to work with real robots. The simulated environments, Cart-Pole and Car Racing, were ran at $22.5$ and $20.5$ FPS, respectively. These experiments were carried out using human teachers and simulated teachers. Humans had approximately 5 minutes to practice teaching in each environment. The learning curves of agents trained by 10 human teachers were obtained and averaged; the learning curves of agents trained by a simulated teacher were repeated 30 times and averaged. Along with the algebraic mean, the confidence intervals that represent the $60^{th}$ percentile of the data were plotted. In the case of the Car Racing problem, it was observed that coupled training was advantageous when the teachers were humans. The designed coupled signals are shown in Table \ref{table:coupled_car_racing}.
 
 \begin{table}[t]
 \centering
@@ -200,9 +194,10 @@ This problem is not used for comparisons of the methods, but only as a validatio
 \end{figure}
 
 \section{Discussion}
-This work presented D-COACH, an algorithm for training policies modeled with DNNs interactively with corrective advice. The method was validated in a problem of low-dimensionality, along with problems of high-dimensional state spaces like raw pixel observations, with a simulated and a real robot environment, and also using both simulated and real human teachers. 
+This chapter presented D-COACH v1, an algorithm for training policies modeled with DNNs interactively with corrective advice. The method was validated in a problem of low-dimensionality, along with problems of high-dimensional state spaces like raw pixel observations, with a simulated and a real robot environment, and also using both simulated and real human teachers. 
 
 The use of the experience replay buffer (which has been well tested for DRL) was re-validated for this different kind of learning approach, since this is a feature not included in the original COACH. The comparisons showed that the use of memory resulted in an important boost in the learning speed of the agents, which were able to converge with less feedback, and to perform better even in cases with a significant amount of erroneous signals.  
 
 The results of the experiments show that teachers advising corrections can train policies in fewer time steps than a DRL method like DDPG. So it was possible to train real robot tasks based on human corrections during the task execution, in an environment with a raw pixel level state space. 
+
 The comparison of D-COACH with respect to DDPG, shows how this interactive method makes it more feasible to learn policies represented with DNNs, within the constraints of physical systems. DDPG needs to accumulate millions of time steps of experience in order to obtain good performances as shown in \cite{Lillicrap2015}. However, this is not always possible with real systems.

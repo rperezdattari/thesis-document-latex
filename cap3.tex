@@ -3,7 +3,7 @@
 
 Although the offline state learning approach works for high-dimensional state problems, it has the shortcoming that it needs a database with images of the environment to work. This can be time consuming and not robust to changes in the environment. Thus, it would be desirable to have a version of D-COACH that eliminates the requirement of recording demonstrations and pre-training an autoencoder, learning everything in a single interaction step, as the original COACH does. Hence, an algorithm capable of training all the parameters of the network interactively from scratch. 
 
-\section{D-COACH: Online State Learning}
+\section{Online State Representation Learning}
 In order to obtain an algorithm capable of learning everything from scratch interactively we need to make the networks converge faster. In the past chapter, an autoencoder was used to learn a low-dimensional representation of high-dimensional states in an offline learning process. In this chapter we propose to use the autoencoder learning criteria during the interactive learning process, such that both networks (the policy and the autoencoder) share the convolutional layers of the encoder, as shown in Fig.~\ref{fig:msim}.
 
 \begin{figure}[H]

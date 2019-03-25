@@ -2,14 +2,14 @@
 \depto{Departamento de Ingeniería Eléctrica}
 \author{Rodrigo Javier Pérez Dattari}
 \title{Interactive Learning with Corrective Feedback for Continuous-Action Policies based on Deep Neural Networks}
-\auspicio{?}
+\auspicio{Proyecto FONDECYT 1161500.}
 \date{2018}
 \guia{Javier Ruiz del Solar}
 \carrera{Magíster en Ciencias de la Ingeniería, Mención Eléctrica}
 \carreraeng{Master of Engineering Sciences in Electrical Engineering}
 \memoria{Tesis para optar al Grado de \break  Magíster en Ciencias de la Ingeniería, Mención Eléctrica\break \break
 Memoria para optar al Título de Ingeniero Civil Eléctrico}
-\comision{?}
+\comision{Javier Ruiz del Solar, Felipe Tobar, Nicolás Navarro-Guerrero}
 
 \usepackage{lipsum}
 
@@ -45,24 +45,24 @@ Memoria para optar al Título de Ingeniero Civil Eléctrico}
 \maketitle
 
 \begin{abstract}
-El Aprendizaje Reforzado Profundo (DRL) se ha transformado en una metodología poderosa para resolver problemas complejos de toma de decisión secuencial. Sin embargo, el DRL tiene varias limitaciones cuando es usado en problemas del mundo real (p.ej. aplicaciones de robótica). Por ejemplo, largos tiempos de entrenamiento son requeridos y no pueden ser acelerados en contraste con ambientes simulados, y las funciones de recompensa pueden ser difíciles de especificar/modelar y/o computar. Más aún, el traspaso de políticas aprendidas en simulaciones al mundo real no es directo ("reality gap"). Por otro lado, métodos de aprendizaje de máquinas basados en la transferencia de conocimiento humano a un agente han mostrado ser eficientes en tiempo para obtener políticas con buenos desempeños y no necesariamente requieren el uso de una función de recompensa.
+El Aprendizaje Reforzado Profundo (DRL) se ha transformado en una metodología poderosa para resolver problemas complejos de toma de decisión secuencial. Sin embargo, el DRL tiene varias limitaciones cuando es usado en problemas del mundo real (p.ej. aplicaciones de robótica). Por ejemplo, largos tiempos de entrenamiento (que no se pueden acelerar) son requeridos, en contraste con ambientes simulados, y las funciones de recompensa pueden ser difíciles de especificar/modelar y/o computar. Más aún, el traspaso de políticas aprendidas en simulaciones al mundo real no es directo ("reality gap"). Por otro lado, métodos de aprendizaje de máquinas basados en la transferencia de conocimiento humano a un agente han mostrado ser capaces de obtener políticas con buenos desempeños sin necesariamente requerir el uso de una función de recompensa, siendo eficientes en lo que respecta al tiempo.
 
-En este contexto, nosotros introducimos una estrategia de Aprendizaje Interactivo de Máquinas (IML) para entrenar políticas modeladas como Redes Neuronales Profundas (DNNs) basada en retroalimentación correctiva humana, con un método llamado D-COACH. Combinamos Aprendizaje Profundo (DL) con el método Asesoramiento Correctivo Comunicado por Humanos (COACH), en donde humanos no expertos pueden entrenar políticas corrigiendo las acciones que va tomando el agente en ejecución. El método D-COACH tiene el potencial de resolver problemas complejos sin necesitar de muchos datos o tiempo. Resultados experimentales validan la eficiencia del método propuesto en plataformas simuladas y del mundo real, en espacios de estados de baja y alta dimensionalidad, mostrando la capacidad de aprender políticas en espacios de acción continuos de manera efectiva.
+En este contexto, en esta tesis se introduce una estrategia de Aprendizaje Interactivo de Máquinas (IML) para entrenar políticas modeladas como Redes Neuronales Profundas (DNNs), basada en retroalimentación correctiva humana con un método llamado D-COACH. Se combina Aprendizaje Profundo (DL) con el método Asesoramiento Correctivo Comunicado por Humanos (COACH), en donde humanos no expertos pueden entrenar políticas corrigiendo las acciones que va tomando el agente en ejecución. El método D-COACH tiene el potencial de resolver problemas complejos sin necesitar de muchos datos o tiempo. Resultados experimentales validan la eficiencia del método propuesto en plataformas simuladas y del mundo real, en espacios de estados de baja y alta dimensionalidad, mostrando la capacidad de aprender políticas en espacios de acción continuos de manera efectiva.
 
-El método propuesto mostró resultados particularmente interesantes cuando políticas parametrizadas con Redes Neuronales Convolucionales (CNNs) fueron usadas para resolver problemas con espacios de estado de alta dimensionalidad, como pixeles desde una imagen. Al usar CNNs, los agentes tienen la capacidad de construir valiosas representaciones del estado del ambiente sin la necesidad de hacer ingeniería de características por el lado del diseñador (lo que era siempre necesario en el Aprendizaje Reforzado (RL) clásico). Estas propiedades pueden ser muy útiles en robótica, ya que es común encontrar aplicaciones con observaciones de alta dimensionalidad, como imágenes RGB. Darles la habilidad a los robots de aprender desde datos del alta dimensión va a permitir escalar la complejidad de lo que los robots son capaces de hacer.
+El método propuesto mostró resultados particularmente interesantes cuando políticas parametrizadas con Redes Neuronales Convolucionales (CNNs) fueron usadas para resolver problemas con espacios de estado de alta dimensionalidad, como pixeles desde una imagen. Al usar CNNs, los agentes tienen la capacidad de construir valiosas representaciones del estado del ambiente sin la necesidad de hacer ingeniería de características por el lado del diseñador (lo que era siempre necesario en el Aprendizaje Reforzado (RL) clásico). Estas propiedades pueden ser muy útiles en robótica, ya que es común encontrar aplicaciones en donde la información adquirida por los sensores del sistema es de alta dimensionalidad, como imágenes RGB. Darles la habilidad a los robots de aprender desde datos del alta dimensionalidad va a permitir aumentar la complejidad de los problemas que estos pueden resolver.
 
-A lo largo de este documento se proponen y validan tres variaciones de D-COACH. La primera introduce una estructura general para resolver problemas de estado de baja y alta dimensionalidad. La segunda propone una variación del primer método propuesto para problemas de estado de alta dimensionalidad, reduciendo el tiempo y esfuerzo de un humano al entrenar una política. Y por último, la tercera introduce el uso de Redes Neuronales Recurrentes (RNNs) para añadirle memoria a los agentes en problemas con observabilidad parcial.
+A lo largo de esta tesis se proponen y validan tres variaciones de D-COACH. La primera introduce una estructura general para resolver problemas de estado de baja y alta dimensionalidad. La segunda propone una variación del primer método propuesto para problemas de estado de alta dimensionalidad, reduciendo el tiempo y esfuerzo de un humano al entrenar una política. Y por último, la tercera introduce el uso de Redes Neuronales Recurrentes para añadirle memoria a los agentes en problemas con observabilidad parcial.
 
 \end{abstract}
 
 \begin{abstract_eng}
-Deep Reinforcement Learning (DRL) has become a powerful methodology to solve complex decision making problems. However, DRL has several limitations when used in real-world problems (e.g., robotics applications). For instance, long training times are required and cannot be accelerated in contrast to simulated environments, and reward functions may be hard to specify/model and/or to compute. Moreover, the transfer of policies learned in a simulator to the real-world has limitations (reality gap). On the other hand, machine learning methods that rely on the transfer of human knowledge to an agent have shown to be time efficient for obtaining well performing policies and do not require a reward function.
+Deep Reinforcement Learning (DRL) has become a powerful methodology to solve complex decision making problems. However, DRL has several limitations when used in real-world problems (e.g., robotics applications). For instance, long training times (that cannot be accelerated) are required in contrast to simulated environments, and reward functions may be hard to specify/model and/or to compute. Moreover, the transfer of policies learned in a simulator to the real-world has limitations (reality gap). On the other hand, machine learning methods that rely on the transfer of human knowledge to an agent have shown to be time efficient for obtaining well performing policies and do not require a reward function.
 
-In this context, we approach an alternative Interactive Machine Learning (IML) strategy for training Deep Neural Network (DNN) policies based on human corrective feedback, with a method called Deep COACH (D-COACH). We combine Deep Learning with the COrrective Advice Communicated by Humans (COACH) framework, in which non-expert humans shape policies by correcting the agent’s actions during execution. The D-COACH framework has the potential to solve complex problems without much data or time required. Experimental results validated the efficiency of the proposed framework in simulated and real-world platforms, with state spaces of low and high dimensionality, showing the capacity to successfully learn policies for continuous action spaces. 
+In this context, this thesis proposes an alternative Interactive Machine Learning (IML) strategy for training Deep Neural Network (DNN) policies based on human corrective feedback, with a method called Deep COACH (D-COACH). Deep Learning is combined with the COrrective Advice Communicated by Humans (COACH) framework, in which non-expert humans shape policies by correcting the agent’s actions during execution. The D-COACH framework has the potential to solve complex problems without much data or time required. Experimental results validated the efficiency of the proposed framework in simulated and real-world platforms, with state spaces of low and high dimensionality, showing the capacity to successfully learn policies for continuous action spaces. 
 
 The proposed framework showed particularly interesting results when learning policies parameterized with Convolutional Neural Networks (CNNs) for high-dimensional state spaces, such as raw pixels from an image. By using CNNs, agents are given the possibility to build rich state representations of the environment without feature engineering on the side of the designer (which was always necessary in classical RL). These properties can be very useful in robotics, since it is common to find applications with high-dimensional observations, such as RGB images. Giving robots the ability to learn from such high-dimensional data will allow to scale up the complexity of what robots are able to do.
 
-Throughout this document three variations of D-COACH are proposed and validated. The first one introduces a general structure for solving problems with low-dimensional and high-dimensional state spaces. The second one proposes a variation of the first approach for high-dimensional state problems, reducing the time and effort of a human for training a policy. And finally, the third variation introduces the use of Recurrent Neural Networks (RNNs) for adding memory to agents in problems with partial observability.
+In this thesis three variations of D-COACH are proposed and validated. The first one introduces a general structure for solving problems with low-dimensional and high-dimensional state spaces. The second one proposes a variation of the first approach for high-dimensional state problems, reducing the time and effort of a human for training a policy. And finally, the third variation introduces the use of Recurrent Neural Networks for adding memory to agents in problems with partial observability.
 \end{abstract_eng}
 
 
@@ -89,9 +89,12 @@ A mi abuelo Ernesto
 \input{cap3.tex}
 \input{cap4.tex}
 \input{conclu.tex}
-\input{publi.tex}
 
 \nocite{*}
+\newpage
+\addcontentsline{toc}{chapter}{\protect\numberline{}Bibliography}
 \bibliographystyle{plain}
 \bibliography{bibliography}
+
+\input{publi.tex}
 \end{document}

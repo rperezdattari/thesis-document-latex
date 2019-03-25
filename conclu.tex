@@ -1,4 +1,4 @@
-\begin{conclusion}
+\chapter{Conclusion and Future Work}
 We presented a framework for learning continuous-action policies using corrective feedback to shape DNN policies in high and low dimensional state spaces. This work was inspired in the COrrective Advice Communicated by Humans (COACH) framework, from where two ideas were taken: (1) the use of binary corrective feedback in action spaces for shaping policies, and (2) the use of past corrections to modify the effects of newer ones. In the COACH framework, these ideas were validated in problems with low-dimensional state spaces using linear combination of basis functions (LCBFs) as function approximators. The novelty of this work is that Deep Neural Networks (DNNs) were used instead, combining ideas of the Deep Reinforcement Learning (DRL) era with the ones of COACH, creating Deep COACH (D-COACH). With D-COACH, we showed that by combining Deep Learning with COACH it is possible to extrapolate the ideas of COACH to learn policies in high-dimensional state spaces and in Partially Observable Markov Decision Processes (POMDPs) within the tens of minutes. 
 
 The hypothesis of this thesis was supported with several experiments. We showed that human corrective feedback can be used to learn well performing DNN policies in a time-efficient and reward function free way.
@@ -24,4 +24,3 @@ In contrast, the are some shortcomings that D-COACH presents that would be benef
 \end{itemize}
 
 Beyond the limitations of D-COACH and the future research that can be done in this area, the variations of D-COACH presented in this work showed to be a valid alternative for teaching robots to solve sequential decision-making problems using DNN policies. Human teachers were able to interact with real-world platforms (Duckie Racing and 3DoF arm) and guide them through the learning process for solving tasks.
-\end{conclusion}

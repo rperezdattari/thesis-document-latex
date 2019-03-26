@@ -20,7 +20,7 @@ Three variations of D-COACH are introduced:
     \item \textbf{Memoryful ONline state representation learning (D-COACH MON)}
 \end{enumerate}
 
-D-COACH and D-COACH ON assume that the agents interact in fully-observable environments. As a consequence, they make decisions solely based on what they are observing on that precise moment. In low-dimensional state problems, they do not differ. A fully connected network policy is interactively trained during task execution with human corrective feedback. Nevertheless, in high-dimensional state problems D-COACH ON enhances the methodology proposed in D-COACH. In both approaches a convolutional autoencoder is added to the network architecture for state dimensionality reduction. In the D-COACH formulation, a demonstration session is required at the beginning of the training process for tuning the weights of the autoencoder. After that, a fully connected network policy is linked to the output of the encoder layers (latent space of the autoencoder), and is trained interactively, in the same way as in the low-dimensional state case. In contrast, D-COACH ON eliminates the need of demonstration sessions and trains the policy and the autoencoder simultaneously, sharing the convolutional layers (encoder) between both networks. This reduces the time and effort of the human for teaching a policy.
+D-COACH and D-COACH ON assume that the agents interact in fully-observable environments. As a consequence, they make decisions solely based on what they are observing on that precise moment. There is no difference between these two approaches in problems with low-dimensional states. A fully connected network policy is interactively trained during task execution with human corrective feedback. Nevertheless, in high-dimensional state problems D-COACH ON enhances the methodology proposed in D-COACH. In both approaches a convolutional autoencoder is added to the network architecture for state dimensionality reduction. In the D-COACH formulation, a demonstration session is required at the beginning of the training process for tuning the weights of the autoencoder. After that, a fully connected network policy is linked to the output of the encoder layers (latent space of the autoencoder), and is trained interactively, in the same way as in the low-dimensional state case. In contrast, D-COACH ON eliminates the need of demonstration sessions and trains the policy and the autoencoder simultaneously, sharing the convolutional layers (encoder) between both networks. This reduces the time and effort of the human for teaching a policy.
 
 D-COACH MON assumes that the agents interact in partially-observable environments, which is true in many real-world scenarios, and tries to cover a subset of these problems. Memory is added to the agents by using recurrent layers in the network architectures in order to obtain well performing policies in problems where past observations contain crucial information about the current state of the agent. As in D-COACH ON, everything is learned online, without the need of a demonstration session. 
 
@@ -36,20 +36,19 @@ The general objective of this thesis is to develop and validate an algorithm tha
     \item Study the state-of-the-art of robot learning algorithms for solving sequential decision-making problems.
     \item Propose and implement an algorithm that, by using deep neural networks policies, allows robots to learn to solve tasks in continuous-action domains from low-dimensional and high-dimensional states using online human corrective feedback. 
     \item Validate the proposed algorithm with tasks using simulated and real platforms.
-    \item Propose a variation of the algorithm to solve problems with partially observed environments.
+    \item Propose and validate a variation of the algorithm to solve problems with partially observed environments.
 \end{itemize}
 
 \section{Hypothesis}
 Human corrective feedback can be used to learn well performing deep neural network policies. As a consequence, an algorithm of this kind will effectively inherit the learning properties of using human corrective feedback and the function approximation properties of deep neural networks. Combining both approaches will result in a time-efficient and reward function free learning algorithm capable of solving problems using complex observations, such as raw pixels from an image.
 
 \section{Outline}
-This thesis is divided in four chapters. Chapters 2-4 introduce and evaluate three different variations of D-COACH:
+This thesis is divided in six chapters.
 
 \begin{itemize}
-    \item \textbf{Chapter 1} presents the theoretical framework of this work. Both the areas of sequential decision-making and deep learning are revised in order to use them as baselines for the development of the thesis.
-    \item \textbf{Chapter 2} introduces D-COACH. The ideas taken from the COACH framework are discussed and the formulation of D-COACH is presented. This approach is validated using simulated and real-world platforms.
-    \item \textbf{Chapter 3} proposes an enhanced variation of D-COACH introduced in Chapter 2 (D-COACH On), tackling one of its main shortcomings. This new version of the algorithm is able to learn policies from scratch in problems with high-dimensional state spaces in one learning step, while the previous version of D-COACH had an extra offline learning step.
-    \item \textbf{Chapter 4} introduces a variation of D-COACH that adds memory to the agents (D-COACH v3) in order for them to solve tasks in partially observable environments. In contrast, Chapters 2 and 3 assume that the environments are fully observable, which is not true in many real-world scenarios.
+    \item \textbf{Chapter 2} presents the theoretical framework of this work. Both the areas of sequential decision-making and deep learning are revised in order to use them as baselines for the development of the thesis.
+    \item \textbf{Chapter 3} introduces D-COACH. The ideas taken from the COACH framework are discussed and the formulation of D-COACH is presented. This approach is validated using simulated and real-world platforms.
+    \item \textbf{Chapter 4} proposes an enhanced variation of D-COACH introduced in Chapter 2 (D-COACH ON), tackling one of its main shortcomings. This new version of the algorithm is able to learn policies from scratch in problems with high-dimensional state spaces in one learning step, while the previous version of D-COACH had an extra offline learning step.
+    \item \textbf{Chapter 5} introduces a variation of D-COACH that adds memory to the agents (D-COACH MON) in order for them to solve tasks in partially observable environments. In contrast, Chapters 3 and 4 assume that the environments are fully observable, which is not true in many real-world scenarios.
+    \item \textbf{Chapter 6} gathers the conclusions and the future work of this thesis.
 \end{itemize}
-
-Finally, the conclusions and the future work of this thesis are discussed.

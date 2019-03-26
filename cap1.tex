@@ -1,21 +1,21 @@
 \chapter{Theoretical Framework}
 \section{Sequential Decision-Making}
-In robotics, sequential decision-making problems refers to tasks in which a robot must achieve a goal by physically interacting with the environment, for example, navigating from one point to another, grasping an object, balancing, etc. It can be described as a step-by-step decision theory, where depending on the information that is gathered by its sensors, the robot has to make decisions consecutively.
+In robotics, sequential decision-making problems refers to tasks in which a robot must achieve a goal by physically interacting with the environment, for example, navigating from one point to another, grasping an object, balancing, etc. It can be described as a step-by-step decision process, where depending on the information that is gathered by its sensors, the robot has to make decisions consecutively.
 
 \subsection{Markov Decision Process (MDP) \cite{puterman2014markov, sutton2018reinforcement}}
-A Markov Decision Process (MDP) is meant to be a straightforward framing of sequential decision-making problems. In an MDP we have an \emph{agent} and an \emph{environment} which interact continually. The agent is the learner and the decision maker. The environment is everything that the agent can interact with. In robotics, the agent is the robot and the environment is the real world setting in which the robots exists.
+A Markov Decision Process (MDP) is meant to be a straightforward framing of sequential decision-making problems. In an MDP we have an \emph{agent} that is continually interacting with an \emph{environment}. The agent is the learner and the decision maker. The environment is everything that the agent can interact with. In robotics, the agent is the robot and the environment is the real world setting in which the robot exists.
 
-To keep things as simple as possible, MDPs are commonly modeled as discrete time interaction of the agent with the environment. Thus, the time is divided into a sequence of \emph{time steps}, $t=0,1,2,3,...$ . At each time step the agent \emph{observes} $o_{t}$ a representation of the environment's \emph{state} $s_{t}$. Depending on the state, the agent selects an \emph{action} $a_{t}$, that ideally will lead to achieving the goal of the task.
+To keep things as simple as possible, MDPs are commonly modeled as discrete time interaction of the agent with the environment. Thus, the time is divided into a sequence of \emph{time steps}, $t=0,1,2,3,...$ . At each time step the agent perceives an \emph{observation} $o_{t}$ of the environment, which is a representation of the environment's \emph{state} $s_{t}$. Depending on the state, the agent selects an \emph{action} $a_{t}$, which will ideally lead to a specific task being solved. 
 
-The state describes the current situation of the environment; the action is an input to the environment that the agent can select and that affects the environment's evolution. The agent receives a representation of the state which is called the observation. In robotics, this is information gathered with sensors such as RGB cameras, encoders, inertial measurement units, etc. If the observation contains sufficient information such that the agent can fully understand the environment state, then the problem is said to be \emph{fully observed}, otherwise it is said to be \emph{partially observed}. If a partially observed problem is modeled as an MDP, then is called a partially observable MDP (POMDP).
+The state describes the current situation of the environment; the action is an input to the environment that the agent can select and that affects the environment's evolution. In robotics, this is information gathered with sensors such as RGB cameras, encoders, inertial measurement units, etc. If the observation contains sufficient information such that the agent can fully understand the environment state, then the problem is said to be \emph{fully observed}, otherwise it is said to be \emph{partially observed}. If a partially observed problem is modeled as an MDP, then is called a partially observable MDP (POMDP).
 
-The environment's evolution is the sequence of states visited by the agent. Transitioning from one state to another is a stochastic process defined by the nature of the environment and the actions taken, at each time step, by the agent. Additionally, an MDP is formulated as an extension of a Markov chain, such that the Markov property is satisfied. Consequently,the conditional probability distribution of future states depends only upon the present state, such that:
+The environment's evolution is the sequence of states visited by the agent. Transitioning from one state to another is a stochastic process defined by the nature of the environment and the actions taken, at each time step, by the agent. Additionally, an MDP is a process that satisfies the Markov property. Consequently, the conditional probability distribution of future states depends only upon the present state, such that:
 
 \begin{equation}
     p(s_{t}|s_{t-1}, a_{t-1}) = p(s_{t}|s_{t-1},...,s_{0},a_{t-1},...,a_{0})  \hspace{0.5cm} \forall t
 \end{equation}
 
-Finally, every time the environment transitions, a numerical \emph{reward} is received by the agent. Better decisions will produce higher rewards.
+Finally, every time the agent executes an action, a numerical \emph{reward} is received by the agent. Better decisions will produce higher rewards.
 
 In a nutshell, an MDP can be defined by the tuple $MDP=(\mathcal{S},\matchcal{A},\mathcal{R},\mathcal{P})$, where $\mathcal{S}$ represents the state space and $\mathcal{A}$ the action space. $\mathcal{R}$ represents the \emph{reward function}, which generates a scalar reward $r$ every time step. This reward may depend on $s_{t-1}$; $s_{t-1},a_{t-1}$ or $s_{t-1},a_{t-1},s_{t}$, so $\mathcal{R}$ can be defined with $\mathcal{R}: \mathcal{S} \to \R$, $\mathcal{R}: \mathcal{S} \times \mathcal{A} \to \R$ or $\mathcal{R}: \mathcal{S} \times \mathcal{A} \times \mathcal{S} \to \R$, respectively. Finally, $\mathcal{P}$ corresponds to the transition function, which is the probability $p(s_{t+1}|s_{t}, a_{t})$, where $\mathcal{P}: \mathcal{S} \times \mathcal{A} \times \mathcal{S} \to [0, 1]$. Graphically, an MDP can be summarized in the following diagram:
 
@@ -38,7 +38,7 @@ Reinforcement Learning aims to use the MDP framing of sequential decision-making
 \end{figure}
 \footnotetext{Image taken from \cite{sutton2018reinforcement}.}
 
-The idea is to use this experience to learn/discover a \emph{policy} that maximizes the total amount of reward the agent receives. A policy $\pi$ is a function that maps states into actions in a deterministic $\pi: \mathcal{S} \to \mathcal{A}$ or stochastic $\pi: \mathcal{S} \times \mathcal{A} \to [0,1]$ manner. To obtain a good performing policy, is necessary to adequately combine \emph{exploration} with \emph{exploitation}. When exploring, the agent finds more information about the environment; when exploiting, it exploits known information to maximize the reward.
+The idea is to use this experience to learn/discover a \emph{policy} that maximizes the total amount of reward the agent receives. A policy $\pi$ is a function that maps states into actions. This mapping can be either deterministic $\pi: \mathcal{S} \to \mathcal{A}$ or stochastic $\pi: \mathcal{S} \times \mathcal{A} \to [0,1]$. To obtain a good performing policy, it is necessary to adequately combine \emph{exploration} with \emph{exploitation}. When exploring, the agent finds more information about the environment; when exploiting, it exploits known information to maximize the reward.
 
 Commonly, in complex problems, $\pi$ is a parameterized model; then, the goal of reinforcement learning is to find the set of parameters $\theta$ that maximizes the sum of rewards, or \emph{return} $G$, that the agent will obtain when solving a task. As a consequence of the parameterized policy $\pi_{\theta}$, the agent will follow a trajectory $\tau = \{s_{0}, a_{0},...,s_{T}, a_{T}\}$, where $T$ is the number of time steps. When a problem has well-defined initial and final conditions it has a \emph{finite horizon} (the trajectory generated between the initial and final conditions is called \emph{episode}), otherwise, it has an \emph{infinite horizon}. In the former, $T \in \N$; in the later, $T \to \infty$. Finally, $\tau$ follows the probability distribution $p_{\theta}(\tau)$ that depends on $p(s_{t+1}|s_{t}, a_{t})$, $\pi_{\theta}$ and $p_{0}=p(s_{0})$, which corresponds to the initial distribution of states.
 
@@ -184,6 +184,8 @@ Although $\pi$ can be represented by a look-up table, where every state has a co
 
 There is a large list of different function approximators, but in this work two of them are the most relevant: \textbf{linear models of basis functions (LCBFs)} and \textbf{artificial neural networks (ANNs)}. Although the policy may not be directly represented by these models, as in the case of value function approximation, for simplicity, from now on we are going to assume that it always does. Also, we are only going to work with deterministic policies. So, if the function approximator is $\Psi$, then $\pi_{\theta} = \Psi(s;\theta)$ such that $\Psi: \mathcal{S} \to \mathcal{A}$.
 
+\newpage
+
 \subsection{Linear Model of Basis Functions \cite{busoniu2010reinforcement}}
 A well-known case of function approximation in RL is that in which $\pi_{\theta}$ is a linear function of
 the weight vector $\theta$. Specifically, we are going to work with linear combinations of gaussian radial basis functions (RBFs). If $\phi(s)$ corresponds to a vector of basis functions which is weighted by $\theta$, then $\pi_{\theta}$ can be represented as:
@@ -196,12 +198,13 @@ the weight vector $\theta$. Specifically, we are going to work with linear combi
 In this case, $\phi(s)$ corresponds to normalized gaussians:
 
 \begin{equation}
-    \phi'_{i}(s) = \exp\left( -\frac{1}{2}[s - c_{i}]B^{-1}_{i}[s-c_{i}]\right) 
-    \hspace{1cm}
     \phi_{i}(s) = \frac{\phi'_{i}(s)}{\sum_{i'=1}^{N}{\phi'_{i'}(s)}}
+    \hspace{0.5cm};
+    \hspace{0.5cm}
+    \phi'_{i}(s) = \exp\left( -\frac{1}{2}[s - c_{i}]B^{-1}_{i}[s-c_{i}]\right)
 \end{equation}
 
-Where $N$ is the number of basis functions and the sub index $i$ refers to the i-th basis function.
+\noindent Where $N$ is the number of basis functions and the sub index \emph{i} refers to the \emph{i-th} basis function.
 
 \subsection{Artificial Neural Networks \cite{goodfellow2016deep, nielsen2015neural}}
 
@@ -263,7 +266,7 @@ The way to achieve this is to replace the dot product in Equation \ref{eq:h} by 
     s(x)_{i} = (x * w)_{i} = \sum_{l=0}^{L}w_{l} \cdot x_{i+l}
 \end{equation}
     
-The sub-index $i$ corresponds to the $i\mathrm{-}eth$ term of the input $x$. $w$ corresponds to the kernel, which has dimension $L$. It can be observed that the kernel is applied over a region of each index $i$, which means that this operation cares about the order of the data, and as a consequence, these networks are used with inputs that have spatial or time correlations, such as images or time series. CNNs are widely use for image processing problems, so is common to use convolutions over more than one axis at a time. If we have a two-dimensional image as an input it seems natural to use a two-dimensional kernel $K$ as well (to exploit spatial correlations):
+The sub-index \emph{i} corresponds to the \emph{i-eth} term of the input $x$, and $w$ corresponds to the kernel, which has dimension $L$. It can be observed that the kernel is applied over a region of each index \emph{i}, which means that this operation cares about the order of the data, and as a consequence, these networks are used with inputs that have spatial or time correlations, such as images or time series. CNNs are widely use for image processing problems, so is common to use convolutions over more than one axis at a time. If we have a two-dimensional image as an input it seems natural to use a two-dimensional kernel $K$ as well (to exploit spatial correlations):
 
 \begin{equation}
     s(x)_{i,j} = (x * K)_{i,j} = \sum_{l=0}^{L}\sum_{m=0}^{M}K_{l, m} \cdot x_{i+l, j+m}
@@ -286,7 +289,7 @@ So, in CNNs, Equation \ref{eq:h} has the following shape:
     \label{eq:h2}
 \end{equation}
 
-Each neuron will correspond to the output of a kernel applied over a region of the input; thus, the output of the full convolution operation will correspond to a set of neurons. As a consequence, the weights, which in this case conform the kernel, will be shared between neurons, which does not happens in the FNN case. Is important to note that is also common to apply the convolution operation over images with arbitrary depth. For instance, RGB images have depth=3 (red, green and blue channels), so in these cases filters with arbitrary depth may be used as well. Also, considering the assumption that each filter extracts one kind of feature out of a signal, usually, several filters are applied over an input, where every filter generates a different image (set of neurons) as an output. These means that the depth of the output of a convolutional layer will be equal to the number of filters applied.
+Each neuron will correspond to the output of a kernel applied over a region of the input; thus, the output of the full convolution operation will correspond to a set of neurons. As a consequence, the weights, which in this case conform the kernel, will be shared between neurons, which does not happens in the FNN case. It is important to note that it is also common to apply the convolution operation over images with arbitrary depth. For instance, RGB images have depth=3 (red, green and blue channels), so in these cases filters with arbitrary depth may be used as well. Also, considering the assumption that each filter extracts one kind of feature out of a signal, usually, several filters are applied over an input, where every filter generates a different image (set of neurons) as an output. These means that the depth of the output of a convolutional layer will be equal to the number of filters applied.
 
 To modify the output of a convolutional layer further, it is common to use a \textbf{pooling function}. This function summarizes the output of the convolution operations replacing every value of the outputs with a statistic of the nearby outputs. One example of a pooling function is the \emph{max pooling}, which takes the maximum value over a rectangular neighborhood, as it can be seen in Figure \ref{fig:maxpool}. 
 
@@ -298,7 +301,7 @@ To modify the output of a convolutional layer further, it is common to use a \te
 \end{figure}
 \footnotetext{Image taken from \url{https://computersciencewiki.org/index.php/Max-pooling_/_Pooling}}
 
-Pooling helps the model to be approximately invariant to translations in the input. An alternative to pooling, is to use a convolution with \textbf{stride} greater than one. The stride is the distance skipped between values of the input to where the kernel is applied, which in the default case is one (no skipping). It has been observed that replacing pooling by stride$>1$ has no loss in accuracy for several image recognition benchmarks \cite{springenberg2014striving}. Figure \ref{fig:cnn} shows a CNN used for classification.
+Pooling helps the model to be approximately invariant to translations in the input space. An alternative to pooling, is to use a convolution with \textbf{stride} greater than one. The stride is the distance skipped between values of the input to where the kernel is applied, which in the default case is one (no skipping). It has been observed that replacing pooling by stride$>1$ has no loss in accuracy for several image recognition benchmarks \cite{springenberg2014striving}. Figure \ref{fig:cnn} shows a CNN used for classification.
     
 \begin{figure}[H]
 \centering
@@ -312,7 +315,7 @@ Pooling helps the model to be approximately invariant to translations in the inp
     
 An autoencoder is a special type of ANN that aims to copy the input of the network to its output i.e. aims to be the identity function. Although solving this problem may seem to be useless, it has some interesting properties. In this work, we are interested in using autoencoders for dimensionality reduction and feature learning. 
 
-This neural network is divided in two parts, the \textbf{encoder $e(x)$} and the \textbf{decoder $d(\mathcal{L})$}. When used for dimensiolanity reduction and feature learning, the encoder tries to encode the input into a space of lower dimension (a bottleneck), called the \textbf{latent space $\mathcal{L}$}, which represents a compressed representation of the input $x$, $\mathcal{L}=e(x)$. The decoder takes the latent space and tries to reconstruct the input $\widetilde x = d(\mathcal{L})$, where $\widetilde x$ is the reconstruction of $x$, see Figure \ref{fig:ae}. The objective of using autoencoders in this context is to obtain a latent space that captures the most salient features of the input. 
+This neural network is divided in two parts, the \textbf{encoder $e(x)$} and the \textbf{decoder $d(\mathcal{L})$}. When used for dimensionality reduction and feature learning, the encoder tries to encode the input into a space of lower dimension (a bottleneck), called the \textbf{latent space $\mathcal{L}$}, which represents a compressed representation of the input $x$, $\mathcal{L}=e(x)$. The decoder takes the latent space and tries to reconstruct the input $\widetilde x = d(\mathcal{L})$, where $\widetilde x$ is the reconstruction of $x$, see Figure \ref{fig:ae}. The objective of using autoencoders in this context is to obtain a latent space that captures the most salient features of the input. 
     
 \begin{figure}[H]
     \centering
@@ -399,7 +402,7 @@ But, in the case of ANNs computing the gradient is not direct. Given that we hav
 
 \subsection{Deep RL Era}
 
-Reinforcement Learning can be divided in the \emph{pre Deep RL era} and the \emph{Deep RL era}, which is the current one. In the year 2012, the first work known for successfully solving sequential decision-making problems with high-dimensional state spaces using CNNs was presented \cite{Mnih2015}. This was a consequence of the new advances that where being made in the area of ANNs or \textbf{Deep Learning (DL)}. When ANNs have several layers, which was the case for the mentioned work, they are called \textbf{Deep Neural Networks (DNNs)}. The area that combines DL with RL is called \textbf{Deep RL}. Deep RL gives agents the possibility to build rich state representations of the environment without feature engineering on the side of the designer, which was always necessary in classical RL. This drew a lot of attention and made Deep RL increasingly popular over the past few years \cite{franccois2018introduction}.
+Reinforcement Learning can be divided in the \emph{pre Deep RL era} and the \emph{Deep RL era}, which is the current one. In the year 2013, the first work known for successfully solving sequential decision-making problems with high-dimensional state spaces using CNNs was presented \cite{atari}. This was a consequence of the new advances that where being made in the area of ANNs or \textbf{Deep Learning (DL)}. When ANNs have several layers, which was the case for the mentioned work, they are called \textbf{Deep Neural Networks (DNNs)}. The area that combines DL with RL is called \textbf{Deep RL}. Deep RL gives agents the possibility to build rich state representations of the environment without feature engineering on the side of the designer, which was always necessary in classical RL. This drew a lot of attention and made Deep RL increasingly popular over the past few years \cite{franccois2018introduction}.
 
 Before the Deep RL era, ANNs where not a predominant function approximator for solving sequential decision-making problems. In the pre Deep RL era, one of the most widely used function approximators were LCBFs, as stated in a survey of the year 2013 \cite{kober2013reinforcement}. 
 
@@ -432,11 +435,11 @@ LfD is a learning paradigm in which a demonstrator provides labelled data of a d
 
 \subsubsection{Imitation Learning}
 
-When the platform of the agent is different to the one in which the demonstrations are made, we talk about \textbf{Imitation Learning}. In this case, the learning agent must identify a mapping between the demonstrator and itself. This is a setting that arises naturally in real-world problems. For instance, let's suppose that we want to teach a robot how to walk. Using a camera, we could record a human making demonstrations (just by walking), but then, the robot should figure out how to map that observations into labeled data over its own state and action spaces. The problem of identifying this mapping is one of the main difficulties of LfD approaches and is known as \textbf{The Correspondence Problem}.
+When the platform of the agent is different to the one in which the demonstrations are made, we talk about \textbf{Imitation Learning}. In this case, the learning agent must identify a mapping between the demonstrator and itself. This is a setting that arises naturally in real-world problems. For instance, let us suppose that we want to teach a robot how to walk. Using a camera, we could record a human making demonstrations (just by walking), but then, the robot should figure out how to map that observations into labeled data over its own state and action spaces. The problem of identifying this mapping is one of the main difficulties of LfD approaches and is known as \textbf{The Correspondence Problem}.
 
 \subsubsection{Distributional Drift}
 
-The \textbf{Distributional Drift} is an issue that every LfD approach could have if is not taken into account. This problem arises because the probability distribution of the trajectory followed by the policy $p_{\pi_{\theta}}$ "drifts" from the one of the demonstrator $p_{data}$. This happens because even though the agent imitates the demonstrator, is very difficult for the agent to make a perfect imitation. Thus, small errors over several states accumulate into a larger error that eventually makes the agent to fail. This phenomenon can be observed in Figure \ref{fig:drift}, where the drift is shown over one dimension of the state.
+The \textbf{Distributional Drift} is an issue that every LfD approach could have if is not taken into account. This problem arises because the probability distribution of the trajectory followed by the policy $p_{\pi_{\theta}}$ "drifts" from the one of the demonstrator $p_{data}$. This happens because even though the agent imitates the demonstrator, it is very difficult for the agent to make a perfect imitation. Thus, small errors over several states accumulate into a larger error that eventually makes the agent to fail. This phenomenon can be observed in Figure \ref{fig:drift}, where the drift is shown over one dimension of the state.
 
 \begin{figure}[H]
     \centering
@@ -491,7 +494,7 @@ Methodologies such as \textbf{Advice Operators} \cite{Argall2009, Argall2008} ha
 In COACH, if the agent executes an action $a$ that the human considers to be erroneous, then s/he would indicate the direction in which the action should be corrected (thus, COACH was proposed for problems with continuous actions). Each dimension of the action would have a corresponding correction signal $h$ with values $0$, $-1$ or $1$ which produces an error signal with arbitrary magnitude $e$ that is used to shape directly the policy. Thus, the error would be: 
 
 \begin{equation}\label{eq:error}
-    error=h \cdot e.
+    error=h \cdot e
 \end{equation}
 
 $h=0$ indicates that no correction has been advised. $h=\pm 1$ indicates the direction of the advised correction.

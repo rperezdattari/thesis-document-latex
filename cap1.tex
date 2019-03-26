@@ -68,8 +68,8 @@ Where $\gamma$ allows to control the horizon in which the agent maximizes the re
 Under this framework, there are different approaches for learning policies:
 
 \begin{itemize}
-    \item Value Based (Critic)
-    \item Policy Based (Actor)
+    \item Value Based
+    \item Policy Search
     \item Actor-Critic
 \end{itemize}
 
@@ -97,7 +97,7 @@ The main idea is to find a policy $\pi^{*}$, the \emph{optimal policy}, such tha
     Q^{\pi^{*}}(s,a) \geq Q^{\pi}(s,a) \hspace{0.5cm} \forall s,a,\pi
 \end{equation}
 
-If these conditions are met, then $\theta^{*}$ is obtained. On the other hand, \textbf{Policy Based} approaches update $\theta$ by direct policy differentiation. In this case, the challenge is to estimate the gradient of $J(\theta)$ to update $\theta$ iteratively, using gradient ascent:
+If these conditions are met, then $\theta^{*}$ is obtained. On the other hand, \textbf{Policy Search} approaches update $\theta$ by direct policy differentiation. In this case, the challenge is to estimate the gradient of $J(\theta)$ to update $\theta$ iteratively, using gradient ascent:
 
 \begin{equation}
     \Delta \theta = \alpha \nabla_{\theta}J(\theta)
@@ -109,7 +109,7 @@ If these conditions are met, then $\theta^{*}$ is obtained. On the other hand, \
 
 Where $\alpha$ is the learning rate.
 
-Finally, \textbf{Actor-Critic} approaches combine Value Based and Policy Based methods. Figure \ref{fig:rl_summ} summarizes these RL approaches:
+Finally, \textbf{Actor-Critic} approaches combine Value Based and Policy Search methods. A policy (actor) and a value function (critic) are explicitly learned. In this case, the actor decides the action that the agent should take while the critic observes its performance and decides when the policy needs to be updated and how. Figure \ref{fig:rl_summ} summarizes these RL approaches:
 
 \begin{figure}[h]
     \centering

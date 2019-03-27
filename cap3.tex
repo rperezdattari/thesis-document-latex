@@ -1,7 +1,7 @@
 \chapter{Enhancing D-COACH for High-Dimensional State Problems}
 \section{Overview}
 
-In this chapter we introduce  D-COACH v2, a variation of D-COACH v1 for problems with high-dimensional state spaces. This is motivated by the limitation that D-COACH v1 presents when learning state representations. Recording a database with observations of the environment and training an autoencoder in an offline step can be time consuming and not robust to changes in the environment. Thus, it would be desirable to have a version of D-COACH that eliminates this offline step, learning everything in a single interaction step, as the original COACH does. Hence, an algorithm capable of training all the parameters of the network interactively from scratch. 
+In this chapter we introduce  D-COACH ON, a variation of D-COACH OFF for problems with high-dimensional state spaces. This is motivated by the limitation that D-COACH OFF presents when learning state representations. Recording a database with observations of the environment and training an autoencoder in an offline step can be time consuming and not robust to changes in the environment. Thus, it would be desirable to have a version of D-COACH that eliminates this offline step, learning everything in a single interaction step, as the original COACH does. Hence, an algorithm capable of training all the parameters of the network interactively from scratch. 
 
 \section{Online State Representation Learning}
 In order to obtain an algorithm capable of learning interactively from scratch we need to make the networks to converge faster. In the former chapter, an autoencoder was used to learn a low-dimensional representation of high-dimensional states in an offline learning process. In this chapter, we propose to use the autoencoder learning criteria during the interactive learning process, such that both networks (the policy and the autoencoder) share the convolutional layers of the encoder, as shown in Fig.~\ref{fig:msim}.
@@ -9,7 +9,7 @@ In order to obtain an algorithm capable of learning interactively from scratch w
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.6\linewidth]{imagenes/cap2/m2.pdf}
-    \caption{D-COACH online state learning. The state representation is shared between the autoencoder and the policy training.}
+    \caption{D-COACH ON: Online state representation learning. The state representation is shared between the autoencoder and the policy training.}
     \label{fig:msim}
 \end{figure}
 
@@ -57,7 +57,7 @@ The condition for training the autoncoder is used for avoiding conflicts in the 
 \end{algorithm}
 
 \begin{algorithm}[h]
-\caption{D-COACH ON subroutine: \emph{batch\_update}}\label{algorithm:batch_update}
+\caption{D-COACH ON Subroutine: \emph{batch\_update}}\label{algorithm:batch_update}
 \begin{algorithmic}[1]
 \algdef{SE}[SUBALG]{Indent}{EndIndent}{}{\algorithmicend\ }%
 \algtext*{Indent}
@@ -79,9 +79,7 @@ The condition for training the autoncoder is used for avoiding conflicts in the 
 
 \section{Experiments and Results}
 
-Three different types of experiments were carried out for validating this version of D-COACH: i) experiments with simulated teachers for evaluating the learning method under controlled conditions without influence of human factors, ii) validations with real human teachers, and iii) extra validations on real physical systems.
-
-%In these experiments we denote the enhanced D-COACH simply with `D-COACH', while from now on we call the previous version `basic D-COACH'. 
+Three different types of experiments were carried out for validating D-COACH ON: i) experiments with simulated teachers for evaluating the learning method under controlled conditions without influence of human factors, ii) validations with real human teachers, and iii) extra validations on real physical systems.
 
 In the experiments, the learning processes are analyzed in three different problems:
 
@@ -122,38 +120,38 @@ The neural network hyperparameters proposed in Chapter 3 were used in this work.
 
 
 \subsection{Study with Simulated teacher}
-In order to evaluate the method along with subtle variants under more controlled conditions, a high performance policy standing-in as a teacher, which was actually trained with $\text{D-COACH}$ v2 and a real human teacher, was used (in the same way as in Chapter 2).
+In order to evaluate the method along with subtle variants under more controlled conditions, a high performance policy standing-in as a teacher, which was actually trained with $\text{D-COACH ON}$ and a real human teacher, was used (in the same way as in Chapter 2).
 
-To perform an ablation study that evaluates the contribution of the new components of D-COACH v2, the complete method (Algorithm \ref{algorithm:EnDeepCOACH}) is compared to a second variant that does not include the AE contribution, and learns the whole policy network only with the cost of predicting the action. This variant  works like the D-COACH v1, but skipping the first two steps of recording demonstrations and pre-training the AE, i.e., learning from scratch, which means that the convolutional layers are also learned with the teacher's corrections.
+To perform an ablation study that evaluates the contribution of the new components of D-COACH ON, the complete method (Algorithm \ref{algorithm:EnDeepCOACH}) is compared to a second variant that does not include the AE contribution, and learns the whole policy network only with the cost of predicting the action. This variant works like D-COACH OFF, but skipping the first two steps of recording demonstrations and pre-training the AE, i.e., learning from scratch, which means that the convolutional layers are also learned with the teacher's corrections.
 
-The third evaluated variant includes the AE cost function, but never freezes the convolutional layers, so it always modifies the parameters of the complete policy network using the gradient of both cost functions (i.e. setting $\epsilon=0$ for the condition in line 6). The learning curves of the three cases of D-COACH are compared against a DDPG-based RL agent \cite{Lillicrap2015} implemented by OpenAI \cite{baselines}. The curves are the average of 30 runs for each case, showing the evolution of the return through the learning time. The time considered is measured when rendering the environments, i.e., no environment acceleration, since D-COACH is intended for learning with real systems wherein speeding up the environment is not possible.
+The third evaluated variant includes the AE cost function, but never freezes the convolutional layers, so it always modifies the parameters of the complete policy network using the gradient of both cost functions (i.e. setting $\epsilon=0$ for the condition in line 6). The learning curves of the three cases of D-COACH ON are compared against a DDPG-based RL agent \cite{Lillicrap2015} implemented by OpenAI \cite{baselines}. The curves are the average of 30 runs for each case, showing the evolution of the return through the learning time. The time considered is measured when rendering the environments, i.e., no environment acceleration, since D-COACH is intended for learning with real systems wherein speeding up the environment is not possible.
 
-As shown in the Fig.~\ref{fig:simulatedteachers} for the experiments with the Car Racing, the complete D-COACH v2 has a considerable improvement when simultaneously using the gradients of the auto-encoding cost function for learning the state representation, along with the gradient of the policy  (blue and orange curves), in contrast to using only the gradient of the policy (green curve), which is slower, and reaches less than $50\%$ of outcome with respect to the complete algorithm after 20 minutes of training. Additionally, there is no noticeable improvement in the performance for the RL agent within this time frame.
+As shown in the Fig.~\ref{fig:simulatedteachers} for the experiments with the Car Racing, the complete D-COACH ON has a considerable improvement when simultaneously using the gradients of the auto-encoding cost function for learning the state representation, along with the gradient of the policy  (blue and orange curves), in contrast to using only the gradient of the policy (green curve), which is slower, and reaches less than $50\%$ of outcome with respect to the complete algorithm after 20 minutes of training. Additionally, there is no noticeable improvement in the performance for the RL agent within this time frame.
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.9\linewidth]{imagenes/cap3/car_racing_sim_ICRA.pdf}
-    \caption{Car Racing results for simulated teacher with D-COACH and DDPG. D-COACH A: policy and AE costs, freezing conv. layers; D-COACH B: policy and AE costs; D-COACH C: only policy cost. Buffer: $K = 1000$; $b = 10$; $N = 8$. $P_{h}$: $\alpha = 0.6$; $\tau = 0.000015$.}
+    \caption{Car Racing results for simulated teacher with D-COACH ON and DDPG. D-COACH ON A: policy and AE costs, freezing conv. layers; D-COACH ON B: policy and AE costs; D-COACH ON C: only policy cost. $K = 1000$; $k=20$; $b = 10$; $N = 8$. $P_{h}$: $\alpha = 0.6$; $\tau = 0.000015$; $m=50$.}
     \label{fig:simulatedteachers}
 \end{figure}
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.9\linewidth]{imagenes/cap3/duckie_sim_ICRA.pdf}
-    \caption{Duckie Racing results for simulated teacher with D-COACH and DDPG. D-COACH A: policy and AE costs, freezing conv. layers; D-COACH B: policy and AE costs; D-COACH C: only policy cost. Buffer: $K = 1000$; $b = 10$; $N = 8$. $P_{h}$: $\alpha = 0.6$; $\tau = 0.000015$.}
+    \caption{Duckie Racing results for simulated teacher with D-COACH ON and DDPG. D-COACH ON A: policy and AE costs, freezing conv. layers; D-COACH ON B: policy and AE costs; D-COACH ON C: only policy cost. $K = 1000$; $k=20$; $b = 10$; $N = 8$. $P_{h}$: $\alpha = 0.6$; $\tau = 0.000015$; $m=50$.}
     \label{fig:racing_car_results}
 \end{figure}
 
-The results of the experiments with the Duckie Racing problem (Fig.~\ref{fig:simulatedteachers}) show similar trends as observed with the Car Racing problem, wherein the contribution of the AE cost function makes a considerable difference with respect to only using the policy cost. However, in this problem the variant of D-COACH using only the policy cost manages to reach the same level of performance of the other variants after 17 minutes of training. This variant can learn good policies for this problem, but for reaching $95\%$ of the final performance, it is around 5 times slower than the variants using simultaneous auto-encoding. For this problem again the DDPG learning process does not obtain any improvement during the first 20 minutes of the learning process. 
+The results of the experiments with the Duckie Racing problem (Fig.~\ref{fig:simulatedteachers}) show similar trends as observed with the Car Racing problem, wherein the contribution of the AE cost function makes a considerable difference with respect to only using the policy cost. However, in this problem the variant of D-COACH ON using only the policy cost manages to reach the same level of performance of the other variants after 17 minutes of training. This variant can learn good policies for this problem, but for reaching $95\%$ of the final performance, it is around 5 times slower than the variants using simultaneous auto-encoding. For this problem again the DDPG learning process does not obtain any improvement during the first 20 minutes of the learning process. 
 
 Finally, it is possible to see the contribution of the condition stated for freezing the convolutional layers, when the error of the decoder is small. This rule provides more stability to the learning process. In the Car Racing experiments, the variant that always updates the AE undergoes an ``unlearning'' stage after 10 minutes of training, whereas in the Duckie Racing experiments is not possible to notice any considerable difference between both approaches. When the error of the decoder is small it means that the latent vector is a good representation of the state, but still the gradient and the error of the policy can be large; therefore, in some cases there may be conflicts that harm the AE performance and consequently the performance of the policy. Freezing these layers is a detail that solves this conflict.
 
 \subsection{Experiments with real human teachers}
 
-The experiments with simulated teachers are useful for analyzing the evolution of the learning process. However, D\nobreakdash-COACH is an interactive learning method; therefore, it is necessary to carry out experiments with real human teachers for complementing its evaluation. Specifically, we perform experiments for measuring the human effort in terms of the time dedicated to teach the agent. The experiments compare D-COACH v1 and D-COACH v2, evaluating the necessary effort (time) to achieve some levels of performance. Ten participants between 20 and 27 years old were asked to act as teachers for both the Car Racing and the Duckie Racing problem. In each problem, the participants corrected the agent's actions with the arrow symbols of a keyboard for a limited session of 20 minutes. 
+The experiments with simulated teachers are useful for analyzing the evolution of the learning process. However, D-COACH is an interactive learning method; therefore, it is necessary to carry out experiments with real human teachers for complementing its evaluation. Specifically, we perform experiments for measuring the human effort in terms of the time dedicated to teach the agent. The experiments compare D-COACH OFF and D-COACH ON, evaluating the necessary effort (time) to achieve some levels of performance. Ten participants between 20 and 27 years old were asked to act as teachers for both the Car Racing and the Duckie Racing problem. In each problem, the participants corrected the agent's actions with the arrow symbols of a keyboard for a limited session of 20 minutes. 
 The average results are presented and discussed.
 
-In Fig.~\ref{fig:stacked_bar} the time dedicated for training the agents is depicted. In the cases of learning with D-COACH v1, the blue bar indicates the time dedicated by the teachers in its first step of recording demonstrations, which for both problems is actually longer than the time used for reaching the highest level of performance with D-COACH v2. In total, the new method saves around $45\%$ of the training time for the Car Racing problem, and above $80\%$ for the Duckie Racing problem. These results do not include the time dedicated to train the AE in the D-COACH v1, which would depend on the available hardware. The bar diagram is complemented with the learning curves in Fig.~\ref{fig:humanteachers1}~\ref{fig:humanteachers2} (for D-COACH v1 the curve is only after training the AE), wherein it is shown that D-COACH v2 has a similar progress with a very slight advantage over its basic version, even without considering the additional time required for the AE training step.
+In Fig.~\ref{fig:stacked_bar} the time dedicated for training the agents is depicted. In the cases of learning with D-COACH OFF, the blue bar indicates the time dedicated by the teachers in its first step of recording demonstrations, which for both problems is actually longer than the time used for reaching the highest level of performance with D-COACH ON. In total, the new method saves around $45\%$ of the training time for the Car Racing problem, and above $80\%$ for the Duckie Racing problem. These results do not include the time dedicated to train the AE in the D-COACH OFF, which would depend on the available hardware. The bar diagram is complemented with the learning curves in Fig.~\ref{fig:humanteachers1}~\ref{fig:humanteachers2} (for D-COACH OFF the curve is only after training the AE), wherein it is shown that D-COACH ON has a similar progress with a very slight advantage over its basic version, even without considering the additional time required for the AE training step.
 
 \begin{figure}[H]
 \centering
@@ -166,20 +164,20 @@ In Fig.~\ref{fig:stacked_bar} the time dedicated for training the agents is depi
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.9\linewidth]{imagenes/cap3/car_racing_human_teacher_ICRA.pdf}
-    \caption{Results of learning with human teachers. Buffer: $K = 1000$; $b = 10$; $N = 8$.}
+    \caption{Results of learning with human teachers. $K = 1000$; $k=20$; $b = 10$; $N = 8$; $m=50$.}
     \label{fig:humanteachers1}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.9\linewidth]{imagenes/cap3/duckie_human_teacher_ICRA.pdf}
-    \caption{Results of learning with human teachers. Buffer: $K = 1000$; $b = 10$; $N = 8$.}
+    \caption{Results of learning with human teachers. $K = 1000$; $k=20$; $b = 10$; $N = 8$; $m=50$.}
     \label{fig:humanteachers2}
 \end{figure}
 
 \subsection{Additional validation with real systems}
 
-Additional experiments with human teachers interacting with real robots through D-COACH v2 were carried out. These tests are for validating the results obtained with the previous two types of experiments, and no comparisons are presented.
+Additional experiments with human teachers interacting with real robots through D-COACH ON were carried out. These tests are for validating the results obtained with the previous two types of experiments, and no comparisons are presented.
 
 A real Duckiebot was used for validating the results obtained with the simulations. An experienced teacher advised the policy of Duckiebot from scratch and obtained a good policy in six minutes (experiment available in \url{https://youtu.be/i4f1D4CH26E}). Similarly, in the pusher/reacher problems well performing policies were obtained within twenty minutes. 
 
@@ -196,7 +194,7 @@ Fig.~\ref{fig:reacher_exp} shows an extra validation that was done for the reach
 
 In this chapter we introduced an improved version of an interactive method for training policies represented with deep neural networks, particularly for problems wherein the observed state is defined in a high-dimensional space like a raw image.
 
-The proposed D-COACH v2 offers a simpler learning scheme of only one step in which state representation and the policy itself are learned jointly using the two optimization criteria (the AE cost and the regression error of the policy). This method eliminates the necessity of recording demonstrations for the pre-training of the AE, which is a time consuming effort for the user, and sometimes is not possible due to complexity of the problem and lack of complex skills of the user in the task domain. In the approached problems, the effort of the users was reduced between $45\%$ and $80\%$. D-COACH v2 can adapt and extract features to represent reached unknown states during the learning process, which would be problematic for its basic version. Additionally, computational effort is reduced with the possibility of skipping the offline training of the AE, which is usually expensive. 
+The proposed D-COACH ON offers a simpler learning scheme of only one step in which state representation and the policy itself are learned jointly using the two optimization criteria (the AE cost and the regression error of the policy). This method eliminates the necessity of recording demonstrations for the pre-training of the AE, which is a time consuming effort for the user, and sometimes is not possible due to complexity of the problem and lack of complex skills of the user in the task domain. In the approached problems, the effort of the users was reduced between $45\%$ and $80\%$. D-COACH ON can adapt and extract features to represent reached unknown states during the learning process, which would be problematic for its basic version. Additionally, computational effort is reduced with the possibility of skipping the offline training of the AE, which is usually expensive. 
 
 This simultaneous method is very data efficient for training the state representation. The AE is trained with the data gathered when human teachers advise corrections, which ensures a very representative database. Those samples correspond to the most important regions of the state space wherein the policy needs to discriminate different actions to execute.
 

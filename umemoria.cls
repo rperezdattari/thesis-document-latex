@@ -186,7 +186,9 @@ SUPERVISOR: \foreach \x in \@guia { \MakeUppercase\x }
 			\foreach \x [count=\xi] in \@guia {
 				PROFESOR GUÍA\ifnum\xi>1 \ \xi \fi:\\ \MakeUppercase\x\\
 			}
-
+		\vspace{0.1cm}
+        CO-GUÍA: \\
+        CARLOS CELEMIN \\
 		\vspace{1cm}
 			MIEMBROS DE LA COMISIÓN:\\
 			\foreach \x in \@comision { \MakeUppercase\x\\ }

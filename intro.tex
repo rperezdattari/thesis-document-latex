@@ -24,7 +24,7 @@ D-COACH OFF and D-COACH ON assume that the agents interact in fully-observable e
 
 D-COACH MON assumes that the agents interact in partially-observable environments, which is true in many real-world scenarios, and tries to cover a subset of these problems. Memory is added to the agents by using recurrent layers in the network architectures in order to obtain well performing policies in problems where past observations contain crucial information about the current state of the agent. As in D-COACH ON, everything is learned online, without the need of a demonstration session. 
 
-Throughout this thesis, we give special emphasis to studying the use of policies parameterized with Convolutional Neural Networks (CNNs) for solving problems with high-dimensional state spaces, such as raw pixels from an image. CNNs give agents the possibility to build rich state representations of the environment without feature engineering on the side of the designer (which was always necessary in classical RL). These properties can be very useful in robotics, since it is common to find applications with high-dimensional observations, such as RGB images. Giving robots the ability to learn from such high-dimensional data will allow to scale up the complexity of what robots are able to do. All of the proposed variations of D-COACH have as common denominator the study of CNNs,  seeking to exploit their properties in the best possible way. 
+Throughout this thesis, we give special emphasis to studying the use of policies parameterized with Convolutional Neural Networks (CNNs) for solving problems with high-dimensional state spaces, such as raw pixels from an image. CNNs give agents the possibility to build rich state representations of the environment without feature engineering on the side of the designer (which was always necessary in classical RL). These properties can be very useful in robotics, since it is common to find applications with high-dimensional observations, such as RGB images. Giving robots the ability to learn from such high-dimensional data will allow to scale up the complexity of what robots are able to do. All of the proposed variations of D-COACH have as common denominator the study of CNNs, seeking to exploit their properties in the best possible way. 
 
 \section{Objectives}
 \subsection{General Objective}
@@ -35,7 +35,7 @@ The general objective of this thesis is to develop and validate an algorithm tha
 \begin{itemize}
     \item Study the state-of-the-art of robot learning algorithms for solving sequential decision-making problems.
     \item Propose and implement an algorithm that, by using deep neural networks policies, allows robots to learn to solve tasks in continuous-action domains from low-dimensional and high-dimensional states using online human corrective feedback. 
-    \item Validate the proposed algorithm with tasks using simulated and real platforms.
+    \item Validate the proposed algorithm using simulated and real robotic platforms.
     \item Propose and validate a variation of the algorithm to solve problems with partially observed environments.
 \end{itemize}
 

@@ -11,6 +11,7 @@ But this is not always true. In robotics problems, robots observe its environmen
 There are different reason of why a problem could be partially observed. One of them is when a state is described by time-dependent phenomena, and the observations only get partial information about them. For instance, an agent could need to estimate the velocity of a flying drone by getting instant RGB snapshots of its movements. Unless observations from different time steps are combined, the agent is not going to be able to make this estimation. Other examples of time-dependent phenomena that do not have to do with the dynamics of the environment are temporary occlusions or corrupted communication systems between the sensors and the agent. From now on, we are going to use the acronym POMDP to refer to the just mentioned set of POMDPs.
 
 All of these scenarios are not covered by the variations of D-COACH proposed so far. In this chapter, we aim to add memory to the policies trained with D-COACH, in order to have a system capable of solving sequential decision-making problems with partially observed time-dependent states. The idea is to validate this approach through simulations, establishing a baseline for further research in memory-based deep interactive learning.
+\newpage
 
 \section{Method}
 There are two well-known approaches for adding memory to agents in sequential decision-making problems when using DNNs as function approximators:
@@ -29,9 +30,9 @@ Given the more practical usage of recurrent models and their capability of remem
 \subsection{Learning to Remember}
 Even though RNNs are networks with the capability of storing/embedding information from past observations, they have to learn to do this. Commonly, in DRL approaches this is implicitly learned when backpropagating the error that aims to maximize the expected return. This gives the intuition that when using D-COACH, backpropagating the correction error through the recurrent layers should be enough for learning well-performing policies. Nevertheless, preliminary tests showed that shaping recurrent models with corrective feedback made the agents to rapidly overfit to the first set of corrections, loosing the capability of learning interesting behaviors and, as a consequence, solving tasks. 
 
-To overcome this shortcoming, we propose to have DNNs separated in two parts: (1) transition function model and (2) policy. The model is in charge of learning the dynamics of the environment in a supervised manner using samples collected by the agent as the policy part is shaped using corrective feedback. 
+To overcome this shortcoming, we propose to have DNNs separated in two parts: (1) transition function model and (2) policy. The transition function model is in charge of learning the dynamics of the environment in a supervised manner using samples collected by the agent as the policy part is shaped using corrective feedback. 
 
-In POMDPs, in order for the model to be capable of predicting the next state of the environment as a function of the current state and the taken action $M(s_{t},a_{t}) = s_{t+1}$ (as in Equation \ref{eq:model}), it must have recurrent layers included in its architecture. The objective of learning a model is to embed in the hidden state of its LSTM layers past observations, which is something that should be learned if we are trying to predict the next state. 
+In POMDPs, in order for the transition function model to be capable of predicting the next state of the environment as a function of the current state and the taken action $M(s_{t},a_{t}) = s_{t+1}$ (as in Equation \ref{eq:model}), it must have recurrent layers included in its architecture. The objective of learning a model is to embed in the hidden state of its LSTM layers past observations, which is something that should be learned if we are trying to predict the next state. 
 
 The second part of the DNN, the policy, takes as an input the concatenation of the hidden state of the model with the current observation and treats this as the state. D-COACH is used to update the weights of this part as it is done with fully-observable low-dimensional state problems.
 
@@ -44,12 +45,13 @@ We call this approach Memoryful ONline state representation learning D-COACH (D-
     \label{fig:mb_dcoach}
 \end{figure}
 
-As Figure \ref{fig:mb_dcoach} shows, for training the model we assume that $(o_{t}, h_{t-1}) = s_{t}$ so that $M(o_{t}, h_{t-1},a_{t}) =M(s_{t},a_{t}) = s_{t+1}$ and $\pi(o_{t}, h_{t-1})=\pi(s_{t})=a_{t}$. Where $h_{t}$ is the hidden state of the LSTM layers computed at time step $t$.
+As Figure \ref{fig:mb_dcoach} shows, for training the transition function model we assume that $(o_{t}, h_{t-1}) = s_{t}$ so that $M(o_{t}, h_{t-1},a_{t}) =M(s_{t},a_{t}) = s_{t+1}$ and $\pi(o_{t}, h_{t-1})=\pi(s_{t})=a_{t}$. Where $h_{t}$ is the hidden state of the LSTM layers computed at time step $t$.
 
 \subsection{Low-dimensional State with Memory}
+\label{sec:ld_memory}
 As it has been done previously in this work, we first study the low-dimensional state case. The objective is to learn the dynamics of the environment online i.e. as the policy is shaped interactively. 
 
-If we look back to the approach taken in Chapter 2, the idea was similar. In that case the objective was to learn a low-dimensional embedding of a high-dimensional input online. The strategy was to share the encoder layers of an autoencoder between the policy and the autoencoder, and to update them using both the cost of the policy and the one of the autoencoder. In this case, the hidden state of the LSTM could be interpreted as an embedding of past observations. So, this recurrent layers could be shared between the policy and the model, updating them using both costs. A simplified version of this approach is shown in Figure \ref{fig:ld_model_rip}.
+If we look back to the approach taken in Chapter 3, the idea was similar. In that case the objective was to learn a low-dimensional embedding of a high-dimensional input online. The strategy was to share the encoder layers of an autoencoder between the policy and the autoencoder, and to update them using both the cost of the policy and the one of the autoencoder. In this case, the hidden state of the LSTM could be interpreted as an embedding of past observations. So, this recurrent layers could be shared between the policy and the model, updating them using both costs. A simplified version of this approach is shown in Figure \ref{fig:ld_model_rip}.
 
 \begin{figure}[h]
     \centering
@@ -60,7 +62,7 @@ If we look back to the approach taken in Chapter 2, the idea was similar. In tha
 
 The shortcoming presented in the approach shown in Figure \ref{fig:ld_model_rip} is that in this case the same problem that we found in the preliminary tests appears. The error of the policy does not work well when updating the weights of recurrent layers using the D-COACH strategy, even when using the auxiliary cost of the model. 
 
-Alternatively, the approach was finally used to update the model and the policy separately. If we go back to Figure \ref{fig:mb_dcoach}, this would mean that the \textbf{Model} box is updated with transitions collected by the agent, and, separately, the \textbf{Policy} box is updated with corrective feedback. The proposed model architecture consists of LSTM and FNN layers, as shown in Figure \ref{fig:ld_model_win}.
+Alternatively, the approach that was finally taken was to update the model and the policy separately. If we go back to Figure \ref{fig:mb_dcoach}, this would mean that the \textbf{Model} box is updated with transitions collected by the agent, and, separately, the \textbf{Policy} box is updated with corrective feedback. The proposed transition model architecture (\textbf{Model} box in Figure \ref{fig:mb_dcoach}) consists on LSTM and FNN layers, as shown in Figure \ref{fig:ld_model_win}.
 
 \begin{figure}[h]
     \centering
@@ -69,12 +71,12 @@ Alternatively, the approach was finally used to update the model and the policy 
     \label{fig:ld_model_win}
 \end{figure}
 
-The policy architecture is simply a composition of FNN layers, as it is done in the other variations of D-COACH.
+The policy architecture (\textbf{Policy} box in Figure \ref{fig:mb_dcoach}) is simply a composition of FNN layers, as it is done in the other variations of D-COACH.
 
 \subsection{High-dimensional State with Memory}
-In the high-dimensional case, agents need to learn two embeddings: (1) spatial and (2) temporal. By spatial we mean a low-dimensional representation of high-dimensional data, which is what has been covered in the past chapters using autoencoders. By temporal we mean encapsulating previous observations in a memory, which is what has been done in the previous section using LSTMs. 
+In the high-dimensional case, agents need to learn two embeddings: (1) spatial and (2) temporal. Spatial embeddings are understood as a low-dimensional representation of high-dimensional data, which is what it has been covered in the former chapters using autoencoders. In contrast, temporal embeddings refer to encapsulating previous observations in a memory, which is what it has been done in Section \ref{sec:ld_memory} using LSTMs. 
 
-In preliminary tests, we found that the most effective way of doing this under the setting of D-COACH is to treat the autoencoder and the recurrent layers as one architecture, which represents the model. A model with the capability of learning from high-dimensional states, as it can be seen in Figure \ref{fig:rnn_hd}. 
+In preliminary tests, we found that the most effective way of doing this under the setting of D-COACH is to treat the autoencoder and the recurrent layers as one architecture to represents the transition function model. A model with the capability of learning from high-dimensional states, as it can be seen in Figure \ref{fig:rnn_hd}. 
 
 \begin{figure}[h]
     \centering
@@ -83,19 +85,19 @@ In preliminary tests, we found that the most effective way of doing this under t
     \label{fig:rnn_hd}
 \end{figure}
 
-Instead of using a cost for the model and one for the autoencoder, we use the autoencoding cost but for reconstructing $s_{t+1}$ ($o_{t+1}$ in this case, given the partial observability). So, Equation \ref{eq:ae} instead of being $L(x_{t},\widetilde x_{t})$ it would be  $L(x_{t},\widetilde x_{t+1})$. By doing this, the hidden state of the LSTM embeds both the high-dimensional input and past observations.
-\newpage
+Instead of using separate costs for the model and the autoencoder, the autoencoding cost for reconstructing $s_{t+1}$ is used ($o_{t+1}$ in this case, given the partial observability). So, Equation \ref{eq:ae} instead of being $L(x_{t},\widetilde x_{t})$ it would be  $L(x_{t},\widetilde x_{t+1})$. By doing this, the hidden state of the LSTM embeds both the high-dimensional input and past observations, given that the autoencoder tries to reconstruct and predict $s_{t+1}$.
 
 \subsection{The Algorithm}
 
-In Algorithm \ref{algorithm:DeepCOACH-M}, the pseudocode of D-COACH MON is presented. The hidden state of the LSTM is denoted as  $h^{\mathrm{LSTM}}$ and the human corrective feedback as  $h$.
+In Algorithm \ref{algorithm:DeepCOACH-M}, the pseudocode of D-COACH MON is presented. The hidden state of the LSTM is denoted as  $h^{\mathrm{LSTM}}$ and the human corrective feedback as $h$.
+
+ In every time step, the agent executes an action based on its last observation and in the current hidden state of the LSTM (line 5). This hidden state is updated using its previous value and the most recent observation and action (line 7). In this occasion, the buffer in charge of storing the samples of the transition function model ($\mathcal{D}$) is incorporated. In both buffers, $\mathcal{B}$ and $\mathcal{D}$, sequences with length $\tau$ are stored (lines 8 and 18), which is necessary for training the LSTM. This is done following the \emph{bootstrapped random updates} \cite{hausknecht2015deep} strategy. As in the former versions of D-COACH, $\mathcal{B}$ is used for updating the policy (lines 16 and 22) by replaying past corrections. In contrast, $\mathcal{D}$ replays past transitions of the environment in order to update the transition function model (lines 17 and 24). The transition function model is updated every time feedback is given (lines 15 and 17), in the same way as it is done with the policy in all of the variations of D-COACH, including this one (lines 14 and 16). 
 
 \begin{algorithm}[h]
 \caption{D-COACH MON: Memoryful Online State Representation Learning}\label{algorithm:DeepCOACH-M}
 \begin{algorithmic}[1]
-\State \textbf{Require:} error magnitude $e$, policy buffer update interval $b$, policy buffer sampling size $N$, policy buffer min. size $k$, policy buffer max. size $K$, model buffer update interval $d$, model buffer sampling size $M$, model buffer min. size $l$, model buffer max. size $L$, training sequence length $\tau$.
-\State \textbf{Init:} $\mathcal{B} = []$  \emph{\# initialize policy memory buffer}
-\State \textbf{Init:} $\mathcal{D} = []$  \emph{\# initialize model memory buffer}
+\State \textbf{Require:} error magnitude $e$, policy buffer update interval $b$, policy buffer sampling size $N$, policy buffer min. size $k$, policy buffer max. size $K$, model buffer update interval $d$, transition function model buffer sampling size $M$, transition function model buffer min. size $l$, transition function model buffer max. size $L$, training sequence length $\tau$.
+\State \textbf{Init:} $\mathcal{B} = []$, $\mathcal{D} = []$
 \For{t = 1,2,...}{}
 \State \textbf{observe} observation $o_{t}$
 \State \textbf{execute} action $a_{t}=\pi(o_{t}, h^{\mathrm{LSTM}}_{t-1})$
@@ -109,8 +111,9 @@ In Algorithm \ref{algorithm:DeepCOACH-M}, the pseudocode of D-COACH MON is prese
 \State $\mathit{error}_{t} = h_{t}\cdot e$
 \State $y_{label(t)} = a_{t} + \mathit{error}_{t}$ 
 \State \textbf{update} $\pi$ using SGD with $(o_{t}, h^{\mathrm{LSTM}}_{t-1}, y_{\mathit{label}(t)})$ 
-\State \textbf{update} $M$ using SGD with a mini-batch of sequences sampled from $\mathcal{D}$
+\State \textbf{update} $M$ using SGD with $(o_{t-1},...,o_{t-\tau},a_{t-1},...,a_{t-\tau},o_{t})$
 \State \textbf{update} $\pi$ using SGD with a mini-batch of sequences sampled from $\mathcal{B}$
+\State \textbf{update} $M$ using SGD with a mini-batch of sequences sampled from $\mathcal{D}$
 \State \textbf{append} $(o_{t},...,o_{t-\tau},a_{t-1},...,a_{t-\tau}, y_{\mathit{label}(t)})$ to $\mathcal{B}$
 \If{length($\mathcal{B}$) $> K$ }
 \State $\mathcal{B} = \mathcal{B}[2:K+1]$
@@ -133,18 +136,26 @@ Simulated teachers were used in three different problems for validating D-COACH 
 \begin{enumerate}
     \item \textbf{Partially Observed Cart-Pole:} A partially observed low-dimensional state scenario. This is the same environment used in Chapter 2 with a modification in the observation space of the agent. In the standard fully-observable cart-pole the state has four dimensions, which consists of the position $x$ and velocity $\dot x$ of the cart and the angle $\theta$ and angular velocity $\dot \theta$ of the pole, such that $s=[x, \dot x, \theta, \dot \theta]$. In this case, we take out the derivatives present in the state, such that $s=[x, \theta]$.
     \item \textbf{Partially Observed Cart-Pole from Pixels:} The cart-pole environment is modified to use as input raw pixels with dimensions $32\times32\times1$(high-dimensional state). 
-    \item \textbf{Partially Observed Car Racing:} A partially observed high-dimensional state scenario. The Car Racing problem presented in Chapter 2 is modified such that the indicators in the bottom of the image are gone. 
-    
+    \item \textbf{Partially Observed Car Racing:} A partially observed high-dimensional state scenario. The Car Racing problem presented in Chapter 2 is modified such that the indicators in the bottom of the image are no longer available (see Figure \ref{fig:no_inds_car_racing}). 
 \end{enumerate}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\linewidth]{imagenes/cap4/car_racing_no_inds.PNG}
+    \caption{Partially observed Car Racing: indicators at the bottom of the observation are removed.}
+    \label{fig:no_inds_car_racing}
+\end{figure}
+
+All the results that present averaged data in the form of a curve have confidence intervals that represent the $60^{th}$ percentile of the data. The same hyper-parameters introduced in Figure \ref{fig:network_diagram} were used. In addition an LSTM layer was added between the encoder and the decoder of the autoencoder (in problems with high-dimensional observations) were the dimensionality of $h^{LSTM}$ was $150$.
 
 \subsection{Validation Low-Dimensional State}
 
-D-COACH MON is tested in the partially observed cart-pole because is a way to validate if the proposed methodology works in a simple setting. Figure \ref{fig:ld_cartpole_model} shows the learning curves of D-COACH MON and D-COACH ON. 
+D-COACH MON is tested in the partially observed cart-pole because it is a way of validating if the proposed methodology works in a simple setting. Figure \ref{fig:ld_cartpole_model} shows the learning curves of D-COACH MON and D-COACH ON. The same strategy used in Chapter 3 for training policies with a simulated teacher is employed in this section.
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.9\linewidth]{imagenes/cap3/cartpole_LD_model.pdf}
-    \caption{Partially observed cart-pole results for simulated teacher comparing D-COACH ON and D-COACH MON.  Buffer: $K = 200$; $k=5$; $b = 10$; $N = 50$; $L=1\mathrm{e}5$; $l=5$; $d=1$; $M=50$; $\tau=8$; $P_{h}$: $\alpha = 0.35$; $\tau = 0.0003$.}
+    \caption{Partially observed cart-pole results for simulated teacher comparing D-COACH ON and D-COACH MON (w/model).  Buffer: $K = 200$; $k=5$; $b = 10$; $N = 50$; $L=1\mathrm{e}5$; $l=5$; $d=1$; $M=50$; $\tau=8$; $P_{h}$: $\alpha = 0.35$; $\tau = 0.0003$.}
     \label{fig:ld_cartpole_model}
 \end{figure}
 
@@ -160,23 +171,23 @@ D-COACH ON is not able to learn a well performing policy in this case. This was 
 In contrast, if the agent makes decisions based on previous observations it can understand that these two scenarios are different and take better decisions. This is shown in the blue curve of Figure \ref{fig:ld_cartpole_model}, where the agent is able to learn a well performing policy in about 12 minutes. 
 
 \subsection{Validation High-Dimensional State}
-In this section we validate D-COACH MON in two different problems. Cart-pole is a problem that was not originally designed to be solved using as input raw pixels of an image, so we do not expect to obtain a perfect performance. The main goal of testing D-COACH with this problem is to observe if the proposed model (autoencoder + LSTM) is able to embed both the past and high-dimensional inputs adequately.
+In this section we validate D-COACH MON in two different problems (once again, the simulated teacher training strategy introduced in Chapter 3 is used). Cart-pole is a problem that was not originally designed to be solved using as input raw pixels of an image, so we do not expect to obtain a perfect performance. The main goal of testing D-COACH with this problem is to observe if the proposed model (autoencoder + LSTM) is able to embed both the past and high-dimensional inputs adequately.
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.9\linewidth]{imagenes/cap3/cartpole_HD_model.pdf}
-    \caption{Partially observed cart-pole from pixels results for simulated teacher comparing D-COACH ON and D-COACH MON.  Buffer: $K = 1000$; $k=20$; $b = 1$; $N = 20$; $L=1\mathrm{e}5$; $l=20$; $d=1$; $M=50$; $\tau=4$; $P_{h}$: $\alpha = 0.3$; $\tau = 0.000015$.}
+    \caption{Partially observed cart-pole from pixels results for simulated teacher comparing D-COACH ON and D-COACH MON (w/model).  Buffer: $K = 1000$; $k=20$; $b = 1$; $N = 20$; $L=1\mathrm{e}5$; $l=20$; $d=1$; $M=50$; $\tau=4$; $P_{h}$: $\alpha = 0.3$; $\tau = 0.000015$.}
     \label{fig:cp_hd}
 \end{figure}
 
 Figure \ref{fig:cp_hd} shows a much more slower learning speed if we compare these agents with the ones of Figure \ref{fig:ld_cartpole_model}. This is expected, since in this case the agents are also learning to extract features from the image. Also, D-COACH ON shows a faster learning speed at the beginning, but after 8 minutes of learning it is outperformed by D-COACH MON. This shows that D-COACH takes longer to learn a temporal/spatial embedding than just a spatial embedding. But, in POMDPs, eventually, D-COACH MON should outperform D-COACH ON.
 
-Finally, D-COACH MON was validated in the partially observed Car Racing problem. Figure \ref{fig:po_cr} shows that D-COACH ON is able to learn a well-performing policy even though the state is partially observed. Nevertheless, D-COACH MON shows that it is possible to obtain an even better performance if memory is added to the policy. The difference between both curves shows that D-COACH MON is a more robust and powerful approach than D-COACH ON, capable of enhancing the performance of the agent in problems where D-COACH ON could appear to be sufficient.
+Finally, D-COACH MON was validated in the partially observed Car Racing problem. Figure \ref{fig:po_cr} shows that D-COACH ON (orange curve) is able to learn a policy that achieves an average return of $\sim700$ after $\sim15$ minutes of training, which is an acceptable score for this problem. Nevertheless, D-COACH MON (blue curve) shows that it is possible to obtain an even better performance if memory is added to the neural network, achieving an average return of $\sim800$ after $\sim15$ minutes of training, which is similar to the performance of $\text{D-COACH}$ ON in the fully observable Car Racing (see Figure \ref{fig:simulatedteachers}). The difference between both curves shows that D-COACH MON is a more robust and powerful approach than $\text{D-COACH}$ ON, capable of enhancing the performance of the agent in problems where $\text{D-COACH}$ ON could appear to be sufficient.
 
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.9\linewidth]{imagenes/cap3/car_racing_lstm.pdf}
-    \caption{Partially observed car racing results for simulated teacher comparing D-COACH ON and D-COACH MON.  Buffer: $K = 2000$; $k=20$; $b=10$; $N = 8$; $L=1\mathrm{e}5$; $l=20$; $d=1$; $M=8$; $\tau=10$; $P_{h}$: $\alpha = 0.9$; $\tau = 0.000015$.}
+    \caption{Partially observed car racing results for simulated teacher comparing D-COACH ON and D-COACH MON (w/model).  Buffer: $K = 2000$; $k=20$; $b=10$; $N = 8$; $L=1\mathrm{e}5$; $l=20$; $d=1$; $M=8$; $\tau=10$; $P_{h}$: $\alpha = 0.9$; $\tau = 0.000015$.}
     \label{fig:po_cr}
 \end{figure}
 

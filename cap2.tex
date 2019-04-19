@@ -4,7 +4,7 @@ In this chapter, we propose to extend the use of human corrective feedback durin
 We combine Deep Learning (DL) with the corrective advice based learning framework called COrrective Advice Communicated by Humans (COACH) \cite{Celemin2018AnInteractive}, thus creating the Deep COACH (D-COACH) framework. In this approach, no reward functions are needed and the amount of learning episodes is significantly reduced in comparison to alternative Reinforcement Learning (RL) approaches.
 
 \section{Overview}
-In previous years, learning algorithms for solving sequential decision-making problems heavily relied on carefully handcrafted features based on human intuition and knowledge about them to obtain good performances. Also, when using linear combination of basis functions (LCBFs) as function approximator, which was one of the most commonly used function approximator, for each problem it was necessary to select a specific set of basis functions. Choosing a well performing set of basis functions is a process that may require expert knowledge or several tests, which may become very time consuming or unfeasible as the size of the $\text{state-action}$ space increases. This is also a consequence of the \emph{Curse of Dimensionality} \cite{Bellman1957} which states that as the number of the dimensions of a space grows (state and/or action spaces in this case), exponentially more data and computation are needed to completely cover it. In LCBFs, this often means that their number of parameters $\theta$ grows exponentially as the number of dimensions increase. As a consequence, for most of the cases, learning algorithms needed handcrafted features in low-dimensional state spaces to adequately converge.
+In previous years, learning algorithms for solving sequential decision-making problems heavily relied on carefully handcrafted features based on human intuition and knowledge about them to obtain good performances. Also, when using linear combination of basis functions (LCBFs) as function approximator, which was one of the most commonly used function approximator, for each problem it was necessary to select a specific set of basis functions. Choosing a well performing set of basis functions is a process that may require expert knowledge or several tests, which may become very time consuming or unfeasible as the size of the $\text{state-action}$ space increases. This is also a consequence of the \emph{Curse of Dimensionality} \cite{bellman2003dynamic} which states that as the number of the dimensions of a space grows (state and/or action spaces in this case), exponentially more data and computation are needed to completely cover it. In LCBFs, this often means that their number of parameters $\theta$ grows exponentially as the number of dimensions increase. As a consequence, for most of the cases, learning algorithms needed handcrafted features in low-dimensional state spaces to adequately converge.
 
 Given that COACH uses LCBFs as function approximator, it does not scale up well to problems with high-dimensional state spaces. However, the ideas proposed in COACH for shaping policies are independent of the function approximator that is used. With nowadays techniques, it has been shown that by approximating policies with Deep Neural Networks (DNNs) it is possible to solve problems with high-dimensional state spaces and with unprocessed raw information. So it seems as a natural step to extrapolate the ideas proposed in COACH to DNNs. 
 
@@ -115,7 +115,9 @@ Right       & (1, -1, 0)                                       \\ \hline
 \end{tabular}
 \end{table}
 
-The hyper-parameters of the neural networks used in these experiments were tuned with preliminary experiments. Different combinations of them were tested by a human teacher and the ones that made the training easiest were selected (see \figurename~{\ref{fig:network_diagram}}). The D-COACH error magnitude constant $e$ was set to $\textbf{1}$ in these experiments.
+The hyper-parameters of the neural networks used in these experiments were tuned with preliminary experiments. Different combinations of them were tested by a human teacher and the ones that made the training easiest were selected (see \figurename~{\ref{fig:network_diagram}}).
+
+\newpage
 
 \subsection{Validation of replay buffer with simulated teachers}
 The use of experience replay has been extensively validated in DRL; however, in this approach, we  still consider it necessary to test its impact. Unlike DRL, where the policy is updated with information collected from every time step, in COACH-like methods there is only new data to update the policy when feedback is given by the teacher, so the amount of data used to update the policy may be lower than in the RL case. Since the original COACH has been widely validated with real human teachers in several tasks, we carried out most of the comparisons using  a simulated teacher (a high performance policy standing-in as teacher, which was actually trained with D-COACH OFF and a real human teacher), like in some of the experiments presented in \cite{Celemin2018AnInteractive}, in order to compare the methods under more controlled conditions. 
@@ -126,17 +128,15 @@ A comparison of D-COACH OFF with and without the use of an experience replay buf
 
 \begin{figure}[t]
     \centering
-    \includegraphics[width=0.9\linewidth]{imagenes/cap3/buffer_cart_pole.pdf}
-    \caption{Comparison between using or not experience replay buffer for different values of $P_\mathit{err}$ in the Cart-Pole problem. Buffer: $K = 200$; $b = 10$; $N = 50$. $P_{h}$: $\alpha = 0.6$; $\tau = 0.0003$. Simulated teacher network learning rate: $0.0003$.}
+    \includegraphics[width=0.8\linewidth]{imagenes/cap3/buffer_cart_pole.pdf}
+    \caption{Comparison between using or not experience replay buffer for different values of $P_\mathit{err}$ in the Cart-Pole problem. Buffer: $K = 200$; $b = 10$; $N = 50$. $P_{h}$: $\alpha = 0.6$; $\tau = 0.0003$; $\emph{e}=\textbf{1}$. Simulated teacher network learning rate: $0.0003$.}
     \label{fig:buffer_cart_pole}
 \end{figure}
 
 \begin{figure}[t]
     \centering
-    \vspace{-0.2cm}
-    \includegraphics[width=0.9\linewidth]{imagenes/cap3/bufferCarRacing.pdf}
-    \vspace{-0.2cm}
-    \caption{Comparison between using or not experience replay buffer for different values of $P_\mathit{err}$ in the CarRacing problem. Buffer: $K = 1000$; $b = 10$; $N = 100$. $P_{h}$: $\alpha = 0.6$; $\tau = 0.000015$. Simulated teacher network learning rate: $0.0003$.}
+    \includegraphics[width=0.8\linewidth]{imagenes/cap3/bufferCarRacing.pdf}
+    \caption{Comparison between using or not experience replay buffer for different values of $P_\mathit{err}$ in the CarRacing problem. Buffer: $K = 1000$; $b = 10$; $N = 100$. $P_{h}$: $\alpha = 0.6$; $\tau = 0.000015$; $\emph{e}=\textbf{1}$. Simulated teacher network learning rate: $0.0003$.}
     \label{fig:buffer_car_racing}
 \end{figure}
 
@@ -146,9 +146,9 @@ In \figurename~{\ref{fig:buffer_cart_pole}} and \figurename~{\ref{fig:buffer_car
 \begin{figure}[t]
     \centering
     \vspace{-0.2cm}
-    \includegraphics[width=0.9\linewidth]{imagenes/cap3/offline_cart_pole_humans.pdf}
+    \includegraphics[width=0.8\linewidth]{imagenes/cap3/offline_cart_pole_humans.pdf}
     \vspace{-0.2cm}
-    \caption{Cart-Pole training. Buffer: $K = 200$; $b = 10$; $N = 50$. $P_{h}$: $\alpha = 0.6$; $\tau = 0.0003$. Human teacher network learning rate: $0.003$; Simulated teacher network learning rate: $0.0003$.}
+    \caption{Cart-Pole training. Buffer: $K = 200$; $b = 10$; $N = 50$. $P_{h}$: $\alpha = 0.6$; $\tau = 0.0003$; $\emph{e}=\textbf{1}$. Human teacher network learning rate: $0.003$; Simulated teacher network learning rate: $0.0003$.}
     \label{fig:cartpole_results}
 \end{figure}
 
@@ -158,10 +158,8 @@ In \figurename~{\ref{fig:racing_car_results1}} the learning curves of the Car Ra
 
 \begin{figure}[t]
     \centering
-    \vspace{-0.2cm}
-    \includegraphics[width=0.9\linewidth]{imagenes/cap3/offline_car_racing_humans.pdf}
-    \vspace{-0.2cm}
-    \caption{Racing Car training. Buffer: $K = 1000$; $b = 10$; $N = 100$. $P_{h}$: $\alpha = 0.6$; $\tau = 0.000015$. Human teacher network learning rate: $0.001$; Simulated teacher network learning rate: $0.0003$.}
+    \includegraphics[width=0.8\linewidth]{imagenes/cap3/offline_car_racing_humans.pdf}
+    \caption{Racing Car training. Buffer: $K = 1000$; $b = 10$; $N = 100$. $P_{h}$: $\alpha = 0.6$; $\tau = 0.000015$; $\emph{e}=\textbf{1}$. Human teacher network learning rate: $0.001$; Simulated teacher network learning rate: $0.0003$.}
     \label{fig:racing_car_results1}
 \end{figure}
 

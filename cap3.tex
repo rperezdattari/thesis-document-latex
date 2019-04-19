@@ -33,7 +33,7 @@ The condition for training the autoncoder is used for avoiding conflicts in the 
 \algtext*{Indent}
 \algtext*{EndIndent}
 
-\State \textbf{Require:} error magnitude $\textit{e}$, buffer update interval $b$, buffer sampling size $N$, buffer max. size $K$, buffer min. size $k$, sequence length for AE reconstruction error \emph{m}, pre-trained encoder parameters (if 3-step sequential learning) 
+\State \textbf{Require:} error magnitude $\textit{e}$, buffer update interval $b$, buffer sampling size $N$, buffer max. size $K$, buffer min. size $k$, sequence length for AE reconstruction error \emph{m}, AE reconstruction error threshold $\epsilon$, pre-trained encoder parameters (if 3-step sequential learning) 
 \State \textbf{Init:} $\mathcal{B} = []$ \emph{\# initialize memory buffer}
 \For{t = 1,2,...}{} \emph{\# main loop}
 \State \textbf{observe} state $s_{t}$
@@ -130,15 +130,15 @@ As shown in the Fig.~\ref{fig:simulatedteachers} for the experiments with the Ca
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.9\linewidth]{imagenes/cap3/car_racing_sim_ICRA.pdf}
-    \caption{Car Racing results for simulated teacher with D-COACH ON and DDPG. D-COACH ON A: policy and AE costs, freezing conv. layers; D-COACH ON B: policy and AE costs; D-COACH ON C: only policy cost. $K = 1000$; $k=20$; $b = 10$; $N = 8$. $P_{h}$: $\alpha = 0.6$; $\tau = 0.000015$; $m=50$.}
+    \includegraphics[width=0.8\linewidth]{imagenes/cap3/car_racing_sim_ICRA.pdf}
+    \caption{Car Racing results for simulated teacher with D-COACH ON and DDPG. D-COACH ON A: policy and AE costs, freezing conv. layers; D-COACH ON B: policy and AE costs; D-COACH ON C: only policy cost. $K = 1000$; $k=20$; $b = 10$; $N = 8$. $P_{h}$: $\alpha = 0.6$; $\tau = 0.000015$; $\emph{e}=\textbf{1}$; $m=50$; $\epsilon=0.0011$. Simulated teacher network learning rate: $0.0003$; Autoencoder learning rate: $0.0003$.}
     \label{fig:simulatedteachers}
 \end{figure}
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.9\linewidth]{imagenes/cap3/duckie_sim_ICRA.pdf}
-    \caption{Duckie Racing results for simulated teacher with D-COACH ON and DDPG. D-COACH ON A: policy and AE costs, freezing conv. layers; D-COACH ON B: policy and AE costs; D-COACH ON C: only policy cost. $K = 1000$; $k=20$; $b = 10$; $N = 8$. $P_{h}$: $\alpha = 0.6$; $\tau = 0.000015$; $m=50$.}
+    \includegraphics[width=0.8\linewidth]{imagenes/cap3/duckie_sim_ICRA.pdf}
+    \caption{Duckie Racing results for simulated teacher with D-COACH ON and DDPG. D-COACH ON A: policy and AE costs, freezing conv. layers; D-COACH ON B: policy and AE costs; D-COACH ON C: only policy cost. $K = 1000$; $k=20$; $b = 10$; $N = 8$. $P_{h}$: $\alpha = 0.6$; $\tau = 0.000015$; $\emph{e}=\textbf{1}$; $m=50$; $\epsilon=0.0011$.. Simulated teacher network learning rate: $0.0003$; Autoencoder learning rate: $0.0003$.}
     \label{fig:racing_car_results}
 \end{figure}
 
@@ -163,15 +163,15 @@ In Fig.~\ref{fig:stacked_bar} the time dedicated for training the agents is depi
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\linewidth]{imagenes/cap3/car_racing_human_teacher_ICRA.pdf}
-    \caption{Results of learning with human teachers. $K = 1000$; $k=20$; $b = 10$; $N = 8$; $m=50$.}
+    \includegraphics[width=0.8\linewidth]{imagenes/cap3/car_racing_human_teacher_ICRA.pdf}
+    \caption{Results of learning with human teachers. $K = 1000$; $k=20$; $b = 10$; $N = 8$; $\emph{e}=\textbf{1}$; $m=50$; $\epsilon=0.0011$. Human teacher network learning rate: $0.003$; Autoencoder learning rate: $0.003$.}
     \label{fig:humanteachers1}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\linewidth]{imagenes/cap3/duckie_human_teacher_ICRA.pdf}
-    \caption{Results of learning with human teachers. $K = 1000$; $k=20$; $b = 10$; $N = 8$; $m=50$.}
+    \includegraphics[width=0.8\linewidth]{imagenes/cap3/duckie_human_teacher_ICRA.pdf}
+    \caption{Results of learning with human teachers. $K = 1000$; $k=20$; $b = 10$; $N = 8$; $\emph{e}=\textbf{1}$; $m=50$; $\epsilon=0.0011$. Human teacher network learning rate: $0.003$; Autoencoder learning rate: $0.003$.}
     \label{fig:humanteachers2}
 \end{figure}
 
@@ -185,7 +185,7 @@ Fig.~\ref{fig:reacher_exp} shows an extra validation that was done for the reach
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\linewidth]{imagenes/cap3/reacher_ICRA.pdf}
+    \includegraphics[width=0.8\linewidth]{imagenes/cap3/reacher_ICRA.pdf}
     \caption{Evolution of the error while learning the reacher task. }
     \label{fig:reacher_exp}
 \end{figure}

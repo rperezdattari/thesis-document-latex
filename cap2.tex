@@ -126,17 +126,17 @@ The simulated teacher generates feedback using $h = \operatorname{sign}(a_{\math
 
 A comparison of D-COACH OFF with and without the use of an experience replay buffer is carried out by means of the simulated teacher. To test the behavior of these scenarios when erroneous feedback is added, different values of $P_{\mathit{err}}$ are selected. These results can be seen in \figurename~{\ref{fig:buffer_cart_pole}} and \figurename~{\ref{fig:buffer_car_racing}} (for better readability, no confidence intervals were added).
 
-\begin{figure}[t]
+\begin{figure}[h]
     \centering
     \includegraphics[width=0.8\linewidth]{imagenes/cap3/buffer_cart_pole.pdf}
     \caption{Comparison between using or not experience replay buffer for different values of $P_\mathit{err}$ in the Cart-Pole problem. Buffer: $K = 200$; $b = 10$; $N = 50$. $P_{h}$: $\alpha = 0.6$; $\tau = 0.0003$; $\emph{e}=\textbf{1}$. Simulated teacher network learning rate: $0.0003$.}
     \label{fig:buffer_cart_pole}
 \end{figure}
 
-\begin{figure}[t]
+\begin{figure}[h]
     \centering
     \includegraphics[width=0.8\linewidth]{imagenes/cap3/bufferCarRacing.pdf}
-    \caption{Comparison between using or not experience replay buffer for different values of $P_\mathit{err}$ in the CarRacing problem. Buffer: $K = 1000$; $b = 10$; $N = 100$. $P_{h}$: $\alpha = 0.6$; $\tau = 0.000015$; $\emph{e}=\textbf{1}$. Simulated teacher network learning rate: $0.0003$.}
+    \caption{Comparison between using or not experience replay buffer for different values of $P_\mathit{err}$ in the Car Racing problem. Buffer: $K = 1000$; $b = 10$; $N = 100$. $P_{h}$: $\alpha = 0.6$; $\tau = 0.000015$; $\emph{e}=\textbf{1}$. Simulated teacher network learning rate: $0.0003$.}
     \label{fig:buffer_car_racing}
 \end{figure}
 
@@ -156,16 +156,16 @@ These experiments are intended to compare the learning process of D-COACH OFF (s
 
 In \figurename~{\ref{fig:racing_car_results1}} the learning curves of the Car Racing problem are presented. Again, D-COACH OFF results in a fast convergence. Unlike reported results of DRL algorithms for this problem, in the very early minutes D-COACH OFF reaches high performance policies that have not been obtained by most of the DRL approaches, to the best of our knowledge. If we compare a policy trained with D-COACH OFF for approximately 75 minutes by an experienced teacher against several state-of-the-art DRL approaches, it can be seen that it outperforms most of them (see Table \ref{CarRacing_table}). The problem is considered to be solved if the agent gets an average score of 900 or more over 100 random tracks. However, we observed that this value can substantially vary between different evaluations, so in Table \ref{CarRacing_table}, the obtained range of values over 20 evaluations is presented for D-COACH OFF.
 
-\begin{figure}[t]
+\begin{figure}[h]
     \centering
     \includegraphics[width=0.8\linewidth]{imagenes/cap3/offline_car_racing_humans.pdf}
-    \caption{Racing Car training. Buffer: $K = 1000$; $b = 10$; $N = 100$. $P_{h}$: $\alpha = 0.6$; $\tau = 0.000015$; $\emph{e}=\textbf{1}$. Human teacher network learning rate: $0.001$; Simulated teacher network learning rate: $0.0003$.}
+    \caption{Car Racing training. Buffer: $K = 1000$; $b = 10$; $N = 100$. $P_{h}$: $\alpha = 0.6$; $\tau = 0.000015$; $\emph{e}=\textbf{1}$. Human teacher network learning rate: $0.001$; Simulated teacher network learning rate: $0.0003$.}
     \label{fig:racing_car_results1}
 \end{figure}
 
-\begin{table}[t]
+\begin{table}[h]
 \centering
-\caption{Car Racing state-of-the-art learning algorithms comparison. DRL results taken from \cite{Ha2018}.}
+\caption[Car Racing state-of-the-art learning algorithms comparison.]{Car Racing state-of-the-art learning algorithms comparison. DRL results taken from \cite{Ha2018}.}
 \label{CarRacing_table}
 \begin{tabular}{lc}
 \multicolumn{1}{c}{\textbf{Method}}      & \multicolumn{1}{l}{\textbf{Average Score over 100 Random Tracks}} \\ \hline\hline
@@ -185,7 +185,7 @@ In the third problem that we called Duckie Racing, an agent has to learn to driv
 
 This problem is not used for comparisons of the methods, but only as a validation of D-COACH OFF using experience replay, which showed to be the best alternative in the previous problems. \figurename~\ref{fig:racing_duckie_results} shows the learning curve for each of the tasks explored in this environment with a real robot and a real human teacher. The curves and the following video \url{https://youtu.be/vcEtuRrRIe4} show that the system quickly learns to drive properly through the road based only on the human corrections. As expected, the policy is faster when the robot has the freedom to drive over both lanes. Learning this task with RL would definitely take more training time, and might need an external perception system to compute the reward function, whereas with D-COACH this performance index does not have any influence on the learning process, rather it is used for descriptive and comparative purposes.
 
-\begin{figure}[H]
+\begin{figure}[h]
     \centering
     \begin{minipage}{.5\textwidth}
     \vspace{-0.2cm}

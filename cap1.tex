@@ -2,7 +2,7 @@
 \section{Sequential Decision-Making}
 In robotics, sequential decision-making problems refer to tasks in which a robot must achieve a goal through physical world interaction by making sequential decisions, for example, navigating from one point to another, grasping an object, balancing, etc. It can be described as a step-by-step decision process, where depending on the information that is gathered by its sensors, the robot has to make decisions consecutively.
 
-\subsection{Markov Decision Process (MDP) \cite{puterman2014markov, sutton2018reinforcement}}
+\subsection[Markov Decision Process (MDP)]{Markov Decision Process (MDP) \cite{puterman2014markov, sutton2018reinforcement}}
 A Markov Decision Process (MDP) is meant to be a straightforward framing of sequential decision-making problems. In an MDP we have an \emph{agent} that is continually interacting with an \emph{environment}. The agent is the learner and the decision maker. The environment is everything that the agent can interact with. In robotics, the agent is the robot and the environment is the real world setting in which the robot exists.
 
 To keep things as simple as possible, MDPs are commonly modeled as discrete time interaction of the agent with the environment. Thus, the time is divided into a sequence of \emph{time steps}, $t=0,1,2,3,...$ . At each time step the agent perceives an \emph{observation} $o_{t}$ of the environment, which is a representation of the environment's \emph{state} $s_{t}$. Depending on the state, the agent selects an \emph{action} $a_{t}$, which will ideally lead to a specific task being solved. 
@@ -27,7 +27,7 @@ In a nutshell, an MDP can be defined by the tuple $MDP=(\mathcal{S},\matchcal{A}
 \end{figure}
 \footnotetext{Image taken from \url{https://artint.info/html/ArtInt_224.html}.}
 
-\section{Reinforcement Learning \cite{sutton2018reinforcement, kober2013reinforcement}}
+\section[Reinforcement Learning]{Reinforcement Learning \cite{sutton2018reinforcement, kober2013reinforcement}}
 Reinforcement Learning aims to use the MDP framing of sequential decision-making problems so that agents learn to solve tasks from \emph{experience}. In this case, experience is understood as the agent-environment interaction (see Figure \ref{fig:agent-environment}), which results in the generation of reward values that indicate the quality of the decisions made by the agent. 
 
 \begin{figure}[h]
@@ -162,7 +162,7 @@ Figure \ref{fig:free_based_model} summarizes the difference between both approac
 \end{figure}
 \footnotetext{Image taken from \url{http://www0.cs.ucl.ac.uk/staff/d.silver/web/Teaching_files/dyna.pdf}}
 
-\subsubsection{Experience Replay \cite{atari, lin1993reinforcement, zhang2017deeper}}
+\subsubsection[Experience Replay]{Experience Replay \cite{atari, lin1993reinforcement, zhang2017deeper}}
 \label{sss:ER}
 
 The anatomy of Reinforcement Learning (Figure \ref{fig:RL_anatomy}) suggests that every time the policy is improved, obtaining new samples is necessary to improve it again. This is only true in \emph{on-policy} algorithms. On-policy algorithms are those in which a policy can only be updated with data gathered by itself. Data gathered before the last update corresponds to data gathered by a past version of the current policy; thus, gathered by a different policy. So if the policy is changed, even a little bit, generating new samples becomes necessary. 
@@ -177,12 +177,12 @@ The key idea of experience replay is to store old transitions $(s, a, r, s')$ in
     \item\textbf{Data efficiency:} depending on the the parameterized model of $\pi_{\theta}$, it may not be efficient to update its parameters with a set of samples just once. To successfully extract all the information contained in the samples, it would be necessary to update the model several times from them. This is achieved when using experience replay.
 \end{itemize}
 
-\section{Function Approximation \cite{kober2013reinforcement, sutton2018reinforcement}}
+\section[Function Approximation]{Function Approximation \cite{kober2013reinforcement, sutton2018reinforcement}}
 Although $\pi$ can be represented by a look-up table, where every state has a corresponding action stored in a table, this representation is not scalable to complex problems with large state/action spaces. This is mainly because the states and/or actions are too many to be stored in memory and/or it would take too long to adequately explore the states. Thus, in robotics contexts, where state/action spaces are most likely continuous, the standard approach is to use function approximation. As mentioned before, this means that the policy is a parameterized model $\pi_{\theta}$.
 
 There is a large list of different function approximators, but in this work two of them are the most relevant: \textbf{linear models of basis functions (LCBFs)} and \textbf{artificial neural networks (ANNs)}. Although the policy may not be directly represented by these models, as in the case of value function approximation, for simplicity, from now on we are going to assume that it always does. Also, we are only going to work with deterministic policies. So, if the function approximator is $\Psi$, then $\pi_{\theta} = \Psi(s;\theta)$ such that $\Psi: \mathcal{S} \to \mathcal{A}$.
 
-\subsection{Linear Model of Basis Functions \cite{busoniu2010reinforcement}}
+\subsection[Linear Model of Basis Functions]{Linear Model of Basis Functions \cite{busoniu2010reinforcement}}
 A well-known case of function approximation in RL is that in which $\pi_{\theta}$ is a linear function of
 the weight vector $\theta$. Specifically, we are going to work with linear combinations of gaussian radial basis functions (RBFs). If $\phi(s)$ corresponds to a vector of basis functions which is weighted by $\theta$, then $\pi_{\theta}$ can be represented as:
 
@@ -202,7 +202,7 @@ In this case, $\phi(s)$ corresponds to normalized gaussians:
 
 \noindent Where $N$ is the number of basis functions and the sub index \emph{i} refers to the \emph{i-th} basis function.
 
-\subsection{Artificial Neural Networks \cite{goodfellow2016deep, nielsen2015neural}}
+\subsection[Artificial Neural Networks]{Artificial Neural Networks \cite{goodfellow2016deep, nielsen2015neural}}
 
 ANNs are a widely used model for non-linear function approximation. The idea behind these models is to build a network of interconnected units that have some properties inspired on neurons. There is a large variety of models, the ones relevant to this work are the following:
 
@@ -402,7 +402,7 @@ Reinforcement Learning can be divided in the \emph{pre Deep RL era} and the \emp
 
 Before the Deep RL era, ANNs where not a predominant function approximator for solving sequential decision-making problems. In the pre Deep RL era, one of the most widely used function approximators were LCBFs, as stated in a survey of the year 2013 \cite{kober2013reinforcement}. 
 
-\section{Interactive Machine Learning \cite{Argall2009, amershi2014power,billing2010formalism, Chernova2014, cuayahuitl2013machine}}
+\section[Interactive Machine Learning]{Interactive Machine Learning \cite{Argall2009, amershi2014power,billing2010formalism, Chernova2014, cuayahuitl2013machine}}
 
 In the context of this work, Interactive Machine Learning (IML) is understood as a research area that gathers all the techniques in which humans/users take part in the agent's learning process for solving sequential decision-making problems. Other works refer to IML as an area that focuses on learning classifiers with the help of users \cite{fails2003interactive, ware2001interactive, amershi2012regroup, ngo2014efficient}.
 

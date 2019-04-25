@@ -72,7 +72,7 @@ Alternatively, the approach that was finally taken was to update the model and t
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.6\linewidth]{imagenes/cap4/ld_model.pdf}
+    \includegraphics[width=0.5\linewidth]{imagenes/cap4/ld_model.pdf}
     \caption{Low-dimensional observations general neural network architecture for POMDPs (option 2).}
     \label{fig:ld_model_win}
 \end{figure}
@@ -90,9 +90,9 @@ As mentioned before, the transition model and the policy are trained as two sepa
 
 \begin{figure}[h]
 \centering
-\subfloat[][Transition model update step.]{\includegraphics[width=0.5\linewidth]{imagenes/cap4/ld_mon1.pdf}}
-\subfloat[][Policy update step.]{\includegraphics[width=0.5\linewidth]{imagenes/cap4/ld_mon2.pdf}}
-\caption[Update step of D-COACH MON neural network for low-dimensional observations.]{Update step of D-COACH MON neural network for low-dimensional observations. First (a), the transition model is updated in a supervised manner using as input a batch with sequences of observations and actions where the labels correspond to $o_{t+1}$. Consecutively (b), the policy is updated using human corrective feedback.} 
+\subfloat[][Transition model update step.]{\includegraphics[width=0.45\linewidth]{imagenes/cap4/ld_mon1.pdf}}
+\subfloat[][Policy update step.]{\includegraphics[width=0.45\linewidth]{imagenes/cap4/ld_mon2.pdf}}
+\caption[Update step of D-COACH MON neural network for low-dimensional observations.]{Update step of D-COACH MON neural network for low-dimensional observations. First (a), the transition model is updated in a supervised manner using as input a batch with sequences of observations and actions where the labels correspond to $o_{t+1}$. Consecutively (b), the policy is updated using human corrective feedback using as input $o_{t}$ and $h_{t-1}$.} 
 \label{fig:ld_mon_train} 
 \end{figure}
 
@@ -103,12 +103,36 @@ In preliminary tests, we found that the most effective way of doing this under t
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.6\linewidth]{imagenes/cap4/hd_model.pdf}
+    \includegraphics[width=0.5\linewidth]{imagenes/cap4/hd_model.pdf}
     \caption{High-dimensional observations general neural network architecture for POMDPs.}
     \label{fig:rnn_hd}
 \end{figure}
 
-Instead of using separate costs for the model and the autoencoder, the autoencoding cost for reconstructing $o_{t+1}$. So, Equation \ref{eq:ae} instead of being $L(x_{t},\widetilde x_{t})$ it would be  $L(x_{t},\widetilde x_{t+1})$. By doing this, the hidden state of the LSTM embeds both the high-dimensional input and past observations, given that the autoencoder tries to reconstruct and predict $o_{t+1}$.
+Instead of using separate costs for the model and the autoencoder, the autoencoding cost for reconstructing $o_{t+1}$ is used. So, Equation \ref{eq:ae} instead of being $L(x_{t},\widetilde x_{t})$ it would be  $L(x_{t},\widetilde x_{t+1})$. By doing this, the hidden state of the LSTM embeds both the high-dimensional input and past observations, given that the autoencoder tries to reconstruct and predict $o_{t+1}$. As it was done for the low-dimensional observation case, Figure \ref{fig:detailed_hd} introduces the detailed neural network architecture for the high-dimensional observation case.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\linewidth]{imagenes/cap4/hd_model_det.pdf}
+    \caption{D-COACH MON high-dimensional observations neural network architecture.}
+    \label{fig:detailed_hd}
+\end{figure}
+
+In the same way as in the low-dimensional observation case, the transition model and the policy are trained separately and simultaneously. The only difference is that in this case, when the policy is updated it uses the encoding layers to generate an encoded low-dimensional representation of the observation $e(o_{t})$ that the policy uses as input, but only the policy layers are updated. This is also different from what is done in D-COACH OFF, where the encoding layers are also updated when training the policy. Figures \ref{fig:hd_mon_train1} and \ref{fig:hd_mon_train2} summarize a D-COACH MON update step for high-dimensional observations.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.93\linewidth]{imagenes/cap4/hd_mon1.pdf}
+    \caption{Transition model update step.}
+    \label{fig:hd_mon_train1}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.93\linewidth]{imagenes/cap4/hd_mon2.pdf}
+    \caption{Policy update step.}
+    \label{fig:hd_mon_train2}
+\end{figure}
+
 
 \subsection{The Algorithm}
 
@@ -125,6 +149,13 @@ In Algorithm \ref{algorithm:DeepCOACH-M}, the pseudocode of D-COACH MON is prese
 \State \textbf{observe} observation $o_{t}$
 \State \textbf{execute} action $a_{t}=\pi(o_{t}, h^{\mathrm{LSTM}}_{t-1})$
 \State \textbf{feedback} human corrective advice $h_{t}$
+\algstore{myalg}
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}            
+\begin{algorithmic} [1]                  
+\algrestore{myalg}
 \State \textbf{compute} $h^{\mathrm{LSTM}}_{t}$ from $M(o_{t}, a_{t},h^{\mathrm{LSTM}}_{t-1})$
 \State \textbf{append} $(o_{t-1},...,o_{t-\tau},a_{t-1},...,a_{t-\tau},o_{t})$ to $\mathcal{D}$
 \If{length($\mathcal{D}$) $> L$ }
@@ -187,7 +218,7 @@ D-COACH ON is not able to learn a well performing policy in this case. This was 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.9\linewidth]{imagenes/cap4/cartpole_ex.pdf}
-    \caption{Cart-pole partial observabilty example.}
+    \caption{Cart-pole partial observability example.}
     \label{fig:cp_ex}
 \end{figure}
 

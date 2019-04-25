@@ -30,23 +30,23 @@ Training CNN policies is a more challenging problem than training FNN policies. 
 To address this limitation, we employ \emph{state representation strategies} in problems with high-dimensional states/observations. The convolutional layers of a CNN can be interpreted as operations that extract the most relevant features out of a high-dimensional input. Thus, the output of these layers (which is commonly linked to a FNN in regression problems) can be seen as a representation of the state in a new space where the problem is easier to solve. This is what we call the state representation. So, in this context, state representation strategies refer to techniques employed for assisting the learning process of the state representation. In this work, the state representation of the policy is trained with additional criteria, adding an autoencoder to help with the training of the convolutional layers (or encoding layers) of the network.
 
 \subsubsection{Offline State Representation Learning}
-The D-COACH version introduced in this Chapter, OFFline state representation learning (D-COACH OFF), proposes to learn policies in a 3-step sequential process. In the first step, a session of demonstrations where observations of the environments are captured is recorded. Then, in a second step, the convolutional layers of the policy/autoencoder are trained with the recorded data, while tuning an  autoencoder  used  for state representation of reduced dimensionality, (Figure \ref{fig:ms}(a)). The state is embedded in the latent space of an autoencoder. Finally, in the third step, the convolutional layers of the trained encoder are frozen, then the subsequent non-convolutional layers (right hand side of Figure \ref{fig:ms}(b)) are trained interactively based on the corrections that the teacher advises to the agent. Figure \ref{fig:ms} depicts the second and third steps of this strategy. This kind of sequential strategy has been proven to work in decision-making problems \cite{Warnell2017,Finn2015,Ha2018}.
+The D-COACH version introduced in this Chapter, OFFline state representation learning (D-COACH OFF), proposes to learn policies in a 3-step sequential process. In the first step, a session of demonstrations where observations of the environments are captured is recorded. Then, in a second step, the convolutional layers of the policy/autoencoder are trained with the recorded data, while tuning an  autoencoder  used  for state representation of reduced dimensionality, (Figure \ref{fig:ms}(a)). The state is embedded in the latent space of an autoencoder $\mathcal{L}$. Finally, in the third step, the convolutional layers of the trained encoder are frozen, then the subsequent non-convolutional layers (right hand side of Figure \ref{fig:ms}(b)) are trained interactively based on the corrections that the teacher advises to the agent. Figure \ref{fig:ms} depicts the second and third steps of this strategy. This kind of sequential strategy has been proven to work in decision-making problems \cite{Warnell2017,Finn2015,Ha2018}.
 
 \begin{figure}[h]
 \centering
 \subfloat[][Autoencoder network for learning the state representation of the policy based on the demonstrations database.]{\includegraphics[width=0.45\linewidth]{imagenes/cap2/m1_p1.pdf}}
 \hspace{0.1cm}
 \subfloat[][Interactive training of the policy using the trained convolutional layers.]{\includegraphics[width=0.45\linewidth]{imagenes/cap2/m1_p2.pdf}}
-\caption{D-COACH OFF: offline state representation learning.} 
+\caption{D-COACH OFF learning scheme.} 
 \label{fig:ms} 
 \end{figure}
 
-In the case of low-dimensional state problems, the state is fed into a FNN, skipping the autoencoder related steps and training the policy with interactive feedback directly. Figure \ref{fig:network_diagram} summarizes the network architecture for both low-dimensional and high-dimensional state problems.
+In the case of low-dimensional state problems, the state is fed into a FNN (Policy), skipping the autoencoder related steps and training the policy with interactive feedback directly. Figure \ref{fig:network_diagram} summarizes the network architecture for both low-dimensional and high-dimensional state problems.
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.9\linewidth]{imagenes/cap2/ISER_diagram.pdf}
-    \caption{D-COACH OFF neural networks architecture. HD STATE: high-dimensional state space, input of FNN is the latent space of the autoencoder (purple arrow). LD STATE: low-dimensional state space, input of FNN is the observed state (red arrow). Variations between environments are specified with the acronyms CP (Cart-Pole), CR (Car Racing) and DR (Duckie Racing). }
+    \includegraphics[width=\linewidth]{imagenes/cap2/ISER_diagram2.pdf}
+    \caption[D-COACH OFF neural network architecture.]{D-COACH OFF neural network architecture. $s_{t}^{HD}$: high-dimensional state, input of the policy is the latent space of the autoencoder $\mathcal{L}_{t}$ (purple arrow). $s_{t}^{LD}$: low-dimensional state, input of the policy is the observed state (red arrow).}
     \label{fig:network_diagram}
 \end{figure}
 
@@ -99,9 +99,9 @@ Our proposed algorithm is validated experimentally in three different problems:
 
 \textbf{(iii) Duckie Racing:} This is also a driving task with high-dimensional input, but in this case with a real robot, which has an onboard camera that gives a first-person view of the environment. The robot consist of a Duckiebot from the project Duckietown \cite{Paull2017}. A $120\times160\times3$ observation image is received from the environment which is downsampled to $64\times64\times1$. The duckiebot is a differential robot, so the default actions consisted of speed commands ranging from -1 to 1 for each of the two wheels. To make it more intuitive for a human teacher to give feedback, the environment had an inverse kinematics module for the actions to be linear and rotational speeds instead, also ranging from -1 to 1. This problem is also used for experiments and validation with simulated and real human teachers.
 
-The experiments with the simulated agents are intended to compare the complete $\text{D-COACH}$ OFF presented in Algorithm \ref{algorithm:DeepCOACH}, along with a version of it without replay buffer (ignoring lines 2 and 11-16), and with a well known DRL agent (Deep Deterministic Policy Gradient DDPG \cite{Lillicrap2015} implemented by OpenAI \cite{baselines}). The comparison is carried out by plotting the cumulative reward obtained at each episode by the agent as a function of time. In the case of $\text{D-COACH}$, the obtained reward is only used as a performance metric. Also, the results are presented as a function of time instead of episodes (except in the Duckie Racing experiment), because episodes can have variable duration depending on the policy. Hence, the episode scale would not properly show the time taken by the learning process, which is an important characteristic, since $\text{D-COACH}$ is meant to work with real robots. The simulated environments, Cart-Pole and Car Racing, were ran at $22.5$ and $20.5$ FPS, respectively. These experiments were carried out using human teachers and simulated teachers. Humans had approximately 5 minutes to practice teaching in each environment. The learning curves of agents trained by 10 human teachers were obtained and averaged; the learning curves of agents trained by a simulated teacher were repeated 30 times and averaged. Along with the algebraic mean, the confidence intervals that represent the $60^{th}$ percentile of the data were plotted. In the case of the Car Racing problem, it was observed that coupled training was advantageous when the teachers were humans. The designed coupled signals are shown in Table \ref{table:coupled_car_racing}.
+The experiments with the simulated teachers are intended to compare the complete $\text{D-COACH}$ OFF presented in Algorithm \ref{algorithm:DeepCOACH}, along with a version of it without replay buffer (ignoring lines 2 and 11-16), and with a well known DRL agent (Deep Deterministic Policy Gradient DDPG \cite{Lillicrap2015} implemented by OpenAI \cite{baselines}). The comparison is carried out by plotting the cumulative reward obtained at each episode by the agent as a function of time. In the case of $\text{D-COACH}$, the obtained reward is only used as a performance metric. Also, the results are presented as a function of time instead of episodes (except in the Duckie Racing experiment), because episodes can have variable duration depending on the policy. Hence, the episode scale would not properly show the time taken by the learning process, which is an important characteristic, since $\text{D-COACH}$ is meant to work with real robots. The simulated environments, Cart-Pole and Car Racing, were ran at $22.5$ and $20.5$ FPS, respectively. These experiments were carried out using human teachers and simulated teachers. Humans had approximately 5 minutes to practice teaching in each environment. The learning curves of agents trained by 10 human teachers were obtained and averaged; the learning curves of agents trained by a simulated teacher were repeated 30 times and averaged. Along with the algebraic mean, the confidence intervals that represent the $60^{th}$ percentile of the data were plotted. In the case of the Car Racing problem, it was observed that coupled training was advantageous when the teachers were humans. The designed coupled signals are shown in Table \ref{table:coupled_car_racing}.
 
-\begin{table}[t]
+\begin{table}[h]
 \centering
 \caption{Values of $h$ in the Car Racing problem for human teachers. When feedback is given, the generated correction acts over more than one dimension of the action. For instance, the feedback signal \emph{forward} means that the agent should simultaneously increase its acceleration and decrease its brake.}
 \label{table:coupled_car_racing}
@@ -115,10 +115,46 @@ Right       & (1, -1, 0)                                       \\ \hline
 \end{tabular}
 \end{table}
 
-The hyper-parameters of the neural networks used in these experiments were tuned with preliminary experiments. Different combinations of them were tested by a human teacher and the ones that made the training easiest were selected (see \figurename~{\ref{fig:network_diagram}}).
+The hyper-parameters of the neural networks used in these experiments were tuned with preliminary experiments. Different combinations of them were tested by a human teacher and the ones that made the training easiest were selected. The architecture used is the one shown in \figurename~{\ref{fig:network_diagram}}. The hyper-parameters of each layer are presented in Tables \ref{table:off_hypers1}, \ref{table:off_hypers2} and \ref{table:off_hypers3}.
 
-\newpage
-
+\begin{table}[h]
+\parbox{\linewidth}{
+\centering
+\caption{Convolutional and deconvolutional layers hyper-parameters. Autoencoder latent space size: $8\times8\times4$}.
+\label{table:off_hypers1}
+\begin{tabular}{lcccc}
+\textbf{Layer} & \multicolumn{1}{l}{\textbf{Activation}} & \multicolumn{1}{l}{\textbf{Filters}} & \multicolumn{1}{l}{\textbf{Filter size}} & \multicolumn{1}{l}{\textbf{Stride}} \\ \hline \hline
+C1             & ReLU                                    & 16                                   & $3\times3$                                    & 2                                   \\ \hline
+C2             & ReLU                                    & 8                                    & $3\times3$                                    & 2                                   \\ \hline
+C3             & ReLU                                    & 4                                    & $3\times3$                                    & 2                                   \\ \hline
+DC1            & ReLU                                    & 8                                    & $3\times3$                                    & 2                                   \\ \hline
+DC2            & ReLU                                    & 16                                   & $3\times3$                                    & 2                                   \\ \hline
+DC3            & ReLU                                    & 1                                    & $3\times3$                                    & 2                                   \\ \hline
+\vspace{0.2cm}
+\end{tabular}}
+\hfill
+\parbox{.45\linewidth}{
+\centering
+\caption{Fully-connected layers $\text{hyper-parameters}$.}
+\label{table:off_hypers2}
+\begin{tabular}{lcl}
+\textbf{Layer} & \multicolumn{1}{l}{\textbf{Activation}} & \textbf{$N^{\circ}$ neurons}                                                                          \\ \hline \hline
+FC1          & ReLU                                    & \begin{tabular}[c]{@{}l@{}}Cart-Pole: 64\\ Car Racing: 300\\ Duckie Racing: 300\end{tabular} \\ \hline
+FC2            & ReLU                                    & \begin{tabular}[c]{@{}l@{}}Cart-Pole: 64\\ Car Racing: 300\\ Duckie Racing: 300\end{tabular} \\ \hline
+\begin{tabular}[c]{@{}l@{}}FC3\\ (size action)\end{tabular}            & tanh                                    & \begin{tabular}[c]{@{}l@{}}Cart-Pole: 1\\ Car Racing: 3\\ Duckie Racing: 2\end{tabular}      \\ \hline
+\end{tabular}}
+\hfill
+\parbox{.45\linewidth}{
+\centering
+\caption{State spaces sizes.}
+\label{table:off_hypers3}
+\begin{tabular}{lc}
+\textbf{Problem}     & \textbf{Input size} \\ \hline \hline
+Cart-Pole     & 4                   \\ \hline
+Car Racing    & $64\times64\times1$  \\ \hline
+Duckie Racing & $64\times64\times1$  \\ \hline
+\end{tabular}}
+\end{table}
 \subsection{Validation of replay buffer with simulated teachers}
 The use of experience replay has been extensively validated in DRL; however, in this approach, we  still consider it necessary to test its impact. Unlike DRL, where the policy is updated with information collected from every time step, in COACH-like methods there is only new data to update the policy when feedback is given by the teacher, so the amount of data used to update the policy may be lower than in the RL case. Since the original COACH has been widely validated with real human teachers in several tasks, we carried out most of the comparisons using  a simulated teacher (a high performance policy standing-in as teacher, which was actually trained with D-COACH OFF and a real human teacher), like in some of the experiments presented in \cite{Celemin2018AnInteractive}, in order to compare the methods under more controlled conditions. 
 

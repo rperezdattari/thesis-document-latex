@@ -1,8 +1,8 @@
 \chapter{Theoretical Framework}
 \section{Sequential Decision-Making}
-In robotics, sequential decision-making problems refer to tasks in which a robot must achieve a goal through physical world interaction by making sequential decisions, for example, navigating from one point to another, grasping an object, balancing, etc. It can be described as a step-by-step decision process, where depending on the information that is gathered by its sensors, the robot has to make decisions consecutively.
+In robotics, sequential decision-making problems refer to tasks in which a robot must achieve a goal by interacting with the world as a consequence of decisions that are made sequentially, for example, navigating from one point to another, grasping an object, balancing, etc. It can be described as a step-by-step decision process, where depending on the information that is gathered by its sensors, the robot has to make decisions consecutively.
 
-\subsection[Markov Decision Process (MDP)]{Markov Decision Process (MDP) \cite{puterman2014markov, sutton2018reinforcement}}
+\subsection[Markov Decision Process]{Markov Decision Process (MDP) \cite{puterman2014markov, sutton2018reinforcement}}
 A Markov Decision Process (MDP) is meant to be a straightforward framing of sequential decision-making problems. In an MDP we have an \emph{agent} that is continually interacting with an \emph{environment}. The agent is the learner and the decision maker. The environment is everything that the agent can interact with. In robotics, the agent is the robot and the environment is the real world setting in which the robot exists.
 
 To keep things as simple as possible, MDPs are commonly modeled as discrete time interaction of the agent with the environment. Thus, the time is divided into a sequence of \emph{time steps}, $t=0,1,2,3,...$ . At each time step the agent perceives an \emph{observation} $o_{t}$ of the environment, which is a representation of the environment's \emph{state} $s_{t}$. Depending on the state, the agent selects an \emph{action} $a_{t}$, which will ideally lead to a specific task being solved. 
@@ -15,7 +15,7 @@ The environment's evolution is the sequence of states visited by the agent. Tran
     p(s_{t}|s_{t-1}, a_{t-1}) = p(s_{t}|s_{t-1},...,s_{0},a_{t-1},...,a_{0})  \hspace{0.5cm} \forall t
 \end{equation}
 
-Finally, every time the agent executes an action, a numerical \emph{reward} is received by the agent. Better decisions will produce higher rewards.
+Finally, every time the agent executes an action, a numerical \emph{reward} is received by the agent. Better decisions will produce higher cumulative rewards.
 
 In a nutshell, an MDP can be defined by the tuple $MDP=(\mathcal{S},\matchcal{A},\mathcal{R},\mathcal{P})$, where $\mathcal{S}$ represents the state space and $\mathcal{A}$ the action space. $\mathcal{R}$ represents the \emph{reward function}, which generates a scalar reward $r$ every time step. This reward may depend on $s_{t-1}$; $s_{t-1},a_{t-1}$ or $s_{t-1},a_{t-1},s_{t}$, so $\mathcal{R}$ can be defined with $\mathcal{R}: \mathcal{S} \to \R$, $\mathcal{R}: \mathcal{S} \times \mathcal{A} \to \R$ or $\mathcal{R}: \mathcal{S} \times \mathcal{A} \times \mathcal{S} \to \R$, respectively. Finally, $\mathcal{P}$ corresponds to the transition function, which is the probability $p(s_{t+1}|s_{t}, a_{t})$, where $\mathcal{P}: \mathcal{S} \times \mathcal{A} \times \mathcal{S} \to [0, 1]$. Graphically, an MDP can be summarized in the following diagram:
 
@@ -36,7 +36,7 @@ Reinforcement Learning aims to use the MDP framing of sequential decision-making
     \label{fig:agent-environment}
 \end{figure}
 
-The idea is to use this experience to learn/discover a \emph{policy} that maximizes the total amount of reward the agent receives. A policy $\pi$ is a function that maps states into actions. This mapping can be either deterministic $\pi: \mathcal{S} \to \mathcal{A}$ or stochastic $\pi: \mathcal{S} \times \mathcal{A} \to [0,1]$. To obtain a good performing policy, it is necessary to adequately combine \emph{exploration} with \emph{exploitation}. When exploring, the agent finds more information about the environment; when exploiting, it exploits known information to maximize the reward.
+The idea is to use this experience to learn a \emph{policy} that maximizes the total amount of reward the agent receives. A policy $\pi$ is a function that maps states into actions. This mapping can be either deterministic $\pi: \mathcal{S} \to \mathcal{A}$ or stochastic $\pi: \mathcal{S} \times \mathcal{A} \to [0,1]$. To obtain a good performing policy, it is necessary to adequately combine \emph{exploration} with \emph{exploitation}. When exploring, the agent finds more information about the environment; when exploiting, it exploits known information to maximize the reward.
 
 Commonly, in complex problems, $\pi$ is a parameterized model; then, the goal of reinforcement learning is to find the set of parameters $\theta$ that maximizes the sum of rewards, or \emph{return} $G$, that the agent will obtain when solving a task. As a consequence of the parameterized policy $\pi_{\theta}$, the agent will follow a trajectory $\tau = \{s_{0}, a_{0},...,s_{T}, a_{T}\}$, where $T$ is the number of time steps. When a problem has well-defined initial and final conditions it has a \emph{finite horizon} (the trajectory generated between the initial and final conditions is called \emph{episode}), otherwise, it has an \emph{infinite horizon}. In the former, $T \in \N$; in the later, $T \to \infty$. Finally, $\tau$ follows the probability distribution $p_{\theta}(\tau)$ that depends on $p(s_{t+1}|s_{t}, a_{t})$, $\pi_{\theta}$ and $p_{0}=p(s_{0})$, which corresponds to the initial distribution of states.
 
@@ -64,12 +64,12 @@ Where $\gamma$ allows to control the horizon in which the agent maximizes the re
 Under this framework, there are different approaches for learning policies:
 
 \begin{itemize}
-    \item Value Based
+    \item Value-Based
     \item Policy Search
     \item Actor-Critic
 \end{itemize}
 
-In the \textbf{Value Based} approach, the policy is learned implicitly by learning a \emph{value function}. This function estimates the expected return of the agent for every state, or in other words, how good is to be in a given state. The value for a given state will depend on the the agent's policy, thus, the value function can be written as:
+In \textbf{Value-Based} approaches, the policy is learned implicitly by learning a \emph{value function} parameterized by the weights vector $\theta$. This function estimates the expected return of the agent for every state, or in other words, how good is to be in a given state. The value for a given state will depend on the the agent's policy, thus, the value function can be written as:
 
 \begin{equation}
     V^{\pi}(s_{t'})  = E_{\tau' \sim p_{\theta}(\tau')}\left[\sum_{t=t'}^{T}\gamma^{t}r_{t}(s_{t}, a_{t})|s_{t'}\right]
@@ -93,7 +93,7 @@ The main idea is to find a policy $\pi^{*}$, the \emph{optimal policy}, such tha
     Q^{\pi^{*}}(s,a) \geq Q^{\pi}(s,a) \hspace{0.5cm} \forall s,a,\pi
 \end{equation}
 
-If these conditions are met, then $\theta^{*}$ is obtained. On the other hand, \textbf{Policy Search} approaches update $\theta$ by direct policy differentiation. In this case, the challenge is to estimate the gradient of $J(\theta)$ to update $\theta$ iteratively, using gradient ascent:
+If these conditions are met, then, the optimal vector of weights $\theta^{*}$ is obtained. On the other hand, \textbf{Policy Search} approaches update $\theta$ by direct policy differentiation. In this case, the challenge is to estimate the gradient of $J(\theta)$ to update $\theta$ iteratively, using gradient ascent:
 
 \begin{equation}
     \Delta \theta = \alpha \nabla_{\theta}J(\theta)
@@ -124,7 +124,7 @@ Independently of the technique that is used to solve a problem with Reinforcemen
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.55\linewidth]{imagenes/cap1/RL_anatomy.pdf}
+    \includegraphics[width=0.5\linewidth]{imagenes/cap1/RL_anatomy.pdf}
     \caption{Anatomy of Reinforcement Learning.}
     \label{fig:RL_anatomy}
 \end{figure}
@@ -152,7 +152,7 @@ Figure \ref{fig:free_based_model} summarizes the difference between both approac
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.6\linewidth]{imagenes/cap1/free_based_model.pdf}
+    \includegraphics[width=0.55\linewidth]{imagenes/cap1/free_based_model.pdf}
     \caption{Model-Free vs Model-Based.}
     \label{fig:free_based_model}
 \end{figure}
@@ -201,14 +201,14 @@ In this case, $\phi(s)$ corresponds to normalized gaussians:
 
 ANNs are a widely used model for non-linear function approximation. The idea behind these models is to build a network of interconnected units that have some properties inspired on neurons. There is a large variety of models, the ones relevant to this work are the following:
 
-\begin{itemize}
+\begin{enumerate}
     \item Feedforward Fully-Connected
     \item Convolutional
     \item Autoencoder
     \item Recurrent
-\end{itemize}
+\end{enumerate}
 
-\subsubsection{Feedforward Fully-Connected}
+\subsubsection{1. Feedforward Fully-Connected}
     
 Feedforward Fully-Connected or Feedforward neural networks (FNNs) are the quintessential ANN model. These models are called to be feedforward because the information flows in one sense from the input, trough intermediate representations, to the output. In the mathematical formalization, a network is understood as the model generated when many functions are composed. For instance, you may have three functions ($f^{(1)}$, $f^{(2)}$, $f^{(3)}$) connected in a chain such that:
 
@@ -232,7 +232,7 @@ There are different types of activation functions, such as ReLU, sigmoid or hype
     \label{fig:neuron}
 \end{figure}
 
-As mentioned before, a layer may have many neurons. The number of neurons in a layer is known as the \emph{width} of the layer. The inputs $x$ of a neuron are the outputs of every neuron of the past layer.  There are three types of layers: \textbf{input}, \textbf{hidden} and \textbf{output}. The input layer is the input of $\Psi$, which is $s$ in this context (which is not actually a layer). The output layer is the final function in the chain of functions that compose $\Psi$, which outputs the output of $\Psi$. And finally, the hidden layers are all the functions in between the input and output layers. Graphically, a FNN with one hidden layer is presented in Figure \ref{fig:FNN}.
+As mentioned before, a layer may have many neurons. The number of neurons in a layer is known as the \emph{width} of the layer. The inputs $x$ of a neuron are the outputs of every neuron of the past layer.  There are three types of layers: \textbf{input}, \textbf{hidden} and \textbf{output}. The input layer is the input of $\Psi$, which is $s$ in this context (which is not actually a layer). The output layer is the final function in the chain of functions that compose $\Psi$, which outputs the output of $\Psi$. Finally, the hidden layers are all the functions in between the input and output layers. Graphically, a FNN with one hidden layer is presented in Figure \ref{fig:FNN}.
 
 \begin{figure}[H]
     \centering
@@ -241,11 +241,11 @@ As mentioned before, a layer may have many neurons. The number of neurons in a l
     \label{fig:FNN}
 \end{figure}
 
-It can be observed that the nonlinearity that characterizes neural networks exists because of the activation functions, which are nonlinear. This is an essential condition for neural networks to be \emph{universal approximators} \cite{cybenko1989approximation, hornik1991approximation}. What this states is that a neural network with at least one hidden layer containing a large enough finite number of neurons can approximate any continuous function on a compact region of the network's input space to any degree of accuracy. This is a powerful property; nevertheless, finding the set of weights that parameterize the network in order to approximate an arbitrary function is another story, and a lot of work has been done in that regard. 
+It can be observed that the nonlinearity that characterizes neural networks exists because of the activation functions, which are nonlinear. This is an essential condition for neural networks to be \emph{universal approximators} \cite{cybenko1989approximation, hornik1991approximation}. What this states is that a neural network with at least one hidden layer containing a large enough finite number of neurons can approximate any continuous function on a compact region of the network's input space to any degree of accuracy. This is a powerful property; nevertheless, finding the set of weights that parametrize the network in order to approximate an arbitrary function is another story, which will be discussed in Section \ref{sec:learning}.
 
 Finally, going back to the concept of a parameterized policy $\pi_{\theta}$, in this case $\theta$ would correspond to the concatenation of all the weights (including biases) of the layers of a network. \newline
 
-\subsubsection{Convolutional}
+\subsubsection{2. Convolutional}
     
 Convolutional Neural Networks (CNNs) are a specialized type of neural network. The main feature of these networks is that they are designed such that convolutions are employed in at least one layer. In the area of signal processing convolutions are a well-known tool for applying filters to signals, and at the same time, filtering signals is a well-known way of extracting features out of them. The approach proposed by CNNs is to learn the weights of these filters (also known as kernels) as a part of the network's learning process, and that by construction, these filters are applied to the inputs of the convolutional layers.
 
@@ -297,7 +297,7 @@ Pooling helps the model to be approximately invariant to translations in the inp
 \label{fig:cnn}
 \end{figure}
 
-\subsubsection{Autoencoder}
+\subsubsection{3. Autoencoder}
     
 An autoencoder is a special type of ANN that aims to copy the input of the network to its output i.e. aims to be the identity function. Although solving this problem may seem to be useless, it has some interesting properties. In this work, we are interested in using autoencoders for dimensionality reduction and feature learning. 
 
@@ -319,7 +319,7 @@ The goal of the autoencoder is to minimize the loss function:
 
 Where $L$ is a dissimilarity function such as the mean squared error. This model may have convolutional, fully-connected, both or other types of layers.
 
-\subsubsection{Recurrent}
+\subsubsection{4. Recurrent}
     
 Recurrent Neural Networks (RNNs), unlike FNNs or CNNs, have memory. They are designed to work with sequential data. What this means, that past evaluations of the network affect the ones in the future. RNNs have an internal state, or hidden state $h_{state}^{t}$ ($t$ represents the time step), that is modified every time an input is fed to the network such that:
 
@@ -371,6 +371,7 @@ Nevertheless, vanilla RNNs have some structural problems related to the computat
 Where $i$, $f$, $o$, $g$ are called \textbf{gates} and each one of them is a vector used for internal computations of the recurrent unit. $\sigma_{f}$ corresponds to the $sigmoid$ activation function, $\odot$ is the element-wise product (Hadamard product) operator and $W$ is a weight matrix containing the submatrices $W_{i}$, $W_{f}$, $W_{o}$ and $W_{g}$. A LSTM layer or unit has two internal states $c^{t}$ and $h^{t}$. $h^{t}$ is still known as the hidden state and $c^{t}$ is known as the cell state.
 
 \subsection{Parameter Tuning}
+\label{sec:learning}
 
 Until now, we have discussed that policies can by represented as parameterized models, called function approximators, and that the two most relevant to this work are LCBFs and ANNs. Nevertheless, we have not discussed on how to tune the parameters of these models in order for them to approximate a specific function.
 
@@ -394,16 +395,9 @@ Before the Deep RL era, ANNs where not a predominant function approximator for s
 
 In the context of this work, Interactive Machine Learning (IML) is understood as a research area that gathers all the techniques in which humans/users take part in the agent's learning process for solving sequential decision-making problems. Other works refer to IML as an area that focuses on learning classifiers with the help of users \cite{fails2003interactive, ware2001interactive, amershi2012regroup, ngo2014efficient}.
 
-As RL, IML can also be studied under the framework of MDPs. The main difference with RL is that in IML having an explicitly defined reward function is not a requirement. Some approaches may combine the information gathered from the human with the one given by a reward function, while others, may not need a reward function at all. Figure \ref{fig:LfF} summarizes the LfF approach.
+As RL, IML can also be studied under the framework of MDPs. The main difference with RL is that in IML having an explicitly defined reward function is not a requirement. Some approaches may combine the information gathered from the human with the one given by a reward function, while others, may not need a reward function at all.
 
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.5\linewidth]{imagenes/cap1/LfF.pdf}
-    \caption{Learning from Feedback.}
-    \label{fig:LfF}
-\end{figure}
-
-In this work, we divide IML into two areas: \textbf{Learning from Demonstration (LfD)} and \textbf{Learning from Feedback (LfF)}. 
+In this work, we divide IML into two areas: \textbf{Learning from Demonstration (LfD)} and \textbf{Learning from Feedback (LfF)}.
 
 \subsection{Learning from Demonstration}
 
@@ -422,7 +416,9 @@ When the platform of the agent is different to the one in which the demonstratio
 
 \subsubsection{Distributional Drift}
 
-The \textbf{Distributional Drift} is an issue that every LfD approach could have if is not taken into account. This problem arises because the probability distribution of the trajectory followed by the policy $p_{\pi_{\theta}}$ "drifts" from the one of the demonstrator $p_{data}$. This happens because even though the agent imitates the demonstrator, it is very difficult for the agent to make a perfect imitation. Thus, small errors over several states accumulate into a larger error that eventually makes the agent to fail. This phenomenon can be observed in Figure \ref{fig:drift}, where the drift is shown over one dimension of the state.
+The \textbf{Distributional Drift} is an issue that every LfD approach could have if is not taken into account. This problem arises because the probability distribution of the trajectory followed by the policy $p_{\pi_{\theta}}$ \emph{drifts} from the one of the demonstrator $p_{data}$. This happens because even though the agent imitates the demonstrator, it is very difficult for the agent to make a perfect imitation. Thus, small errors over several states accumulate into a larger error that eventually causes the agent to fail. This phenomenon can be observed in Figure \ref{fig:drift}, where the drift is shown over one dimension of the state.
+
+\newpage
 
 \begin{figure}[H]
     \centering
@@ -442,9 +438,18 @@ A well-known algorithm that tackles this problem is called \textbf{DAgger} \cite
 
 One of the problems that DAgger presents in real-world applications is that the process of labeling the data can be challenging or unfeasible. For instance, robots commonly execute continuous actions, but for a human is not intuitive to assign a continuous valued label to an observation.
 
+\newpage
+
 \subsection{Learning from Feedback}
 
-We define LfF as the paradigms in where policies are shaped by occasional human feedback. In this case there are no demonstrations; instead, \textbf{corrections} or \textbf{evaluations} are given by a teacher over the decisions made by the learning agent.
+We define LfF as the paradigms in where policies are shaped by occasional human feedback. In this case there are no demonstrations; instead, \textbf{corrections} or \textbf{evaluations} are given by a teacher over the decisions made by the learning agent. Figure \ref{fig:LfF} summarizes the LfF approach.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.47\linewidth]{imagenes/cap1/LfF.pdf}
+    \caption{Learning from Feedback.}
+    \label{fig:LfF}
+\end{figure}
 
 \subsubsection{Evaluative Feedback}
 
@@ -453,7 +458,7 @@ Evaluative feedback has been used similarly to RL in methods wherein a human tea
 \begin{itemize}
     \item \textbf{Interactive Reinforcement Learning:} RL-based methodologies in which the reward signals are given by a human.
     \item \textbf{Human Reinforcement Modeling:} A reward function is modeled from the feedback given by a human. Then, this model is used as the reward function in a RL-based approach.
-    \item \textbf{The \emph{shaping} approach:} This is a LfF approach known as TAMER \cite{Knox:2009:ISA:1597735.1597738}. The policy is interactively shaped with evaluations that the teacher provides occasionally, not like in RL, where the policy is updated with information received every time step from the reward function.
+    \item \textbf{The \emph{shaping} approach:} This is a LfF approach known as TAMER \cite{Knox:2009:ISA:1597735.1597738}. The policy is interactively shaped with evaluations that the teacher provides occasionally.
 \end{itemize}
 
 
@@ -482,7 +487,7 @@ In COACH, if the agent executes an action $a$ that the human considers to be err
 $h=0$ indicates that no correction has been advised. $h=\pm 1$ indicates the direction of the advised correction.
 
 In this framework no value function is modeled, since no reward/cost is used in the learning process. A parameterized policy is directly learned in the parameter space, as in Policy Gradients RL. 
-The classic COACH algorithm shapes two functions parametrized as a linear model of basis functions. The objective of the first function is to learn the policy of the agent $\pi_{\theta}(s)=\phi(s) \cdot \theta$; the objective of the second function, $H_{\psi}(s)=\phi(s) \cdot \psi$, is to learn a prediction of the human feedback. The parameter vectors $\theta$ and $\psi$ are updated to shape the models. As it can be seen, $\phi(s)$ is the same vector for both the \textbf{Policy Model} $\pi(s)$ and the \textbf{Human Feedback Model}  $H(s)$. The Human Feedback Model is used to adapt the size of the error signal that is then used to update the weights of $\pi(s)$. Both functions are updated using stochastic gradient descent each time feedback is received. The pseudocode of COACH is shown in Algorithm \ref{algorithm:COACH}.
+The classic COACH algorithm shapes two functions parameterized as a linear model of basis functions. The objective of the first function is to learn the policy of the agent $\pi_{\theta}(s)=\phi(s) \cdot \theta$; the objective of the second function, $H_{\psi}(s)=\phi(s) \cdot \psi$, is to learn a prediction of the human feedback. The parameter vectors $\theta$ and $\psi$ are updated to shape the models. As it can be seen, $\phi(s)$ is the same vector for both the \textbf{Policy Model} $\pi(s)$ and the \textbf{Human Feedback Model}  $H(s)$. The Human Feedback Model is used to adapt the size of the error signal that is then used to update the weights of $\pi(s)$. Both functions are updated using stochastic gradient descent each time feedback is received. The pseudocode of COACH is shown in Algorithm \ref{algorithm:COACH}.
 
 \begin{algorithm}[H]
 \caption{Basic Structure of COACH}\label{algorithm:COACH}

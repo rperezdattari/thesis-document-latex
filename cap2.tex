@@ -155,6 +155,7 @@ Car Racing    & $64\times64\times1$  \\ \hline
 Duckie Racing & $64\times64\times1$  \\ \hline
 \end{tabular}}
 \end{table}
+
 \subsection{Validation of replay buffer with simulated teachers}
 The use of experience replay has been extensively validated in DRL; however, in this approach, we  still consider it necessary to test its impact. Unlike DRL, where the policy is updated with information collected from every time step, in COACH-like methods there is only new data to update the policy when feedback is given by the teacher, so the amount of data used to update the policy may be lower than in the RL case. Since the original COACH has been widely validated with real human teachers in several tasks, we carried out most of the comparisons using  a simulated teacher (a high performance policy standing-in as teacher, which was actually trained with D-COACH OFF and a real human teacher), like in some of the experiments presented in \cite{Celemin2018AnInteractive}, in order to compare the methods under more controlled conditions. 
 

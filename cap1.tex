@@ -31,11 +31,10 @@ Reinforcement Learning aims to use the MDP framing of sequential decision-making
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.7\linewidth]{imagenes/cap1/agent_environment.png}
-    \caption{The agent-environment interaction.\protect\footnotemark}
+    \includegraphics[width=0.6\linewidth]{imagenes/cap1/agent_environment.pdf}
+    \caption{The agent-environment interaction.}
     \label{fig:agent-environment}
 \end{figure}
-\footnotetext{Image taken from \cite{sutton2018reinforcement}.}
 
 The idea is to use this experience to learn/discover a \emph{policy} that maximizes the total amount of reward the agent receives. A policy $\pi$ is a function that maps states into actions. This mapping can be either deterministic $\pi: \mathcal{S} \to \mathcal{A}$ or stochastic $\pi: \mathcal{S} \times \mathcal{A} \to [0,1]$. To obtain a good performing policy, it is necessary to adequately combine \emph{exploration} with \emph{exploitation}. When exploring, the agent finds more information about the environment; when exploiting, it exploits known information to maximize the reward.
 
@@ -153,11 +152,10 @@ Figure \ref{fig:free_based_model} summarizes the difference between both approac
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.6\linewidth]{imagenes/cap1/free_based_model.png}
-    \caption{Model-Free vs Model-Based.\protect\footnotemark}
+    \includegraphics[width=0.6\linewidth]{imagenes/cap1/free_based_model.pdf}
+    \caption{Model-Free vs Model-Based.}
     \label{fig:free_based_model}
 \end{figure}
-\footnotetext{Image taken from \url{http://www0.cs.ucl.ac.uk/staff/d.silver/web/Teaching_files/dyna.pdf}}
 
 \subsubsection[Experience Replay]{Experience Replay \cite{atari, lin1993reinforcement, zhang2017deeper}}
 \label{sss:ER}
@@ -229,21 +227,19 @@ There are different types of activation functions, such as ReLU, sigmoid or hype
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.6\linewidth]{imagenes/cap1/neuron.jpeg}
-    \caption{Neuron ($b$ considered as an extra dimension of $w$).\protect\footnotemark}
+    \includegraphics[width=0.6\linewidth]{imagenes/cap1/neuron.pdf}
+    \caption{Neuron ($b$ considered as an extra dimension of $w$).}
     \label{fig:neuron}
 \end{figure}
-\footnotetext{Image taken from \url{https://becominghuman.ai/artificial-neuron} \newline \url{-networks-basics-introduction-to-neural-networks-3082f1dcca8c}}
 
-As mentioned before, a layer may have many neurons. The number of neurons in a layer is known as the \emph{width} of the layer. The inputs $x$ of a neuron are the outputs of every neuron of the past layer.  There are three types of layers: \textbf{input}, \textbf{hidden} and \textbf{output}. The input layer is the input of $\Psi$, which is $s$ in this context (which is not actually a layer). The output layer is the final function in the chain of functions that compose $\Psi$, which outputs the output of $\Psi$. And finally, the hidden layers are all the functions in between the input and output layers. Graphically, a FNN with one hidden layer is presented in Figure \ref{fig:FNN}, where every layer is denoted by $u_{j}$.
+As mentioned before, a layer may have many neurons. The number of neurons in a layer is known as the \emph{width} of the layer. The inputs $x$ of a neuron are the outputs of every neuron of the past layer.  There are three types of layers: \textbf{input}, \textbf{hidden} and \textbf{output}. The input layer is the input of $\Psi$, which is $s$ in this context (which is not actually a layer). The output layer is the final function in the chain of functions that compose $\Psi$, which outputs the output of $\Psi$. And finally, the hidden layers are all the functions in between the input and output layers. Graphically, a FNN with one hidden layer is presented in Figure \ref{fig:FNN}.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.6\linewidth]{imagenes/cap1/NeuralNetwork.png}
-    \caption{Feedforward Neural Network model with one hidden layer.\protect\footnotemark}
+    \includegraphics[width=0.4\linewidth]{imagenes/cap1/nn.pdf}
+    \caption{Feedforward Neural Network model with one hidden layer.}
     \label{fig:FNN}
 \end{figure}
-\footnotetext{Image taken from \url{http://lenguyenthedat.com/minimal-data-science-3-mnist-neuralnet/}}
 
 It can be observed that the nonlinearity that characterizes neural networks exists because of the activation functions, which are nonlinear. This is an essential condition for neural networks to be \emph{universal approximators} \cite{cybenko1989approximation, hornik1991approximation}. What this states is that a neural network with at least one hidden layer containing a large enough finite number of neurons can approximate any continuous function on a compact region of the network's input space to any degree of accuracy. This is a powerful property; nevertheless, finding the set of weights that parameterize the network in order to approximate an arbitrary function is another story, and a lot of work has been done in that regard. 
 
@@ -269,11 +265,10 @@ In this case K has dimension $L \times M$. Figure \ref{fig:conv} shows an exampl
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.4\linewidth]{imagenes/cap1/convolution.jpg}
-    \caption{Convolution operation in an image.\protect\footnotemark}
+    \includegraphics[width=0.6\linewidth]{imagenes/cap1/convolution.pdf}
+    \caption{Convolution operation in an image.}
     \label{fig:conv}
 \end{figure}
-\footnotetext{Image taken from \url{https://developer.apple.com/library/archive/documentation/} \newline \url{Performance/Conceptual/vImage/ConvolutionOperations/ConvolutionOperations.html}}
 
 So, in CNNs, Equation \ref{eq:h} has the following shape:
 
@@ -288,21 +283,19 @@ To modify the output of a convolutional layer further, it is common to use a \te
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.4\linewidth]{imagenes/cap1/max_pool.png}
-    \caption{Max pooling operation.\protect\footnotemark}
+    \includegraphics[width=0.5\linewidth]{imagenes/cap1/max_pool.pdf}
+    \caption{Max pooling operation.}
     \label{fig:maxpool}
 \end{figure}
-\footnotetext{Image taken from \url{https://computersciencewiki.org/index.php/Max-pooling_/_Pooling}}
 
 Pooling helps the model to be approximately invariant to translations in the input space. An alternative to pooling, is to use a convolution with \textbf{stride} greater than one. The stride is the distance skipped between values of the input to where the kernel is applied, which in the default case is one (no skipping). It has been observed that replacing pooling by stride$>1$ has no loss in accuracy for several image recognition benchmarks \cite{springenberg2014striving}. Figure \ref{fig:cnn} shows a CNN used for classification.
     
 \begin{figure}[H]
 \centering
-\includegraphics[width=0.9\linewidth]{imagenes/cap1/cnn.png}
-\caption{Convolutional Neural Network.\protect\footnotemark}
+\includegraphics[width=\linewidth]{imagenes/cap1/cnn.pdf}
+\caption{Convolutional Neural Network.}
 \label{fig:cnn}
 \end{figure}
-\footnotetext{Image taken from \url{https://towardsdatascience.com/build-your-own} \newline \url{-convolution-neural-network-in-5-mins-4217c2cf964f}}
 
 \subsubsection{Autoencoder}
     
@@ -312,11 +305,10 @@ This neural network is divided in two parts, the \textbf{encoder $e(x)$} and the
     
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\linewidth]{imagenes/cap1/ae.png}
-    \caption{Autoencoder.\protect\footnotemark}
+    \includegraphics[width=\linewidth]{imagenes/cap1/ae.pdf}
+    \caption{Autoencoder.}
     \label{fig:ae}
 \end{figure}
-\footnotetext{Image taken from \url{https://hackernoon.com/latent-space-visualization-deep-learning-bits-2-bd09a46920df}}    
     
 The goal of the autoencoder is to minimize the loss function:
 
@@ -345,11 +337,10 @@ Where the main difference is that the term $w_{hh} \cdot h_{state\mathrm{-}i}^{t
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.3\linewidth]{imagenes/cap1/unfolded_rnn.png}
-    \caption{Unfolded vanilla RNN.\protect\footnotemark}
+    \includegraphics[width=0.4\linewidth]{imagenes/cap1/unfolded_rnn.pdf}
+    \caption{Unfolded vanilla RNN.}
     \label{fig:rnn_unfolded}
 \end{figure}
-\footnotetext{Image taken from \url{http://blog.jacobandreas.net/monference.html}}
 
 In RNN contexts, commonly, the hidden state is represented as a whole vector directly, and not by the equations of every neuron. A weight matrix $W_{h}$ is used, and corresponds to the concatenation of the weights of every neuron, including the bias, such that:
 
@@ -407,7 +398,7 @@ As RL, IML can also be studied under the framework of MDPs. The main difference 
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.5\linewidth]{imagenes/cap1/LfF.png}
+    \includegraphics[width=0.5\linewidth]{imagenes/cap1/LfF.pdf}
     \caption{Learning from Feedback.}
     \label{fig:LfF}
 \end{figure}
@@ -420,11 +411,10 @@ LfD is a learning paradigm in which a demonstrator provides labelled data of a d
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.9\linewidth]{imagenes/cap1/b_cloning.png}
-    \caption{Behavior cloning. \protect\footnotemark}
+    \includegraphics[width=0.8\linewidth]{imagenes/cap1/b_cloning.pdf}
+    \caption{Behavior cloning.}
     \label{fig:b_cloning}
 \end{figure}
-\footnotetext{Image taken from \url{http://rail.eecs.berkeley.edu/deeprlcourse/static/slides/lec-2.pdf}}
 
 \subsubsection{Imitation Learning}
 
@@ -436,11 +426,10 @@ The \textbf{Distributional Drift} is an issue that every LfD approach could have
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.7\linewidth]{imagenes/cap1/drift.png}
-    \caption{Distributional Drift.\protect\footnotemark}
+    \includegraphics[width=0.7\linewidth]{imagenes/cap1/drift.pdf}
+    \caption{Distributional Drift.}
     \label{fig:drift}
 \end{figure}
-\footnotetext{Image taken from \url{http://rail.eecs.berkeley.edu/deeprlcourse/static/slides/lec-2.pdf}}
 
 A well-known algorithm that tackles this problem is called \textbf{DAgger} \cite{ross2011reduction}. This approach matches $p_{\pi_{\theta}}$ with $p_{data}$, such that $p_{\pi_{\theta}} = p_{data}$. The main idea is that instead of collecting samples from the demonstrator, collect them by running $\pi_{\theta}$ and then label them with the demonstrator. Samples are collected, labeled, added to the database $\mathcal{D}$ and used for training iteratively, in order to approach asymptotically to $p_{data}$. The basic structure of DAgger is the following:
 

@@ -134,6 +134,18 @@ Right       & (1, -1, 0)                                       \\ \hline
 
 The hyper-parameters of the neural networks used in these experiments were tuned with preliminary experiments. Different combinations of them were tested by a human teacher and the ones that made the training easiest were selected. The architecture used is the one shown in \figurename~{\ref{fig:network_diagram}}. The hyper-parameters of each layer are presented in Tables \ref{table:off_hypers1}, \ref{table:off_hypers2} and \ref{table:off_hypers3}.
 
+\begin{table}
+\centering
+\caption{D-COACH OFF state spaces sizes.}
+\label{table:off_hypers3}
+\begin{tabular}{lc}
+\textbf{Problem}     & \textbf{Input size} \\ \hline \hline
+Cart-Pole     & 4                   \\ \hline
+Car Racing    & $64\times64\times1$  \\ \hline
+Duckie Racing & $64\times64\times1$  \\ \hline
+\end{tabular}
+\end{table}
+
 \begin{table}[H]
 \parbox{\linewidth}{
 \centering
@@ -162,18 +174,6 @@ FC2            & ReLU                                    & \begin{tabular}[c]{@{
 \end{tabular}
 \end{table}
 
-\begin{table}
-\centering
-\caption{D-COACH OFF state spaces sizes.}
-\label{table:off_hypers3}
-\begin{tabular}{lc}
-\textbf{Problem}     & \textbf{Input size} \\ \hline \hline
-Cart-Pole     & 4                   \\ \hline
-Car Racing    & $64\times64\times1$  \\ \hline
-Duckie Racing & $64\times64\times1$  \\ \hline
-\end{tabular}
-\end{table}
-
 \subsection{Validation of replay buffer with simulated teachers}
 The use of experience replay has been extensively validated in DRL \cite{atari, lin1993reinforcement, zhang2017deeper}; however, in this approach, we  still consider it necessary to test its impact. Unlike DRL, where the policy is updated with information collected from every time step, in COACH-like methods there is only new data to update the policy when feedback is given by the teacher, so the amount of data used to update the policy may be lower than in the RL case. Since the original COACH has been widely validated with real human teachers in several tasks such as Mountain Car, Cart-Pole, Ball Dribbling with Humanoid Robots and Bicycle Balancing \cite{Celemin2018AnInteractive}, we carried out most of the comparisons using  a simulated teacher (a high performance policy standing-in as teacher, which was actually trained with D-COACH OFF and a real human teacher), like in some of the experiments presented in \cite{Celemin2018AnInteractive}, in order to compare the methods under more controlled conditions. 
 
@@ -183,14 +183,14 @@ A comparison of D-COACH OFF with and without the use of an experience replay buf
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.7\linewidth]{imagenes/cap3/buffer_cart_pole.pdf}
+    \includegraphics[width=0.66\linewidth]{imagenes/cap3/buffer_cart_pole.pdf}
     \caption[Comparison between using or not experience replay buffer for different values of $P_\mathit{err}$ in the Cart-Pole problem.]{Comparison between using or not experience replay buffer for different values of $P_\mathit{err}$ in the Cart-Pole problem. Buffer: $K = 200$; $b = 10$; $N = 50$. $P_{h}$: $\alpha = 0.6$; $\tau = 0.0003$; $\emph{e}=\textbf{1}$. Simulated teacher network learning rate: $0.0003$.}
     \label{fig:buffer_cart_pole}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.7\linewidth]{imagenes/cap3/bufferCarRacing.pdf}
+    \includegraphics[width=0.66\linewidth]{imagenes/cap3/bufferCarRacing.pdf}
     \caption[Comparison between using or not experience replay buffer for different values of $P_\mathit{err}$ in the Car Racing problem.]{Comparison between using or not experience replay buffer for different values of $P_\mathit{err}$ in the Car Racing problem. Buffer: $K = 1000$; $b = 10$; $N = 100$. $P_{h}$: $\alpha = 0.6$; $\tau = 0.000015$; $\emph{e}=\textbf{1}$. Simulated teacher network learning rate: $0.0003$.}
     \label{fig:buffer_car_racing}
 \end{figure}

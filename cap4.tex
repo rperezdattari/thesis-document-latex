@@ -128,9 +128,11 @@ In the same way as in the low-dimensional observation case, the transition model
 
 \begin{figure}[h]
     \centering
+    \vspace{1.5cm}
     \includegraphics[width=0.93\linewidth]{imagenes/cap4/hd_mon2.pdf}
     \caption{Policy update step.}
     \label{fig:hd_mon_train2}
+    \vspace{1.5cm}
 \end{figure}
 
 
@@ -139,6 +141,8 @@ In the same way as in the low-dimensional observation case, the transition model
 In Algorithm \ref{algorithm:DeepCOACH-M}, the pseudocode of D-COACH MON is presented. The hidden state of the LSTM is denoted as  $h^{\mathrm{LSTM}}$ and the human corrective feedback as $h$.
 
 In every time step, the agent executes an action based on its last observation and in the current hidden state of the LSTM (line 5). This hidden state is updated using its previous value and the most recent observation and action (line 7). In this occasion, a buffer in charge of storing the samples of the transition function model ($\mathcal{D}$) is incorporated. In both buffers, $\mathcal{B}$ and $\mathcal{D}$, sequences with length $\tau$ are stored (lines 8 and 18), which is necessary for training the LSTM. This is done following the \emph{bootstrapped random updates} \cite{hausknecht2015deep} strategy. As in the former versions of D-COACH, $\mathcal{B}$ is used for updating the policy (lines 16 and 22) by replaying past corrections. In contrast, $\mathcal{D}$ replays past transitions of the environment in order to update the transition function model (lines 17 and 24). The transition model is updated every time feedback is given (lines 15 and 17), in the same way as it is done with the policy in all of the variations of D-COACH, including this one (lines 14 and 16). 
+
+\newpage
 
 \begin{algorithm}[H]
 \caption{D-COACH MON: Memoryful Online State Representation Learning}\label{algorithm:DeepCOACH-M}
@@ -149,13 +153,6 @@ In every time step, the agent executes an action based on its last observation a
 \State \textbf{observe} observation $o_{t}$
 \State \textbf{execute} action $a_{t}=\pi(o_{t}, h^{\mathrm{LSTM}}_{t-1})$
 \State \textbf{feedback} human corrective advice $h_{t}$
-\algstore{myalg}
-\end{algorithmic}
-\end{algorithm}
-
-\begin{algorithm}            
-\begin{algorithmic} [1]                  
-\algrestore{myalg}
 \State \textbf{compute} $h^{\mathrm{LSTM}}_{t}$ from $M(o_{t}, a_{t},h^{\mathrm{LSTM}}_{t-1})$
 \State \textbf{append} $(o_{t-1},...,o_{t-\tau},a_{t-1},...,a_{t-\tau},o_{t})$ to $\mathcal{D}$
 \If{length($\mathcal{D}$) $> L$ }
@@ -188,9 +185,37 @@ In every time step, the agent executes an action based on its last observation a
 Simulated teachers were used in three different problems for validating D-COACH MON. The main idea behind these experiments is to compare D-COACH MON with D-COACH ON in partially observable problems.
 
 \begin{enumerate}
-    \item \textbf{Partially Observed Cart-Pole:} A partially observed low-dimensional observation scenario. This is the same environment used in Chapter 3 with a modification in the observation space of the agent. In the standard fully-observable cart-pole the state has four dimensions, which consists of the position $x$ and velocity $\dot x$ of the cart and the angle $\theta$ and angular velocity $\dot \theta$ of the pole, such that $s=[x, \dot x, \theta, \dot \theta]$. In this case, we take out the derivatives present in the state, such that $s=[x, \theta]$.
-    \item \textbf{Partially Observed Cart-Pole from Pixels:} The Cart-Pole environment is modified to use as input raw pixels from an image with dimensions $32\times32\times1$ (high-dimensional state). 
-    \item \textbf{Partially Observed Car Racing:} A partially observed high-dimensional state scenario. The Car Racing problem presented in Chapter 2 is modified such that the indicators in the bottom of the image are no longer available (see Figure \ref{fig:no_inds_car_racing}). 
+    \item \textbf{Partially Observed Cart-Pole:} A partially observed low-dimensional observation scenario. This is the same environment used in Chapter 3 with a modification in the observation space of the agent. In the standard fully-observable Cart-Pole the state has four dimensions, which consists of the position $x$ and velocity $\dot x$ of the cart and the angle $\theta$ and angular velocity $\dot \theta$ of the pole, such that $s=(x, \dot x, \theta, \dot \theta)$. In this case, we take out the derivatives present in the state, such that $s=(x, \theta)$.
+    
+    \item \textbf{Partially Observed Cart-Pole from Pixels:} The Cart-Pole environment is modified to use as input raw pixels from an image. The size of the Cart-Pole with respect to the background is incremented to make it easier to learn a low-dimensional representation of the input. The image dimensions are $(600 \times 400 \times 3)$, which is then cropped to $(400 \times 400 \times 3)$ and finally downsampled to $(32 \times 32 \times 1)$ (see Figure \ref{fig:cartpoles}).
+    
+    \begin{figure}[H]
+    \centering
+    \hspace{0.4cm}
+    \subfloat[][Original Cart-Pole environment.]
+    {
+    \setlength{\fboxsep}{0pt}%
+    \setlength{\fboxrule}{1pt}%
+    {\fbox{\includegraphics[width=0.35\linewidth]{imagenes/cap4/cartpole_LD.png}}} 
+    }
+    \hspace{1.3cm}
+    \captionsetup{justification=centering}
+    {
+    \setlength{\fboxsep}{0pt}%
+    \setlength{\fboxrule}{1pt}%
+    \subfloat[][Cart-Pole from pixels \\ $(600 \times 400 \times 3)$.]{\fbox{\includegraphics[width=0.35\linewidth]{imagenes/cap4/cartpole_HD.png}}}
+    }
+    \newline
+    {
+    \setlength{\fboxsep}{0pt}%
+    \setlength{\fboxrule}{1pt}%
+    \subfloat[][Cart-Pole from pixels neural network input \\ $(32 \times 32 \times 1)$. ]{\fbox{\includegraphics[width=0.25\linewidth]{imagenes/cap4/cartpole_hd2.png}}}
+    }
+    \caption{Cart-Pole environment comparison.} 
+    \label{fig:cartpoles} 
+    \end{figure}    
+    
+    \item \textbf{Partially Observed Car Racing:} A partially observed high-dimensional state scenario. The Car Racing problem presented in Chapter 3 is modified such that the indicators at the bottom of the image are no longer available (see Figure \ref{fig:no_inds_car_racing}). 
 \end{enumerate}
 
 \begin{figure}[h]
@@ -274,7 +299,7 @@ D-COACH MON is tested in the partially observed cart-pole because it is a way of
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.7\linewidth]{imagenes/cap3/cartpole_LD_model.pdf}
-    \caption[Partially observed Cart-Pole results for simulated teacher comparing D-COACH ON and D-COACH MON.]{Partially observed cart-pole results for simulated teacher comparing D-COACH ON and D-COACH MON.  Buffer: $K = 200$; $k=5$; $b = 10$; $N = 50$; $L=1\mathrm{e}5$; $l=5$; $d=1$; $M=50$; $\tau=8$; $P_{h}$: $\alpha = 0.35$; $\tau = 0.0003$; $\emph{e}=\textbf{1}$. Simulated teacher network learning rate: $0.005$; Transition model learning rate: $0.0005$.}
+    \caption[Partially observed Cart-Pole results for simulated teacher comparing D-COACH ON and D-COACH MON.]{Partially observed cart-pole results for simulated teacher comparing D-COACH ON and D-COACH MON.  Buffer: $K = 200$; $k=5$; $b = 10$; $N = 50$; $L=1\mathrm{e}5$; $l=5$; $d=1$; $M=50$; $\tau=8$; $P_{h}$: $\alpha = 0.35$; $\tau = 0.0003$; $\emph{e}=1$. Simulated teacher network learning rate: $0.005$; Transition model learning rate: $0.0005$.}
     \label{fig:ld_cartpole_model}
 \end{figure}
 
@@ -282,9 +307,10 @@ D-COACH ON is not able to learn a well performing policy in this case. This was 
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.7\linewidth]{imagenes/cap4/cartpole_ex.pdf}
+    \includegraphics[width=0.65\linewidth]{imagenes/cap4/cartpole_ex.pdf}
     \caption{Cart-pole partial observability example.}
     \label{fig:cp_ex}
+    \vspace{-0.2cm}
 \end{figure}
 
 In contrast, if the agent makes decisions based on previous observations it can understand that these two scenarios are different and take better decisions. This is shown in the blue curve of Figure \ref{fig:ld_cartpole_model}, where the agent is able to learn a well performing policy in about 12 minutes. 
@@ -295,23 +321,24 @@ In this section, we validate D-COACH MON in two different problems (once again, 
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.7\linewidth]{imagenes/cap3/cartpole_HD_model.pdf}
-    \caption[Partially observed Cart-Pole from pixels results for simulated teacher comparing D-COACH ON and D-COACH MON.]{Partially observed cart-pole from pixels results for simulated teacher comparing D-COACH ON and D-COACH MON.  Buffer: $K = 1000$; $k=20$; $b = 1$; $N = 20$; $L=1\mathrm{e}5$; $l=20$; $d=1$; $M=50$; $\tau=4$; $P_{h}$: $\alpha = 0.35$; $\tau = 0.00003$; $\emph{e}=\textbf{1}$; $m=50$; $\epsilon=0.0011$. Simulated teacher network learning rate: $0.0003$; Transition model learning rate: $0.0005$; Autoencoder learning rate: $0.0003$.}
+    \vspace{-0.2cm}
+    \caption[Partially observed Cart-Pole from pixels results for simulated teacher comparing D-COACH ON and D-COACH MON.]{Partially observed cart-pole from pixels results for simulated teacher comparing D-COACH ON and D-COACH MON.  Buffer: $K = 1000$; $k=20$; $b = 1$; $N = 20$; $L=1\mathrm{e}5$; $l=20$; $d=1$; $M=50$; $\tau=4$; $P_{h}$: $\alpha = 0.35$; $\tau = 0.00003$; $\emph{e}=1$; $m=50$; $\epsilon=0.0011$. Simulated teacher network learning rate: $0.0003$; Transition model learning rate: $0.0005$; Autoencoder learning rate: $0.0003$.}
     \label{fig:cp_hd}
 \end{figure}
 
-Figure \ref{fig:cp_hd} shows a slower learning speed and a less successful convergence of D-COACH MON if we compare its performance with the one obtained in the low-dimensional observation partially observed Cart-Pole (see Figure \ref{fig:ld_cartpole_model}). This is expected, since in this case the agent must also learn to extract features from the image. Also, D-COACH ON is not able to learn a well performing policy for this problem. So, even though D-COACH MON is not able to achieve the score of 500, a considerable improvement is made over its memoryless version, showing the importance of using recurrency in this type of problems.
+Figure \ref{fig:cp_hd} shows a slower learning speed and a less successful convergence of D-COACH MON if we compare its performance with the one obtained in the low-dimensional observation partially observed Cart-Pole (see Figure \ref{fig:ld_cartpole_model}). This is expected, since in this case the agent must also learn to extract features from the image. Also, D-COACH ON is not able to learn a well performing policy for this problem. So, even though D-COACH MON is not able to achieve the score of 500, a considerable improvement is made over its memoryless version, showing the importance of using recurrence in this type of problems.
 
 Finally, D-COACH MON was validated in the partially observed Car Racing problem. Figure \ref{fig:po_cr} shows that D-COACH ON (orange curve) is able to learn a policy that achieves an average return of $\sim700$ after $\sim15$ minutes of training, which is an acceptable score for this problem. Nevertheless, D-COACH MON (blue curve) shows that it is possible to obtain an even better performance if memory is added to the neural network, achieving an average return of $\sim800$ after $\sim15$ minutes of training (problem is considered to be solved with a score of 900), which is similar to the performance of $\text{D-COACH}$ ON in the fully observable Car Racing (see Figure \ref{fig:simulatedteachers}). The difference between both curves shows that D-COACH MON is a more robust and powerful approach than $\text{D-COACH}$ ON, capable of enhancing the performance of the agent in problems where $\text{D-COACH}$ ON could appear to be sufficient.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.7\linewidth]{imagenes/cap3/car_racing_lstm.pdf}
-    \caption[Partially observed Car Racing results for simulated teacher comparing D-COACH ON and D-COACH MON.]{Partially observed Car Racing results for simulated teacher comparing D-COACH ON and D-COACH MON.  Buffer: $K = 2000$; $k=20$; $b=10$; $N = 8$; $L=1\mathrm{e}5$; $l=20$; $d=1$; $M=8$; $\tau=10$; $P_{h}$: $\alpha = 0.9$; $\tau = 0.000015$; $\emph{e}=\textbf{1}$; $m=50$; $\epsilon=0.0011$. Simulated teacher network learning rate: $0.003$; Transition model learning rate: $0.0005$; Autoencoder learning rate: $0.003$.}
+    \caption[Partially observed Car Racing results for simulated teacher comparing D-COACH ON and D-COACH MON.]{Partially observed Car Racing results for simulated teacher comparing D-COACH ON and D-COACH MON.  Buffer: $K = 2000$; $k=20$; $b=10$; $N = 8$; $L=1\mathrm{e}5$; $l=20$; $d=1$; $M=8$; $\tau=10$; $P_{h}$: $\alpha = 0.9$; $\tau = 0.000015$; $\emph{e}=(1, 1, 1)$; $m=50$; $\epsilon=0.0011$. Simulated teacher network learning rate: $0.003$; Transition model learning rate: $0.0005$; Autoencoder learning rate: $0.003$.}
     \label{fig:po_cr}
 \end{figure}
 
 \section{Discussion}
-In this chapter we introduced a variation of D-COACH with memory, D-COACH MON. The main objective was to extend D-COACH in order for it to work in the set of POMDPs where the state is described by time-dependent phenomena. Low-dimensional and high-dimensional problems were covered, introducing a different model architecture for each case. 
+In this chapter we introduced a variation of D-COACH with memory, D-COACH MON. The main objective was to extend D-COACH in order for it to work in POMDPs where the state is described by time-dependent phenomena. Low-dimensional and high-dimensional problems were covered, introducing a different model architecture for each case. 
 
 D-COACH MON offers a framework that learns both the policy and the model online. This makes it easy for humans to interact in the learning process of the agents, given that no human effort is needed in extra learning steps as in the offline state representation learning version of D-COACH (Chapter 3). The experiments show that the proposed method is effective for enhancing the performance of agents in POMDPs. As discussed previously, memory-based approaches may be key to solve problems in real-world scenarios, where is common to face problems with partial observability. 
 

@@ -81,12 +81,13 @@ The high-dimensional case can be seen as an extension of the low-dimensional cas
 \end{algorithmic}
 \end{algorithm}
 
+\vspace{-0.1cm}
 \section{Experiments and Results}
-%\textbf{Even though COACH works well in low-dimensional state problems, the set of basis functions used in the LCBF must be selected independently for every problem. In some cases this could be time consuming or tedious. This engineering step is not necessary when using DNNs; thus, the same DNN architecture could be reused in different problems, saving time to the designers/engineers.}
+\vspace{-0.1cm}
 
 Our proposed algorithm is validated experimentally in three different problems: 
 
-\textbf{(i) Cart-Pole:} A simulated task with low-dimensional state space where the objective is to balance a pole attached to a cart. The cart can only move in one axis with an acceleration value between $-1$ and $1$. The state has four dimensions, which consists of the position $x$ and velocity $\dot x$ of the cart, and the angle $\theta$ and angular velocity $\dot \theta$ of the pole. A representation of the Cart-Pole environment is presented in Figure \ref{fig:cartpole}.
+\textbf{(i) Cart-Pole:} A simulated task with low-dimensional state space where the objective is to balance a pole attached to a cart (OpenAI gym implementation used \cite{brockman2016openai}) . The cart can only move in one axis with an acceleration value between $-1$ and $1$. The state has four dimensions, which consists of the position $x$ and velocity $\dot x$ of the cart, and the angle $\theta$ and angular velocity $\dot \theta$ of the pole. A representation of the Cart-Pole environment is presented in Figure \ref{fig:cartpole}.
 
 \begin{figure}[h]
     \centering
@@ -96,7 +97,7 @@ Our proposed algorithm is validated experimentally in three different problems:
 \end{figure}
 
 
-\textbf{(ii) Car Racing:} A simulated problem (from OpenAI gym \cite{brockman2016openai}) in which the agent has to learn to drive from a top-down view of a racing car game (see Fig.~\ref{fig:Car_Racing}). The objective of the task is to drive a racetrack as fast as possible without leaving it. The default state that is given by the environment is a $96\times96\times3$ top-down view of the car which we downsampled to $64\times64\times1$. The continuous-action space consists of 3 dimensions: \textbf{[direction, acceleration, brake]}. The \emph{direction} range goes from $-1$ to $1$, the \emph{acceleration} from $0$ to $1$ and the \emph{brake} from $0$ to $1$.
+\textbf{(ii) Car Racing:} A simulated problem (from OpenAI gym \cite{brockman2016openai}) in which the agent has to learn to drive from a top-down view of a racing car game (see Fig.~\ref{fig:Car_Racing}). The objective of the task is to drive a racetrack as fast as possible without leaving it. The default state that is given by the environment is a $96\times96\times3$ top-down view of the car which we downsampled to $64\times64\times1$. The continuous-action space consists of 3 dimensions: \textbf{(direction, acceleration, brake)}. The \emph{direction} range goes from $-1$ to $1$, the \emph{acceleration} from $0$ to $1$ and the \emph{brake} from $0$ to $1$.
 
 \begin{figure}[h]
     \centering
@@ -116,11 +117,15 @@ Our proposed algorithm is validated experimentally in three different problems:
 \label{fig:duckietown_off} 
 \end{figure}
 
-The experiments were carried out using two types of teachers: (1) humans and (2) simulated teachers. Even though D-COACH is intended to work with humans, in order to evaluate the method along with subtle variants under more controlled conditions, a high performance policy standing-in as a teacher, which was actually trained with D-COACH and a real human teacher, was also used (similar approaches have been taken in \cite{Celemin2018AnInteractive, griffith2013policy}). The experiments with simulated teachers are intended to compare the complete $\text{D-COACH}$ OFF presented in Algorithm \ref{algorithm:DeepCOACH}, along with a version of it without replay buffer (ignoring lines 2 and 11-16), and with a well known DRL algorithm Deep Deterministic Policy Gradient (DDPG) \cite{Lillicrap2015} (OpenAI \cite{baselines} implementation used), given that it is designed to work in continuous-action problems. The comparison is carried out by plotting the cumulative reward obtained at each episode by the agent as a function of time. In the case of $\text{D-COACH}$, the obtained reward is only used as a performance metric. Also, the results are presented as a function of time instead of episodes (except in the Duckie Racing experiment, where the maximum time that each episode can last is 30 seconds), because episodes can have variable duration depending on the policy. Hence, the episode scale would not properly show the time taken by the learning process, which is an important characteristic, since $\text{D-COACH}$ is meant to work with robots. The simulated environments, Cart-Pole and Car Racing, were ran at $22.5$ and $20.5$ FPS, respectively. These experiments were carried out using human teachers and simulated teachers. Humans had approximately 5 minutes to practice teaching in each environment. The learning curves of agents trained by 10 human teachers were obtained and averaged; the learning curves of agents trained by a simulated teacher were repeated 30 times and averaged. Along with the algebraic mean, the confidence intervals that represent the $60^{th}$ percentile of the data were plotted. In the case of the Car Racing problem, it was observed that coupled training was advantageous when the teachers were humans. The designed coupled signals are shown in Table \ref{table:coupled_car_racing}.
+The experiments were carried out using two types of teachers: (1) humans and (2) simulated teachers. Even though D-COACH is intended to work with humans, in order to evaluate the method along with subtle variants under more controlled conditions, a high performance policy standing-in as a teacher, which was actually trained with D-COACH and a real human teacher, was also used (similar approaches have been taken in \cite{Celemin2018AnInteractive, griffith2013policy}).
+
+The experiments with simulated teachers are intended to compare the complete $\text{D-COACH}$ OFF presented in Algorithm \ref{algorithm:DeepCOACH}, along with a version of it without replay buffer (ignoring lines 2 and 11-16), and with a well known DRL algorithm Deep Deterministic Policy Gradient (DDPG) \cite{Lillicrap2015} (OpenAI \cite{baselines} implementation used), given that it is designed to work in continuous-action problems. The comparison is carried out by plotting the cumulative reward obtained at each episode by the agent as a function of time. In the case of $\text{D-COACH}$, the obtained reward is only used as a performance metric. Also, the results are presented as a function of time instead of episodes (except in the Duckie Racing experiment, where the maximum time that each episode can last is 30 seconds), because episodes can have variable duration depending on the policy. Hence, the episode scale would not properly show the time taken by the learning process, which is an important characteristic, since $\text{D-COACH}$ is meant to work with robots.
+
+The simulated environments, Cart-Pole and Car Racing, were ran at $22.5$ and $20.5$ FPS, respectively. These experiments were carried out using human teachers and simulated teachers. Humans had approximately 5 minutes to practice teaching in each environment. The learning curves of agents trained by 10 human teachers were obtained and averaged; the learning curves of agents trained by a simulated teacher were repeated 30 times and averaged. Along with the algebraic mean, the confidence intervals that represent the $60^{th}$ percentile of the data were plotted. In the case of the Car Racing problem, it was observed that coupled training was advantageous when the teachers were humans. The designed coupled signals are shown in Table \ref{table:coupled_car_racing}.
 
 \begin{table}[h]
 \centering
-\caption[Values of $h$ in the Car Racing problem for human teachers.]{Values of $h$ in the Car Racing problem for human teachers. When feedback is given, the generated correction acts over more than one dimension of the action. For instance, the feedback signal \emph{forward} means that the agent should simultaneously increase its acceleration and decrease its brake.}
+\caption[Values of $h$ in the Car Racing problem for human teachers.]{Values of $h$ in the Car Racing problem for human teachers. When feedback is given, the generated correction acts over more than one dimension of the action. The feedback signal \emph{Forward} means that the agent should simultaneously increase its acceleration and decrease its brake. The signal \emph{Back} is the opposite case. The signals \emph{Right} and \emph{Left} cause the agent to decrease its acceleration when turning.}
 \label{table:coupled_car_racing}
 \begin{tabular}{lc}
 \textbf{Feedback            } & \multicolumn{1}{l}{          }{\textbf{h
@@ -171,28 +176,37 @@ DC3            & ReLU                                    & 1                    
 FC1          & ReLU                                    & \begin{tabular}[c]{@{}l@{}}Cart-Pole: 64\\ Car Racing: 300\\ Duckie Racing: 300\end{tabular} \\ \hline
 FC2            & ReLU                                    & \begin{tabular}[c]{@{}l@{}}Cart-Pole: 64\\ Car Racing: 300\\ Duckie Racing: 300\end{tabular} \\ \hline
 \begin{tabular}[c]{@{}l@{}}FC3\\ (size action)\end{tabular}            & tanh                                    & \begin{tabular}[c]{@{}l@{}}Cart-Pole: 1\\ Car Racing: 3\\ Duckie Racing: 2\end{tabular}      \\ \hline
+\vspace{-0.8cm}
 \end{tabular}
 \end{table}
 
+\vspace{-0.82cm}
 \subsection{Validation of replay buffer with simulated teachers}
+\vspace{-0.16cm}
 The use of experience replay has been extensively validated in DRL \cite{atari, lin1993reinforcement, zhang2017deeper}; however, in this approach, we  still consider it necessary to test its impact. Unlike DRL, where the policy is updated with information collected from every time step, in COACH-like methods there is only new data to update the policy when feedback is given by the teacher, so the amount of data used to update the policy may be lower than in the RL case. Since the original COACH has been widely validated with real human teachers in several tasks such as Mountain Car, Cart-Pole, Ball Dribbling with Humanoid Robots and Bicycle Balancing \cite{Celemin2018AnInteractive}, we carried out most of the comparisons using  a simulated teacher (a high performance policy standing-in as teacher, which was actually trained with D-COACH OFF and a real human teacher), like in some of the experiments presented in \cite{Celemin2018AnInteractive}, in order to compare the methods under more controlled conditions. 
 
-The simulated teacher generates feedback using $h = \operatorname{sign}(a_{\mathit{teacher}} - a_{\mathit{agent}})$, whereas the decision of advising feedback at each time step is given by the probability $P_{h} = \alpha \cdot\exp(-\tau\cdot \mathit{timestep})$, where $\{\alpha \in {\rm I\!R}\ | 0 \le \alpha \le 1\}$ and $\{\tau \in {\rm I\!R}\ | 0 \le \tau\}$. Additionally, since human teachers occasionally advise wrong corrections, a probability of giving erroneous feedback $P_{\mathit{err}}$ is added to the model. The variable $P_{\mathit{err}}$ indicates the probability that at least one dimension of $h$ is multiplied by $-1$ when feedback is given.
+The simulated teacher generates feedback using $h = \operatorname{sign}(a_{\mathit{teacher}} - a_{\mathit{agent}})$, whereas the decision of advising feedback at each time step is given by the probability $P_{h} = \alpha \cdot\exp(-\tau\cdot \mathit{timestep})$, where $\{\alpha \in {\rm I\!R}\ | 0 \le \alpha \le 1\}$ and $\{\tau \in {\rm I\!R}\ | 0 \le \tau\}$. Additionally, since human teachers occasionally advise wrong corrections, a probability of giving erroneous feedback $P_{\mathit{err}}$ is added to the model. The variable $P_{\mathit{err}}$ indicates the probability that at least one dimension of $h$ is multiplied by $-1$ when feedback is given. Given that D-COACH modifies the policy every time feedback is received, a teacher that gives too much feedback may indirectly control the agent's decisions (which will also depend on the learning rate of the policy). Therefore, in order to observe the learning processes of the agents, for each problem, the hyper-parameters $\alpha$ and $\tau$ were chosen (empirically) in such a way as to avoid the aforementioned case.
 
 A comparison of D-COACH OFF with and without the use of an experience replay buffer is carried out by means of the simulated teacher. To test the behavior of these scenarios when erroneous feedback is added, different values of $P_{\mathit{err}}$ are selected. These results can be seen in \figurename~{\ref{fig:buffer_cart_pole}} and \figurename~{\ref{fig:buffer_car_racing}} (for better readability, no confidence intervals were added).
 
 \begin{figure}[H]
     \centering
+    \vspace{-0.2cm}
     \includegraphics[width=0.66\linewidth]{imagenes/cap3/buffer_cart_pole.pdf}
-    \caption[Comparison between using or not experience replay buffer for different values of $P_\mathit{err}$ in the Cart-Pole problem.]{Comparison between using or not experience replay buffer for different values of $P_\mathit{err}$ in the Cart-Pole problem. Buffer: $K = 200$; $b = 10$; $N = 50$. $P_{h}$: $\alpha = 0.6$; $\tau = 0.0003$; $\emph{e}=\textbf{1}$. Simulated teacher network learning rate: $0.0003$.}
+    \vspace{-0.2cm}
+    \caption[Comparison between using or not experience replay buffer for different values of $P_\mathit{err}$ in the Cart-Pole problem.]{Comparison between using or not experience replay buffer for different values of $P_\mathit{err}$ in the Cart-Pole problem. Buffer: $K = 200$; $b = 10$; $N = 50$. $P_{h}$: $\alpha = 0.6$; $\tau = 0.0003$; $\emph{e}=1$. Simulated teacher network learning rate: $0.0003$.}
     \label{fig:buffer_cart_pole}
+    \vspace{-0.2cm}
 \end{figure}
 
 \begin{figure}[H]
     \centering
+    \vspace{-0.2cm}
     \includegraphics[width=0.66\linewidth]{imagenes/cap3/bufferCarRacing.pdf}
-    \caption[Comparison between using or not experience replay buffer for different values of $P_\mathit{err}$ in the Car Racing problem.]{Comparison between using or not experience replay buffer for different values of $P_\mathit{err}$ in the Car Racing problem. Buffer: $K = 1000$; $b = 10$; $N = 100$. $P_{h}$: $\alpha = 0.6$; $\tau = 0.000015$; $\emph{e}=\textbf{1}$. Simulated teacher network learning rate: $0.0003$.}
+    \vspace{-0.2cm}
+    \caption[Comparison between using or not experience replay buffer for different values of $P_\mathit{err}$ in the Car Racing problem.]{Comparison between using or not experience replay buffer for different values of $P_\mathit{err}$ in the Car Racing problem. Buffer: $K = 1000$; $b = 10$; $N = 100$. $P_{h}$: $\alpha = 0.6$; $\tau = 0.000015$; $\emph{e}=(1, 1, 1)$. Simulated teacher network learning rate: $0.0003$.}
     \label{fig:buffer_car_racing}
+    \vspace{-0.2cm}
 \end{figure}
 
 In \figurename~{\ref{fig:buffer_cart_pole}} and \figurename~{\ref{fig:buffer_car_racing}} the learning curves show a large difference between the processes of learning that use experience replay buffer with respect to the cases without the buffer. In the case without the buffer, which is more similar to the original COACH, it is possible to see that the learning agent is not benefiting from the advised corrections as much as it can do when the pieces of advice are kept in the memory. For instance, we can see that $\text{D-COACH OFF}$ learns more from corrections with $20 \%$ of mistakes when using the buffer than in the case of perfect corrections, but without any buffering. This means the buffer is necessary for increasing the use of the available information, even when this information could be corrupted and not clean.
@@ -204,7 +218,7 @@ These experiments are intended to compare the learning process of D-COACH OFF (s
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.7\linewidth]{imagenes/cap3/offline_cart_pole_humans.pdf}
-    \caption[Cart-Pole training.]{Cart-Pole training. Buffer: $K = 200$; $b = 10$; $N = 50$. $P_{h}$: $\alpha = 0.6$; $\tau = 0.0003$; $\emph{e}=\textbf{1}$. Human teacher network learning rate: $0.003$; Simulated teacher network learning rate: $0.0003$.}
+    \caption[Cart-Pole training.]{Cart-Pole training. Buffer: $K = 200$; $b = 10$; $N = 50$. $P_{h}$: $\alpha = 0.6$; $\tau = 0.0003$; $\emph{e}=1$. Human teacher network learning rate: $0.003$; Simulated teacher network learning rate: $0.0003$.}
     \label{fig:cartpole_results}
 \end{figure}
 
@@ -213,7 +227,7 @@ In \figurename~{\ref{fig:racing_car_results1}} the learning curves of the Car Ra
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.7\linewidth]{imagenes/cap3/offline_car_racing_humans.pdf}
-    \caption[Car Racing training.]{Car Racing training. Buffer: $K = 1000$; $b = 10$; $N = 100$. $P_{h}$: $\alpha = 0.6$; $\tau = 0.000015$; $\emph{e}=\textbf{1}$. Human teacher network learning rate: $0.001$; Simulated teacher network learning rate: $0.0003$.}
+    \caption[Car Racing training.]{Car Racing training. Buffer: $K = 1000$; $b = 10$; $N = 100$. $P_{h}$: $\alpha = 0.6$; $\tau = 0.000015$; $\emph{e}=(1, 1, 1)$. Human teacher network learning rate: $0.001$; Simulated teacher network learning rate: $0.0003$.}
     \label{fig:racing_car_results1}
 \end{figure}
 
@@ -244,17 +258,15 @@ This problem is not used for comparisons of the methods, but only as a validatio
 \begin{figure}[h]
     \centering
     \begin{minipage}{.5\textwidth}
-    \vspace{-0.2cm}
     \includegraphics[width=1.0\linewidth]{imagenes/cap3/racing_duckie_results.png}
     \vspace{-0.2cm}
-    \caption[Duckie Racing training.]{Duckie Racing training. A traveled distance of 100\% indicates that the car finished one lap.}
+    \caption[Duckie Racing training.]{Duckie Racing training. A traveled distance of 100\% indicates that the car finished one lap. The experiment lasted less than 7 minutes. $K = 1000$; $k=20$; $b = 10$; $N = 8$. $\emph{e}=(1, 1)$;. Human teacher network learning rate: $0.003$.}
     \label{fig:racing_duckie_results}
     \end{minipage}%
     \begin{minipage}{.5\textwidth}
     \centering
     \includegraphics[width=1.0\linewidth]{imagenes/cap3/AE_duckie2.png}
-    \vspace{-0.2cm}
-    \caption[Duckie Racing autoencoder input vs output.]{Duckie Racing autoencoder input (left) vs output (right). The experiment lasted less than 7 minutes.}
+    \caption[Duckie Racing autoencoder input vs output.]{Duckie Racing autoencoder input (left) vs output (right).}
     \label{fig:AE_duckie}
     \end{minipage}
 \end{figure}

@@ -1,27 +1,27 @@
 \chapter{Adding Memory to the Agents}
 \section{Overview}
-In the previous chapters, we have assumed that the agents interact in fully observable problems, following an MDP. This means that the observation that the agent receives from the environment is sufficient to fully understand its state. Thus:
+In the previous chapters, we have assumed that the agents interact in fully observable problems, which are modeled as MDPs. This means that the observation that the agent receives from the environment is sufficient to fully understand its state. Thus:
 
 \begin{equation}
     s_{t} = o_{t}
 \end{equation}
 
-However, this is not always true. In robotics problems, robots observe its environment through sensors, and, commonly, the data obtained from them gives partial information about the robot's state. So, a significant set of real-world problems is better described by Partially Observable Markov Decision Processes (POMDPs).
+However, this is not always true. In robotics problems, robots observe their environment through sensors, and, commonly, the data obtained from them gives partial information about the robot's state. So, a significant set of real-world problems is better described by Partially Observable Markov Decision Processes (POMDPs).
 
-There are different reason of why a problem could be partially observed. One of them is when a state is described by time-dependent phenomena, and the observations only get partial information about them. For instance, an agent could need to estimate the velocity of a flying drone by getting instant RGB snapshots of its movements. Unless observations from different time steps are combined, the agent is not going to be able to make this estimation. Other examples of time-dependent phenomena that do not have to do with the dynamics of the environment are temporary occlusions or corrupted communication systems between the sensors and the agent. From now on, we are going to use the acronym POMDP to refer to the just mentioned set of problems.
+There are different reasons why a problem could be partially observed. One of them is when a state is described by time-dependent phenomena, and the current observations only get partial information about them. For instance, an agent may need to estimate the velocity of a flying drone using instantaneous RGB images that capture its position. Unless observations from different time steps are combined, the agent is not going to be able to make the estimation of the drone's velocity. Other examples of time-dependent phenomena are temporary occlusions or corrupted communication systems between the sensors and the agent.
 
-All of these scenarios are not covered by the variations of D-COACH proposed so far. In this chapter, we aim to add memory to the policies trained with D-COACH, in order to have a system capable of solving sequential decision-making problems with partially observed time-dependent states. The idea is to validate this approach through simulations, establishing a baseline for further research in memory-based deep interactive learning.
+All of these scenarios are not covered by the variations of D-COACH proposed so far. In this chapter, we aim to add memory to the policies trained with D-COACH, in order to have a system capable of solving sequential decision-making problems with partially observed $\text{time-dependent}$ states. The idea is to validate this approach through simulations, establishing a baseline for further research in memory-based deep interactive learning.
 \newpage
 
 \section{Methodology}
 There are two well-known approaches for adding memory to agents in sequential decision-making problems when using DNNs as function approximators:
 
 \begin{enumerate}
-    \item \textbf{Observation stacking \cite{atari}}: This approach consists in stacking a fixed number of past observations to the current one and using this stack as the input of the policy. 
-    \item \textbf{Recurrent models \cite{hausknecht2015deep}:} This approach uses policies that incorporate RNN layers into its neural network architecture. Given that these models have an internal state, they can store information from the past (i.e. they have memory) and use it in future inferences. 
+    \item \textbf{Observation stacking \cite{atari}}: This approach consists in stacking a fixed number of past observations to the current one, and using this stack as the input of the policy. 
+    \item \textbf{Recurrent models \cite{hausknecht2015deep}:} This approach uses policies that incorporate RNN layers into its neural network architecture. Given that these models have an internal state, they can store information from the past (i.e. they have memory), and use it in future inferences. 
 \end{enumerate}
 
-One of the main issues of observation stacking is that the memory of these models is determined by the number of stacked observations. Problems that need to remember events in medium or large sequences would require larger stacks. In high-dimensional state problems, the size of the input can increase considerably as the number of stacked observations increments, generating high overheads. In contrast, RNN-based models have the ability to remember information for an arbitrarily long amount of time \cite{lample2017playing}. Also, they have no input-related overheads because when these models are evaluated they use as input one observation at a time. In RNNs, the memory-related overhead is determined by the size of their hidden states and the length of the sequences used when updating the weights of the models, so the latter is only effective when training.
+One of the main issues of observation stacking is that the memory of these models is determined by the number of stacked observations. Problems that need to remember events in medium or large sequences would require larger stacks. In high-dimensional state problems, the size of the input can increase considerably as the number of stacked observations increments, generating high overheads. In contrast, RNN-based models have the ability to model information for an arbitrarily long amount of time \cite{lample2017playing}. Also, they have no input-related overheads because when these models are evaluated they use as input one observation at a time. In RNNs, the memory-related overhead is determined by the size of their hidden states and the length of the sequences used when updating the weights of the models, so the latter is only effective when training.
 
 From an engineering point of view, using RNNs in products for real-world applications with long or medium time dependencies could lower their costs in comparison to using observation stacking. The input overhead of approaches based on stacked observations would be too high in these scenarios; thus, more powerful (expensive) computers would be needed. 
 
@@ -225,7 +225,7 @@ Simulated teachers were used in three different problems for validating D-COACH 
     \label{fig:no_inds_car_racing}
 \end{figure}
 
-All the results that present averaged data in the form of a curve have confidence intervals that represent the $60^{th}$ percentile of the data. For problems with low-dimensional observations, the neural network architecture presented in Figure \ref{fig:detailed_ld} was used, and the hyper-parameters values are shown in Table \ref{table:mon_ld_hyp}. For the high-dimensional observation case, the neural network architecture introduced in \ref{fig:detailed_ld} was, and the hyper-parameters shown in Tables \ref{table:mon_hypers1}, \ref{table:mon_hypers2} and \ref{table:mon_hypers3} were used. The rows in the tables with no values were not used i.e. replace FC with identity. In the same way as in Chapter 3, the hyper-parameters of the neural networks used in these experiments were tuned with preliminary experiments.
+All the results that present averaged data in the form of a curve have confidence intervals that represent the $60^{th}$ percentile of the data. For problems with low-dimensional observations, the neural network architecture presented in Figure \ref{fig:detailed_ld} was used, and the hyper-parameters values are shown in Table \ref{table:mon_ld_hyp}. For the high-dimensional observation case, the neural network architecture introduced in \ref{fig:detailed_ld} was used, and the hyper-parameters shown in Tables \ref{table:mon_hypers1}, \ref{table:mon_hypers2} and \ref{table:mon_hypers3} were used. The rows in the tables with no values were not used i.e. replace FC with identity. In the same way as in Chapter 3, the hyper-parameters of the neural networks used in these experiments were tuned with preliminary experiments.
 
 \begin{table}[]
 \centering
@@ -247,6 +247,7 @@ R1                                                          & LSTM              
 \end{table}
 
 \begin{table}[H]
+\vspace{1cm}
 \parbox{\linewidth}{
 \centering
 \caption[High-dimensional observation D-COACH MON convolutional and deconvolutional layers hyper-parameters]{D-COACH MON high-dimensional observations convolutional and deconvolutional layers hyper-parameters. Autoencoder latent space size: $8\times8\times4$ (Car Racing) and $4\times4\times4$ (HD Cart-Pole).}
@@ -263,8 +264,19 @@ DC3            & ReLU                                    & 1                    
 \end{tabular}}
 \end{table}
 
-\begin{table}
-\parbox{.45\linewidth}{
+\begin{table}[H]
+\centering
+\caption{High-dimensional observation D-COACH MON observation spaces sizes.}
+\label{table:mon_hypers3}
+\begin{tabular}{lc}
+\textbf{Problem}     & \textbf{Input size} \\ \hline \hline
+Car Racing     & $64\times64\times1$                   \\ \hline
+HD Cart-Pole    & $32\times32\times1$  \\ \hline
+\end{tabular}
+\vspace{1cm}
+\end{table}
+
+\begin{table}[H]
 \centering
 \caption{High-dimensional observation D-COACH MON fully-connected and LSTM layers hyper-parameters.}
 \label{table:mon_hypers2}
@@ -280,18 +292,9 @@ FC7                                                         & ReLU              
 FC8                                                         & ReLU                                    & 64                                                                                      \\ \hline
 \begin{tabular}[c]{@{}l@{}}FC9\\ (action size)\end{tabular} & tanh                                    & \begin{tabular}[c]{@{}c@{}}Car Racing: 3\\ HD Cart-Pole: 1\end{tabular}     \\ \hline
 R1                                                          & LSTM                                    & \begin{tabular}[c]{@{}c@{}}150\\ (size h)\end{tabular}                                  \\ \hline
-\end{tabular}}
-\hfill
-\parbox{.45\linewidth}{
-\centering
-\caption{High-dimensional observation D-COACH MON observation spaces sizes.}
-\label{table:mon_hypers3}
-\begin{tabular}{lc}
-\textbf{Problem}     & \textbf{Input size} \\ \hline \hline
-Car Racing     & $64\times64\times1$                   \\ \hline
-HD Cart-Pole    & $32\times32\times1$  \\ \hline
-\end{tabular}}
+\end{tabular}
 \end{table}
+
 \subsection{Validation Low-Dimensional State}
 
 D-COACH MON is tested in the partially observed cart-pole because it is a way of validating if the proposed methodology works in a simple setting. Figure \ref{fig:ld_cartpole_model} shows the learning curves of D-COACH MON and D-COACH ON. The same strategy used in Chapter 3 for training policies with a simulated teacher is employed in this section.

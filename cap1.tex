@@ -1,11 +1,11 @@
 \chapter{Theoretical Framework}
-\section{Sequential Decision-Making}
+\section{Sequential Decision Making}
 In robotics, sequential decision-making problems refer to tasks in which a robot must achieve a goal by interacting with the world as a consequence of decisions that are made sequentially, for example, navigating from one point to another, grasping an object, balancing, etc. It can be described as a step-by-step decision process, where depending on the information that is gathered by its sensors, the robot has to make decisions consecutively.
 
 \subsection[Markov Decision Process]{Markov Decision Process (MDP)}
-A Markov Decision Process (MDP) is meant to be a straightforward framing of sequential decision-making problems. In an MDP we have an \emph{agent} that is continually interacting with an \emph{environment}. The agent is the learner and the decision maker. The environment is everything that the agent can interact with \cite{puterman2014markov, sutton2018reinforcement}. In robotics, the agent is the robot and the environment is the real world setting in which the robot exists.
+A Markov Decision Process (MDP) is meant to be a straightforward framing of sequential decision-making problems \cite{puterman2014markov, sutton2018reinforcement}. In an MDP we have an \emph{agent} that is continually interacting with an \emph{environment}. The agent is the learner and the decision maker. The environment is everything that the agent can interact with. In robotics, the agent is the robot and the environment is the real world setting in which the robot exists.
 
-To keep things as simple as possible, MDPs are commonly modeled as discrete time interaction of the agent with the environment. Thus, the time is divided into a sequence of \emph{time steps}, $t=0,1,2,3,...$ . At each time step the agent perceives an \emph{observation} $o_{t}$ of the environment, which is a representation of the environment's \emph{state} $s_{t}$. Depending on the state, the agent selects an \emph{action} $a_{t}$, which will ideally lead to a specific task being solved \cite{sutton2018reinforcement}. 
+To keep things as simple as possible, MDPs are commonly modeled as discrete time interaction of the agent with the environment \cite{sutton2018reinforcement}. Thus, the time is divided into a sequence of \emph{time steps}, $t=0,1,2,3,...$ . At each time step the agent perceives an \emph{observation} $o_{t}$ of the environment, which is a representation of the environment's \emph{state} $s_{t}$. Depending on the state, the agent selects an \emph{action} $a_{t}$, which will ideally lead to a specific task being solved. 
 
 The state describes the current situation of the environment; the action is an input to the environment that the agent can select and that affects the environment's evolution. In robotics, this is information gathered with sensors such as RGB cameras, encoders, inertial measurement units, etc. If the observation contains sufficient information such that the agent can see the entire state of the environment, then the problem is said to be \emph{fully observed} (or fully observable); otherwise, it is said to be \emph{partially observed} (or partially observable). If a partially observed problem is modeled as a sequence of interactions between the agent and the environment, then is called a partially observable MDP (POMDP) \cite{kober2013reinforcement}.
 
@@ -36,9 +36,9 @@ Reinforcement Learning aims to use the MDP framing of sequential decision-making
     \label{fig:agent-environment}
 \end{figure}
 
-The idea is to use this experience to learn a \emph{policy} that maximizes the total amount of reward the agent receives \cite{sutton2018reinforcement}. A policy $\pi$ is a function that maps states into actions. This mapping can be either deterministic $\pi: \mathcal{S} \to \mathcal{A}$ or stochastic $\pi: \mathcal{S} \times \mathcal{A} \to [0,1]$. To obtain a good performing policy, it is necessary to adequately combine \emph{exploration} with \emph{exploitation} \cite{sutton2018reinforcement}. When exploring, the agent finds more information about the environment; when exploiting, it exploits known information to maximize the reward.
+The idea is to use this experience to learn a \emph{policy} that maximizes the total amount of reward the agent receives \cite{sutton2018reinforcement}. A policy $\pi$ is a function that maps states into actions. This mapping can be either deterministic $\pi: \mathcal{S} \to \mathcal{A}$ or stochastic $\pi: \mathcal{S} \times \mathcal{A} \to [0,1]$. To obtain a good performing policy, it is necessary to adequately combine \emph{exploration} with \emph{exploitation}. When exploring, the agent finds more information about the environment; when exploiting, it exploits known information to maximize the reward.
 
-Commonly, in complex problems, $\pi$ is a parameterized model; then, the goal of reinforcement learning is to find the set of parameters $\theta$ that maximizes the sum of rewards, or \emph{return} $G$, that the agent will obtain when solving a task. As a consequence of the parameterized policy $\pi_{\theta}$, the agent will follow a trajectory $\tau = \{s_{0}, a_{0},...,s_{T}, a_{T}\}$, where $T$ is the number of time steps. When a problem has well-defined initial and final conditions it has a \emph{finite horizon} (the trajectory generated between the initial and final conditions is called \emph{episode}), otherwise, it has an \emph{infinite horizon}. In the former, $T \in \N$; in the later, $T \to \infty$. Finally, $\tau$ follows the probability distribution $p_{\theta}(\tau)$ that depends on $p(s_{t+1}|s_{t}, a_{t})$, $\pi_{\theta}$ and $p_{0}=p(s_{0})$, which corresponds to the initial distribution of states \cite{sutton2018reinforcement, kober2013reinforcement}.
+Commonly, in complex problems, $\pi$ is a parameterized model; then, the goal of reinforcement learning is to find the set of parameters $\theta$ that maximizes the sum of rewards, or \emph{return} $G$, that the agent will obtain when solving a task. As a consequence of the parameterized policy $\pi_{\theta}$, the agent will follow a trajectory $\tau = \{s_{0}, a_{0},...,s_{T}, a_{T}\}$, where $T$ is the number of time steps. When a problem has well-defined initial and final conditions it has a \emph{finite horizon} (the trajectory generated between the initial and final conditions is called \emph{episode}), otherwise, it has an \emph{infinite horizon} \cite{sutton2018reinforcement, kober2013reinforcement}. In the former, $T \in \N$; in the later, $T \to \infty$. Finally, $\tau$ follows the probability distribution $p_{\theta}(\tau)$ that depends on $p(s_{t+1}|s_{t}, a_{t})$, $\pi_{\theta}$ and $p_{0}=p(s_{0})$, which corresponds to the initial distribution of states.
 
 With the above formulation, the goal of reinforcement learning is to \textbf{maximize the expected return} of a given task such that:
 
@@ -122,14 +122,16 @@ Independently of the technique that is used to solve a problem with Reinforcemen
     \item \textbf{Improve the policy:} use the estimated value function to obtain a policy or $\nabla_{\theta} J(\theta)$ to update $\theta$.
 \end{itemize}
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
-    \includegraphics[width=0.5\linewidth]{imagenes/cap1/RL_anatomy.pdf}
+    \includegraphics[width=0.45\linewidth]{imagenes/cap1/RL_anatomy.pdf}
     \caption{Anatomy of Reinforcement Learning.}
     \label{fig:RL_anatomy}
+    \vspace{-0.3cm}
 \end{figure}
 
 \subsubsection{Model-Free vs Model-Based}
+\vspace{-0.3cm}
 Reinforcement Learning approaches may be either Model-Free or Model-Based \cite{sutton2018reinforcement, kober2013reinforcement}.
 
 \textbf{Model-Free} algorithms learn a policy directly from experience. The dynamics of the environment are not directly learned.
@@ -137,13 +139,13 @@ Reinforcement Learning approaches may be either Model-Free or Model-Based \cite{
 \textbf{Model-Based} algorithms learn a \emph{model} of the dynamics of the environment from experience. Then, planning or optimal control techniques are applied to develop a policy using the model.
 
 A model of the environment is a function $M: \mathcal{S} \times \mathcal{A} \to \mathcal{S}$ that predicts the next state as a function of the current state and action to take:
-
+\vspace{-0.02cm}
 \begin{equation} \label{eq:model}
     M(s_{t},a_{t}) = s_{t+1}  
 \end{equation}
-
+\vspace{-0.02cm}
 or, in the stochastic case, $M: \mathcal{S} \times \mathcal{A} \times \mathcal{S} \to [0, 1]$:
-
+\vspace{-0.02cm}
 \begin{equation}
     M(s_{t},a_{t}) = p(s_{t+1}|s_{t},a_{t})  
 \end{equation}
@@ -152,7 +154,7 @@ Figure \ref{fig:free_based_model} summarizes the difference between both approac
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.55\linewidth]{imagenes/cap1/free_based_model.pdf}
+    \includegraphics[width=0.5\linewidth]{imagenes/cap1/free_based_model.pdf}
     \caption{Model-Free vs Model-Based.}
     \label{fig:free_based_model}
 \end{figure}
@@ -392,11 +394,11 @@ Before the Deep RL era, ANNs where not a predominant function approximator for s
 
 \section[Interactive Machine Learning]{Interactive Machine Learning}
 
-In the context of this work, Interactive Machine Learning (IML) is understood as a research area that gathers all the techniques in which humans/users take part in the agent's learning process for solving sequential decision-making problems \cite{Argall2009, amershi2014power,billing2010formalism, Chernova2014, cuayahuitl2013machine}.Other works refer to IML as an area that focuses on learning classifiers with the help of users \cite{fails2003interactive, ware2001interactive, amershi2012regroup, ngo2014efficient}.
+In the context of this work, Interactive Machine Learning (IML) is understood as a research area that gathers all the techniques in which humans/users take part in the agent's learning process for solving sequential decision-making problems \cite{Argall2009, amershi2014power,billing2010formalism, Chernova2014, cuayahuitl2013machine}. Other works refer to IML as an area that focuses on learning classifiers with the help of users \cite{fails2003interactive, ware2001interactive, amershi2012regroup, ngo2014efficient}.
 
 As RL, IML can also be studied under the framework of MDPs \cite{Celemin2018AnInteractive, Knox:2009:ISA:1597735.1597738, Argall2009}. The main difference with RL is that in IML having an explicitly defined reward function is not a requirement. Some approaches may combine the information gathered from the human with the one given by a reward function, while others, may not need a reward function at all.
 
-In this work, we divide IML into two areas: \textbf{Learning from Demonstration (LfD)} \cite{Argall2009, billing2010formalism} and \textbf{Learning from Feedback (LfF)} \cite{Celemin2018AnInteractive}.
+In this work, we divide IML into two areas: \textbf{Learning from Demonstration (LfD)} \cite{Argall2009, billing2010formalism} and \textbf{Learning from Feedback (LfF)} \cite{Celemin2018AnInteractive, argall2009learning, Knox:2009:ISA:1597735.1597738}.
 
 \subsection{Learning from Demonstration}
 
@@ -496,7 +498,7 @@ The classic COACH algorithm shapes two functions parameterized as a linear model
 \State \textbf{feedback} human corrective advice $h_{t}$
 \If{$h_{t}$ is not 0}
 \State \textbf{update} $H(s_{t})$ with $\Delta \psi = \beta\cdot (h_{t}-H(s_{t}))\cdot \phi(s_{t})$
-\State $\alpha_{t} = |H(s_{t+1})|$
+\State $\alpha_{t} = |H(s_{t})|$
 \State $error_{t} = h_{t}\cdot e$
 \State \textbf{update} $\pi(s_{t})$ with $\Delta \theta = \alpha_{t} \cdot error_{t} \cdot \phi(s_{t})$
 \EndIf
